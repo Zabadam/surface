@@ -29,5 +29,5 @@
 # [Surface Example](https://github.com/Zabadam/surface/example)
 
 See some example usage of the Surface package for Flutter included here.
-- [Surface Example Android source](https://github.com/Zabadam/surface/example/lib/main.dart): `/example/lib/main.dart`
-- [Surface Example APK](https://github.com/Zabadam/surface/example/build/app/outputs/flutter-apk/app-release.apk)
+- [Surface Example Android source](https://github.com/Zabadam/surface/tree/main/example/lib/main.dart): `/example/lib/main.dart`
+- [Surface Example APK](https://github.com/Zabadam/surface/tree/main/example/build/app/outputs/flutter-apk/app-release.apk)
