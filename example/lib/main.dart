@@ -5,9 +5,8 @@ import 'package:surface/surface.dart';
 
 const _PRIMARY_SWATCH = Colors.red;
 const _ACCENT_COLOR = Colors.blue;
-const _DURATION = LIGHTNING;
-const _CURVE = Curves.linear;
-// const _CURVE = Curves.fastOutSlowIn;
+const _DURATION = Duration(milliseconds: 300);
+const _CURVE = Curves.fastOutSlowIn;
 
 void main() {
   runApp(SurfaceExample());
@@ -161,6 +160,8 @@ class _LandingState extends State<Landing> {
   Image buildBackground() {
     return Image.network(
       'https://apod.nasa.gov/apod/image/2102/rosette_goldman_2500.jpg',
+
+      /// This frameBuilder simply fades in the photo when it loads.
       frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
         if (wasSynchronouslyLoaded) return child;
         return AnimatedOpacity(
@@ -170,6 +171,8 @@ class _LandingState extends State<Landing> {
           curve: _CURVE,
         );
       },
+
+      /// Stretch the photo to the size of the app and have it cover the Surface.
       fit: BoxFit.cover,
       width: _width,
       height: _height,

@@ -1,5 +1,4 @@
-/// An [AnimatedContainer] Widget and [Material] with a number of parameters for
-/// both appearance and behavior.
+/// ## An [AnimatedContainer] and [Material] with a number of convenience parameters and customization options, through standard approaches and bespoke shape-crafting.
 ///
 /// Options to render an [InkResponse], blurry
 /// [ImageFilter]s in preconfigured [SurfaceFilter] arrangements, a
@@ -10,7 +9,7 @@
 /// as giving special treatment, generally a thicker appearance, to selected
 /// side(s) by passing [Surface.borderAlignment] and tuning with [Surface.borderRatio].
 ///
-/// [SurfaceCorners.BEVEL] shape is returned from [biBeveledShape].
+/// [biBeveledShape] is responsible for the [SurfaceCorners.BEVEL] custom shape.
 library surface;
 
 import 'dart:ui';
@@ -18,11 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-/// ------
-/// ## ENUMS
-///
-/// ---
-/// ### 📐 [SurfaceLayer]
+/// ### 📇 [SurfaceLayer]
 /// Defines the three layers for rendering a [Surface].
 enum SurfaceLayer {
   /// Lowest layer of a [Surface]. This bottom [AnimatedContainer] may be
@@ -57,12 +52,12 @@ enum SurfaceCorners {
 }
 
 /// ### 👓 [SurfaceFilter]
-/// Defines very complex [BackdropFilter] layout  options for entire [Surface].
+/// Defines complex [BackdropFilter] layout  options for entire [Surface].
 ///
 /// A blur filter under [Surface.child] and under [Surface.innerMaterial] will
 /// be a different rectangle (and thus will not be duplicates of each other) only
 /// if [Surface.paddingStyle] `!=` [SurfacePadding.PAD_CHILD] and [Surface.padding]
-/// is passed a non-negligble value.
+/// is passed a non-negligible value.
 ///
 /// It is only then that the child is offset from the [Surface.innerMaterial] itself.
 /// ```dart
@@ -116,7 +111,7 @@ enum SurfaceFilter {
   CHILD
 }
 
-/// ### 📐 [SurfacePadding]
+/// ### 🔲 [SurfacePadding]
 /// Defines how passed [Surface.padding] is applied.
 /// - `SurfacePadding.PAD_CHILD` gives entire passed padding value to the child
 /// - `SurfacePadding.PAD_SURFACE` applies entire passed padding value to a [Padding] that surrounds the inner [ClipPath] where [Surface.child] eventually resides
@@ -132,14 +127,12 @@ enum SurfacePadding {
   SPLIT
 }
 
-/// ---
-/// ### 🔧🔬 [blurry] Image Filter
+/// ### 🔬 [blurry] Image Filter
 /// double [radius] is passed as [sigmaX] and [sigmaY] to `ImageFilter.blur()`
 ImageFilter blurry(double radius) {
   return ImageFilter.blur(sigmaX: radius, sigmaY: radius);
 }
 
-/// ---
 /// ### 🔰 [biBeveledShape]
 ///
 /// Returns a [BeveledRectangleBorder] where the passed [radius] is applied to
@@ -193,10 +186,6 @@ BeveledRectangleBorder biBeveledShape({
   ));
 }
 
-/// ------
-/// ## SURFACE
-///
-/// ---
 /// ### 📦 [Surface]
 ///
 /// An [AnimatedContainer] Widget and [Material] with a number of parameters for
@@ -260,8 +249,8 @@ BeveledRectangleBorder biBeveledShape({
 ///     Surface(borderAlignment: Alignment.topLeft, corners: SurfaceCorners.BEVEL, flipBevels: true, borderGradient: LinearGradient(...))
 ///
 class Surface extends StatelessWidget {
-  /// # ⚡ Speedy: 500ms
-  static const SPEEDY = Duration(milliseconds: 500);
+  /// ## 🏃‍♂️ Default Duration: 500ms
+  static const _DEFAULT_DURATION = Duration(milliseconds: 500);
 
   /// ## ⬜ Default Color: White ~17%
   ///     Color(0x44FFFFFF)
@@ -301,7 +290,7 @@ class Surface extends StatelessWidget {
     this.inkSplashColor,
     this.inkHighlightColor,
     this.filterStyle = SurfaceFilter.NONE,
-    this.duration = SPEEDY,
+    this.duration = _DEFAULT_DURATION,
     this.curve = Curves.easeIn,
     this.providesFeedback = false,
     this.margin = const EdgeInsets.all(0),
@@ -335,11 +324,11 @@ class Surface extends StatelessWidget {
                     : true),
             '[Surface] > Upper-layered filters will be negated if ancestor filters are enabled that have radius < 0.0003. Increase blur radius of lower layer(s) or pass a different [filterStyle].');
 
-  /// [width] and [height] follow rules of [AnimatedContainer], but applies to either
-  /// the [borderContainer] or, if `disableBorers: true`, the [innerSurface] directly.
+  /// The [width] and [height] follow rules of [AnimatedContainer], but apply
+  /// to either the [Surface.borderContainer] or, if `disableBorers: true`, the [Surface.innerSurface] directly.
   ///
   /// [radius] impacts the roundedness of default [SurfaceCorners.ROUND] or
-  /// set-in of [SurfaceCorners.BEVEL]. If not provided, [_DEFAULT_RADIUS] `== 6.0`
+  /// set-in of [SurfaceCorners.BEVEL]. If not provided, [Surface._DEFAULT_RADIUS] `== 6.0`
   final double width, height, radius;
 
   /// If passed [gradient] or [borderGradient], the `Color` parameters are ignored.
@@ -402,7 +391,7 @@ class Surface extends StatelessWidget {
   final EdgeInsets margin, padding;
 
   /// The [padding] value may be (default) passed entirely to the [child], but
-  /// optionally may be given to a [clipper] within [innerSurface] before
+  /// optionally may be given to a [_clipper] within [innerSurface] before
   /// rendering [child], or split evenly between the two.
   ///
   /// The effect with [SurfacePadding.PAD_SURFACE] can be quite neat as it adds
@@ -434,7 +423,6 @@ class Surface extends StatelessWidget {
   /// The Widget to render inside considering all layout parameters.
   final Widget child;
 
-  /// ---
   /// 👷‍♂️ Build [Surface]
   @override
   Widget build(BuildContext context) {
@@ -451,7 +439,6 @@ class Surface extends StatelessWidget {
       print(
           '[$context] > Both [borderGadient] and [borderColor] have been passed, so [borderColor] will be ignored.');
 
-    /// ---
     /// 🔢 Establish the thickness of each border-side (padding property for [borderContainer])
     /// based on [borderThickness] and considering [borderAlignment] & [borderRatio]
     final double left = (borderAlignment == Alignment.topLeft ||
@@ -475,7 +462,6 @@ class Surface extends StatelessWidget {
         ? borderThickness * borderRatio
         : borderThickness;
 
-    /// ---
     /// 🧅 [innerMaterial] may contain [buildInkResponse] but always eventually
     /// holds [child], as the InkResponse will soon [buildChild] as well.
     ///
@@ -502,7 +488,6 @@ class Surface extends StatelessWidget {
       ),
     );
 
-    /// ---
     /// 🐚 [borderContainer] contains [innerMaterial] & represents [Surface] border
     Widget borderContainer = AnimatedContainer(
       /// [width] and [height] may be `null` anyway
@@ -532,7 +517,6 @@ class Surface extends StatelessWidget {
       ),
     );
 
-    /// ---
     /// ### 📤 Return [Surface]
     if (disableBorder)
       return _filterOrChild(layer: SurfaceLayer.MATERIAL, child: innerMaterial);
@@ -540,10 +524,6 @@ class Surface extends StatelessWidget {
       return _filterOrChild(layer: SurfaceLayer.BORDER, child: borderContainer);
   }
 
-  /// ------
-  /// ### [Surface] METHODS
-  ///
-  /// ---
   /// 👷‍♂️👆 [_buildInkResponse]
   /// If [tappable] is `true` then Surface parameter [child] is passed into
   /// this [InkResponse] with customizable [inkHighlightColor] and [inkSplashColor].
@@ -573,9 +553,8 @@ class Surface extends StatelessWidget {
     );
   }
 
-  /// ---
   /// 👶 [_buildChild] with passed [child].
-  /// A [ClipPath] from [clipper] is used to ensure child renders properly
+  /// A [ClipPath] from [_clipper] is used to ensure child renders properly
   /// at inner corners.
   /// Property [paddingStyle] determines how [padding] is distributed.
   AnimatedPadding _buildChild() {
@@ -591,7 +570,7 @@ class Surface extends StatelessWidget {
               : padding,
 
       /// [clipper] containing [child]
-      child: clipper(
+      child: _clipper(
         layer: SurfaceLayer.CHILD,
         content: AnimatedContainer(
           duration: duration,
@@ -614,7 +593,6 @@ class Surface extends StatelessWidget {
     );
   }
 
-  /// ---
   /// 👷‍♂️🏗 [_buildDecoration] returns Shape or [BoxDecoration] considering whether
   /// to pass [color] vs. [gradient]
   Decoration _buildDecoration({
@@ -626,7 +604,6 @@ class Surface extends StatelessWidget {
         : _buildColorDecoration(layer);
   }
 
-  /// ---
   /// 👷‍♂️🔰 [_buildBiBeveledShape]
   /// Customized [biBeveledShape] so the [innerMaterial] may have a deeper-cut
   /// beveled corner if the property [borderAlignment] is passed and corner-set.
@@ -644,36 +621,34 @@ class Surface extends StatelessWidget {
         shrinkCornerAlignment: _determineShrinkCornerAlignment());
   }
 
-  /// ---
-  /// 🔪 Shortcut [clipper] since a [ClipPath] is employed similarly
+  /// 🔧🔪 Shortcut [_clipper] since a [ClipPath] is employed similarly
   /// in more than one context.
-  ClipPath clipper({@required SurfaceLayer layer, @required Widget content}) {
+  ClipPath _clipper({@required SurfaceLayer layer, @required Widget content}) {
     return ClipPath(
       child: content,
       clipper: ShapeBorderClipper(
-        shape: ShapeBorder.lerp(
-          /// [SurfaceCorners.BEVEL] may need a slightly different shape for
-          /// the [innerSurface] vs. the [borderContainer].
-          (layer == SurfaceLayer.BORDER)
-              ? _buildBiBeveledShape(isBorder: true)
-              : _buildBiBeveledShape(isBorder: false),
+        shape: (corners == SurfaceCorners.BEVEL)
+            ?
 
-          /// A [SurfaceCorners.ROUND] or SQUARE Surface uses the same shape
-          /// regardless of [SurfaceLayer]. TODO: Altered inner radius for roundedRects
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                (corners == SurfaceCorners.SQUARE)
-                    ? 0
-                    : radius ?? _DEFAULT_RADIUS),
-          ),
-          (corners == SurfaceCorners.BEVEL) ? 0 : 1,
-        ),
+            /// [SurfaceCorners.BEVEL] may need a slightly different shape for
+            /// the [innerSurface] vs. the [borderContainer].
+            (layer == SurfaceLayer.BORDER)
+                ? _buildBiBeveledShape(isBorder: true)
+                : _buildBiBeveledShape(isBorder: false)
+
+            /// A [SurfaceCorners.ROUND] or SQUARE Surface uses the same shape
+            /// regardless of [SurfaceLayer]. TODO: Altered inner radius for roundedRects
+            : RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    (corners == SurfaceCorners.SQUARE)
+                        ? 0
+                        : radius ?? _DEFAULT_RADIUS),
+              ),
       ),
     );
   }
 
-  /// ---
-  /// 🔬 Shortcut [_filterOrChild] which considers the currently rendering
+  /// 🔧🔬 Shortcut [_filterOrChild] which considers the currently rendering
   /// [SurfaceLayer] and the parameter [filterStyle].
   ///
   /// If an [ImageFilter] is not needed, this method just returns the passed child.
@@ -694,7 +669,7 @@ class Surface extends StatelessWidget {
                 filterStyle != SurfaceFilter.CHILD)
 
             /// If passes, return the child clipped and nested on a filter.
-            ? clipper(
+            ? _clipper(
                 layer: SurfaceLayer.BORDER,
                 content: BackdropFilter(
                     filter: blurry(filterSurfaceBlur), child: child),
@@ -707,7 +682,7 @@ class Surface extends StatelessWidget {
                 filterStyle != SurfaceFilter.SURFACE_AND_CHILD &&
                 filterStyle != SurfaceFilter.SURFACE &&
                 filterStyle != SurfaceFilter.CHILD)
-            ? clipper(
+            ? _clipper(
                 layer: SurfaceLayer.CHILD,
                 content: BackdropFilter(
                     filter: blurry(filterMaterialBlur), child: child),
@@ -729,7 +704,6 @@ class Surface extends StatelessWidget {
     return child;
   }
 
-  /// ---
   /// 👷‍♂️🌆 Build [gradient] Decorations
   Decoration _buildGradientDecoration(SurfaceLayer layer) {
     if (corners == SurfaceCorners.BEVEL) {
@@ -748,7 +722,6 @@ class Surface extends StatelessWidget {
     }
   }
 
-  /// ---
   /// 👷‍♂️🎨 Build [color] Decorations
   Decoration _buildColorDecoration(SurfaceLayer layer) {
     if (corners == SurfaceCorners.BEVEL)
@@ -766,7 +739,6 @@ class Surface extends StatelessWidget {
                   : radius ?? _DEFAULT_RADIUS)));
   }
 
-  /// ---
   /// 🧮 [_determineShrinkCornerAlignment]
   /// Shrink the corner diagonally-opposite the corner from where [borderAlignment]
   /// results in thicker border.

@@ -75,7 +75,7 @@ class _CustomInkFactory extends InteractiveInkFeatureFactory {
   }
 }
 
-/// A delightfully bouncy and position-mirroring reaction to user input
+/// 🖋👆 A delightfully bouncy and position-mirroring reaction to user input
 /// on a piece of [Material].
 ///
 /// A circular ink feature whose origin immediately moves from input touch point

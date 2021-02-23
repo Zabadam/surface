@@ -13,8 +13,6 @@
 ///
 /// ### `surface.dart` adds a few items to namespace currently... sorry!
 /// - `fullPrint(String text)` to receive really long Strings in console log
-/// - A few `Duration` constants
-/// - Color constant `TRANSPARENT`
 /// - Color extensions `.withBlack(int subtract)` and `.withWhite(int add)`
 /// - `CustomInk.splashFactory` - New InteractiveInkFeatureFactory from modified [Material.InkRipple]
 /// - `Transform ScaleAxis(Widget child, {Key key, double dx =1.0, double dy =1.0, Offset origin, AlignmentGeometry alignment})`
