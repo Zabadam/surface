@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the CustomInk class from the surface library, for the Dart programming language.">
+  <title>CustomInk class - surface library - Dart API</title>
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="../static-assets/github.css">
+  <link rel="stylesheet" href="../static-assets/styles.css">
+  <link rel="icon" href="../static-assets/favicon.png">
+
+</head>
+
+<body data-base-href="../"
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">surface</a></li>
+    <li><a href="../surface/surface-library.html">surface</a></li>
+    <li class="self-crumb">CustomInk class</li>
+  </ol>
+  <div class="self-name">CustomInk</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+      <form class="search-sidebar" role="search">
+        <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+      </form>
+    </header>
+    
+    <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+      <li><a href="../index.html">surface</a></li>
+      <li><a href="../surface/surface-library.html">surface</a></li>
+      <li class="self-crumb">CustomInk class</li>
+    </ol>
+    
+    <h5>surface library</h5>
+    <ol>
+  <li class="section-title"><a href="../surface/surface-library.html#classes">Classes</a></li>
+  <li><a href="../surface/CustomInk-class.html">CustomInk</a></li>
+  <li><a href="../surface/DragNub-class.html">DragNub</a></li>
+  <li><a href="../surface/Surface-class.html">Surface</a></li>
+
+  <li class="section-title"><a href="../surface/surface-library.html#extension">Extensions</a></li>
+  <li><a href="../surface/WithShading.html">WithShading</a></li>
+
+
+
+
+  <li class="section-title"><a href="../surface/surface-library.html#functions">Functions</a></li>
+  <li><a href="../surface/biBeveledShape.html">biBeveledShape</a></li>
+  <li><a href="../surface/blurry.html">blurry</a></li>
+  <li><a href="../surface/fullPrint.html">fullPrint</a></li>
+  <li><a href="../surface/scaleAxis.html">scaleAxis</a></li>
+
+  <li class="section-title"><a href="../surface/surface-library.html#enums">Enums</a></li>
+  <li><a href="../surface/SurfaceCorners-class.html">SurfaceCorners</a></li>
+  <li><a href="../surface/SurfaceFilter-class.html">SurfaceFilter</a></li>
+  <li><a href="../surface/SurfaceLayer-class.html">SurfaceLayer</a></li>
+  <li><a href="../surface/SurfacePadding-class.html">SurfacePadding</a></li>
+
+
+</ol>
+
+  </div>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div><h1><span class="kind-class">CustomInk</span> class  </h1></div>
+
+    <section class="desc markdown">
+      <p>🖋👆 A delightfully bouncy and position-mirroring reaction to user input
+on a piece of <a href="https://api.flutter.dev/flutter/material/Material-class.html">Material</a>.</p>
+<p>A circular ink feature whose origin immediately moves from input touch point
+to an X- and Y-mirrored point opposite the touch point; and whose radius
+expands from 0% of the final radius to twice that of the radius.
+The splash origin bounce-animates to the target mirror point of its
+<a href="https://api.flutter.dev/flutter/material/InkFeature/referenceBox.html">referenceBox</a> as it grows in radius and fades-in.</p>
+<p>This object is rarely created directly. Instead of creating a <a href="../surface/CustomInk-class.html">CustomInk</a>,
+consider using an <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a> or <a href="https://api.flutter.dev/flutter/material/InkWell-class.html">InkWell</a> widget, which uses
+gestures (such as tap and long-press) to trigger ink splashes. This class
+is used when the <a href="https://api.flutter.dev/flutter/material/Theme-class.html">Theme</a>'s <a href="https://api.flutter.dev/flutter/material/ThemeData/splashFactory.html">ThemeData.splashFactory</a> is <a href="../surface/CustomInk/splashFactory-constant.html">CustomInk.splashFactory</a>.</p>
+<p>See also:</p>
+<ul>
+<li><a href="https://api.flutter.dev/flutter/material/InkRipple-class.html">InkRipple</a>, which is a built-in ink splash feature that expands less
+aggressively than the custom ink.</li>
+<li><a href="https://api.flutter.dev/flutter/material/InkSplash-class.html">InkSplash</a>, which is a built-in ink splash feature that expands less
+aggressively than the ripple.</li>
+<li><a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a>, which uses gestures to trigger ink highlights and ink
+splashes in the parent <a href="https://api.flutter.dev/flutter/material/Material-class.html">Material</a>.</li>
+<li><a href="https://api.flutter.dev/flutter/material/InkWell-class.html">InkWell</a>, which is a rectangular <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a> (the most common type of
+ink response).</li>
+<li><a href="https://api.flutter.dev/flutter/material/Material-class.html">Material</a>, which is the widget on which the ink splash is painted.</li>
+<li><a href="https://api.flutter.dev/flutter/material/InkHighlight-class.html">InkHighlight</a>, which is an ink feature that emphasizes a part of a
+<a href="https://api.flutter.dev/flutter/material/Material-class.html">Material</a>.</li>
+</ul>
+    </section>
+    
+    <section>
+      <dl class="dl-horizontal">
+        <dt>Inheritance</dt>
+        <dd><ul class="gt-separated dark clazz-relationships">
+          <li><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></li>
+          <li><a href="https://api.flutter.dev/flutter/material/InkFeature-class.html">InkFeature</a></li>
+          <li><a href="https://api.flutter.dev/flutter/material/InteractiveInkFeature-class.html">InteractiveInkFeature</a></li>
+          <li>CustomInk</li>
+        </ul></dd>
+
+
+
+
+
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor" id="constructors">
+      <h2>Constructors</h2>
+
+      <dl class="constructor-summary-list">
+        <dt id="CustomInk" class="callable">
+          <span class="name"><a href="../surface/CustomInk/CustomInk.html">CustomInk</a></span><span class="signature">(<span class="parameter" id="-param-controller">{<span>@<a href="https://pub.dev/documentation/meta/1.3.0-nullsafety.3/meta/required-constant.html">required</a></span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/material/MaterialInkController-class.html">MaterialInkController</a></span> <span class="parameter-name">controller</span>, </span><span class="parameter" id="-param-referenceBox"><span>@<a href="https://pub.dev/documentation/meta/1.3.0-nullsafety.3/meta/required-constant.html">required</a></span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/rendering/RenderBox-class.html">RenderBox</a></span> <span class="parameter-name">referenceBox</span>, </span><span class="parameter" id="-param-position"><span>@<a href="https://pub.dev/documentation/meta/1.3.0-nullsafety.3/meta/required-constant.html">required</a></span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Offset-class.html">Offset</a></span> <span class="parameter-name">position</span>, </span><span class="parameter" id="-param-color"><span>@<a href="https://pub.dev/documentation/meta/1.3.0-nullsafety.3/meta/required-constant.html">required</a></span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">color</span>, </span><span class="parameter" id="-param-textDirection"><span>@<a href="https://pub.dev/documentation/meta/1.3.0-nullsafety.3/meta/required-constant.html">required</a></span> <span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/TextDirection-class.html">TextDirection</a></span> <span class="parameter-name">textDirection</span>, </span><span class="parameter" id="-param-containedInkWell"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">containedInkWell</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-rectCallback"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/material/RectCallback.html">RectCallback</a></span> <span class="parameter-name">rectCallback</span>, </span><span class="parameter" id="-param-borderRadius"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/BorderRadius-class.html">BorderRadius</a></span> <span class="parameter-name">borderRadius</span>, </span><span class="parameter" id="-param-customBorder"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/ShapeBorder-class.html">ShapeBorder</a></span> <span class="parameter-name">customBorder</span>, </span><span class="parameter" id="-param-radius"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">radius</span>, </span><span class="parameter" id="-param-onRemoved"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a></span> <span class="parameter-name">onRemoved</span>}</span>)</span>
+        </dt>
+        <dd>
+          Begin a ripple, centered at <code>position</code> relative to <code>referenceBox</code>. <a href="../surface/CustomInk/CustomInk.html">[...]</a>
+        </dd>
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor inherited" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="color" class="property inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/material/InteractiveInkFeature/color.html">color</a></span>
+          <span class="signature">&#8596; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>         
+        </dt>
+        <dd class="inherited">
+          The ink's color. 
+                  <div class="features">read / write, inherited</div>
+</dd>
+        <dt id="controller" class="property inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/material/InkFeature/controller.html">controller</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/material/MaterialInkController-class.html">MaterialInkController</a></span>         
+        </dt>
+        <dd class="inherited">
+          The <a href="https://api.flutter.dev/flutter/material/MaterialInkController-class.html">MaterialInkController</a> associated with this <a href="https://api.flutter.dev/flutter/material/InkFeature-class.html">InkFeature</a>. <a href="https://api.flutter.dev/flutter/material/InkFeature/controller.html">[...]</a>
+                  <div class="features">read-only, inherited</div>
+</dd>
+        <dt id="hashCode" class="property inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>         
+        </dt>
+        <dd class="inherited">
+          The hash code for this object. <a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">[...]</a>
+                  <div class="features">read-only, inherited</div>
+</dd>
+        <dt id="onRemoved" class="property inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/material/InkFeature/onRemoved.html">onRemoved</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a></span>         
+        </dt>
+        <dd class="inherited">
+          Called when the ink feature is no longer visible on the material. 
+                  <div class="features">final, inherited</div>
+</dd>
+        <dt id="referenceBox" class="property inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/material/InkFeature/referenceBox.html">referenceBox</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/rendering/RenderBox-class.html">RenderBox</a></span>         
+        </dt>
+        <dd class="inherited">
+          The render box whose visual position defines the frame of reference for this ink feature. 
+                  <div class="features">final, inherited</div>
+</dd>
+        <dt id="runtimeType" class="property inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Type-class.html">Type</a></span>         
+        </dt>
+        <dd class="inherited">
+          A representation of the runtime type of the object. 
+                  <div class="features">read-only, inherited</div>
+</dd>
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor" id="instance-methods">
+      <h2>Methods</h2>
+      <dl class="callables">
+        <dt id="cancel" class="callable">
+          <span class="name"><a href="../surface/CustomInk/cancel.html">cancel</a></span><span class="signature">(<wbr>)
+            <span class="returntype parameter">&#8594; void</span>
+          </span>
+                  </dt>
+        <dd>
+          Called when the user input that triggered this feature's appearance was canceled. <a href="../surface/CustomInk/cancel.html">[...]</a>
+                  <div class="features">override</div>
+</dd>
+        <dt id="confirm" class="callable">
+          <span class="name"><a href="../surface/CustomInk/confirm.html">confirm</a></span><span class="signature">(<wbr>)
+            <span class="returntype parameter">&#8594; void</span>
+          </span>
+                  </dt>
+        <dd>
+          Called when the user input that triggered this feature's appearance was confirmed. <a href="../surface/CustomInk/confirm.html">[...]</a>
+                  <div class="features">override</div>
+</dd>
+        <dt id="dispose" class="callable">
+          <span class="name"><a href="../surface/CustomInk/dispose.html">dispose</a></span><span class="signature">(<wbr>)
+            <span class="returntype parameter">&#8594; void</span>
+          </span>
+                  </dt>
+        <dd>
+          Free up the resources associated with this ink feature. 
+                  <div class="features">override</div>
+</dd>
+        <dt id="noSuchMethod" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+            <span class="returntype parameter">&#8594; dynamic</span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Invoked when a non-existent method or property is accessed. <a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">[...]</a>
+                  <div class="features">inherited</div>
+</dd>
+        <dt id="paintFeature" class="callable">
+          <span class="name"><a href="../surface/CustomInk/paintFeature.html">paintFeature</a></span><span class="signature">(<wbr><span class="parameter" id="paintFeature-param-canvas"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Canvas-class.html">Canvas</a></span> <span class="parameter-name">canvas</span>, </span><span class="parameter" id="paintFeature-param-transform"><span class="type-annotation"><a href="https://pub.dev/documentation/vector_math/2.1.0-nullsafety.3/vector_math_64/Matrix4-class.html">Matrix4</a></span> <span class="parameter-name">transform</span></span>)
+            <span class="returntype parameter">&#8594; void</span>
+          </span>
+                  </dt>
+        <dd>
+          Override this method to paint the ink feature. <a href="../surface/CustomInk/paintFeature.html">[...]</a>
+                  <div class="features">override</div>
+</dd>
+        <dt id="paintInkCircle" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/material/InteractiveInkFeature/paintInkCircle.html">paintInkCircle</a></span><span class="signature">(<wbr><span class="parameter" id="paintInkCircle-param-canvas">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Canvas-class.html">Canvas</a></span> <span class="parameter-name">canvas</span>, </span><span class="parameter" id="paintInkCircle-param-transform"><span class="type-annotation"><a href="https://pub.dev/documentation/vector_math/2.1.0-nullsafety.3/vector_math_64/Matrix4-class.html">Matrix4</a></span> <span class="parameter-name">transform</span>, </span><span class="parameter" id="paintInkCircle-param-paint"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Paint-class.html">Paint</a></span> <span class="parameter-name">paint</span>, </span><span class="parameter" id="paintInkCircle-param-center"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Offset-class.html">Offset</a></span> <span class="parameter-name">center</span>, </span><span class="parameter" id="paintInkCircle-param-radius"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">radius</span>, </span><span class="parameter" id="paintInkCircle-param-textDirection"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/TextDirection-class.html">TextDirection</a></span> <span class="parameter-name">textDirection</span>, </span><span class="parameter" id="paintInkCircle-param-customBorder"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/ShapeBorder-class.html">ShapeBorder</a></span> <span class="parameter-name">customBorder</span>, </span><span class="parameter" id="paintInkCircle-param-borderRadius"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/BorderRadius-class.html">BorderRadius</a></span> <span class="parameter-name">borderRadius</span> = <span class="default-value">BorderRadius.zero</span>, </span><span class="parameter" id="paintInkCircle-param-clipCallback"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/material/RectCallback.html">RectCallback</a></span> <span class="parameter-name">clipCallback</span>}</span>)
+            <span class="returntype parameter">&#8594; void</span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Draws an ink splash or ink ripple on the passed in <a href="https://api.flutter.dev/flutter/dart-ui/Canvas-class.html">Canvas</a>. <a href="https://api.flutter.dev/flutter/material/InteractiveInkFeature/paintInkCircle.html">[...]</a>
+                  <div class="features">@<a href="https://pub.dev/documentation/meta/1.3.0-nullsafety.3/meta/protected-constant.html">protected</a>, inherited</div>
+</dd>
+        <dt id="toString" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/material/InkFeature/toString.html">toString</a></span><span class="signature">(<wbr>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Returns a string representation of this object. 
+                  <div class="features">inherited</div>
+</dd>
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor inherited" id="operators">
+      <h2>Operators</h2>
+      <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          The equality operator. <a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">[...]</a>
+                  <div class="features">inherited</div>
+</dd>
+      </dl>
+    </section>
+
+
+
+    <section class="summary offset-anchor" id="constants">
+      <h2>Constants</h2>
+
+      <dl class="properties">
+        <dt id="splashFactory" class="constant">
+          <span class="name "><a href="../surface/CustomInk/splashFactory-constant.html">splashFactory</a></span>
+          <span class="signature">&#8594; const <a href="https://api.flutter.dev/flutter/material/InteractiveInkFeatureFactory-class.html">InteractiveInkFeatureFactory</a></span>
+                  </dt>
+        <dd>
+          Used to specify this type of ink splash for an <a href="https://api.flutter.dev/flutter/material/InkWell-class.html">InkWell</a>, <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a>
+or material <a href="https://api.flutter.dev/flutter/material/Theme-class.html">Theme</a>. 
+                  
+  <div>
+            <span class="signature"><code>_CustomInkFactory()</code></span>
+          </div>
+        </dd>
+      </dl>
+    </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <ol>
+
+    <li class="section-title"><a href="../surface/CustomInk-class.html#constructors">Constructors</a></li>
+    <li><a href="../surface/CustomInk/CustomInk.html">CustomInk</a></li>
+
+
+    <li class="section-title inherited">
+      <a href="../surface/CustomInk-class.html#instance-properties">Properties</a>
+    </li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/material/InteractiveInkFeature/color.html">color</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/material/InkFeature/controller.html">controller</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/material/InkFeature/onRemoved.html">onRemoved</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/material/InkFeature/referenceBox.html">referenceBox</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+
+    <li class="section-title"><a href="../surface/CustomInk-class.html#instance-methods">Methods</a></li>
+    <li><a href="../surface/CustomInk/cancel.html">cancel</a></li>
+    <li><a href="../surface/CustomInk/confirm.html">confirm</a></li>
+    <li><a href="../surface/CustomInk/dispose.html">dispose</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li><a href="../surface/CustomInk/paintFeature.html">paintFeature</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/material/InteractiveInkFeature/paintInkCircle.html">paintInkCircle</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/material/InkFeature/toString.html">toString</a></li>
+
+    <li class="section-title inherited"><a href="../surface/CustomInk-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+    <li class="section-title"><a href="../surface/CustomInk-class.html#constants">Constants</a></li>
+    <li><a href="../surface/CustomInk/splashFactory-constant.html">splashFactory</a></li>
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    surface
+      0.0.1
+  </span>
+
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="../static-assets/typeahead.bundle.min.js"></script>
+<script src="../static-assets/highlight.pack.js"></script>
+<script src="../static-assets/script.js"></script>
+
+
+</body>
+
+</html>

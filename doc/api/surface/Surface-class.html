@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the Surface class from the surface library, for the Dart programming language.">
+  <title>Surface class - surface library - Dart API</title>
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="../static-assets/github.css">
+  <link rel="stylesheet" href="../static-assets/styles.css">
+  <link rel="icon" href="../static-assets/favicon.png">
+
+</head>
+
+<body data-base-href="../"
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">surface</a></li>
+    <li><a href="../surface/surface-library.html">surface</a></li>
+    <li class="self-crumb">Surface class</li>
+  </ol>
+  <div class="self-name">Surface</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+      <form class="search-sidebar" role="search">
+        <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+      </form>
+    </header>
+    
+    <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+      <li><a href="../index.html">surface</a></li>
+      <li><a href="../surface/surface-library.html">surface</a></li>
+      <li class="self-crumb">Surface class</li>
+    </ol>
+    
+    <h5>surface library</h5>
+    <ol>
+  <li class="section-title"><a href="../surface/surface-library.html#classes">Classes</a></li>
+  <li><a href="../surface/CustomInk-class.html">CustomInk</a></li>
+  <li><a href="../surface/DragNub-class.html">DragNub</a></li>
+  <li><a href="../surface/Surface-class.html">Surface</a></li>
+
+  <li class="section-title"><a href="../surface/surface-library.html#extension">Extensions</a></li>
+  <li><a href="../surface/WithShading.html">WithShading</a></li>
+
+
+
+
+  <li class="section-title"><a href="../surface/surface-library.html#functions">Functions</a></li>
+  <li><a href="../surface/biBeveledShape.html">biBeveledShape</a></li>
+  <li><a href="../surface/blurry.html">blurry</a></li>
+  <li><a href="../surface/fullPrint.html">fullPrint</a></li>
+  <li><a href="../surface/scaleAxis.html">scaleAxis</a></li>
+
+  <li class="section-title"><a href="../surface/surface-library.html#enums">Enums</a></li>
+  <li><a href="../surface/SurfaceCorners-class.html">SurfaceCorners</a></li>
+  <li><a href="../surface/SurfaceFilter-class.html">SurfaceFilter</a></li>
+  <li><a href="../surface/SurfaceLayer-class.html">SurfaceLayer</a></li>
+  <li><a href="../surface/SurfacePadding-class.html">SurfacePadding</a></li>
+
+
+</ol>
+
+  </div>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div><h1><span class="kind-class">Surface</span> class  </h1></div>
+
+    <section class="desc markdown">
+      <h3 id="-surface">📦 <a href="../surface/Surface-class.html">Surface</a></h3>
+<p>An <a href="https://api.flutter.dev/flutter/widgets/AnimatedContainer-class.html">AnimatedContainer</a> Widget and <a href="https://api.flutter.dev/flutter/material/Material-class.html">Material</a> with a number of parameters for
+both appearance and behavior; some of which are just convenience shortcuts,
+such as <a href="../surface/Surface/providesFeedback.html">providesFeedback</a>, that modify very little code.</p>
+<p>Property <a href="../surface/Surface/borderAlignment.html">borderAlignment</a> has hard-coded recognition of all nine <a href="https://api.flutter.dev/flutter/painting/Alignment-class.html">Alignment</a>
+geometries and will determine which side(s) receive a special border treatment
+according to property <a href="../surface/Surface/borderRatio.html">borderRatio</a>; defaults at <code>borderRatio: 2</code> which makes
+the <a href="../surface/Surface/borderAlignment.html">borderAlignment</a> sides twice as thick, but these borders made be made
+<em>thinner</em> than the others by passing <code>0 &gt; borderRatio &gt; 1</code>.</p>
+<p>Considering:</p>
+<ol>
+<li><a href="../surface/SurfaceCorners-class.html">SurfaceCorners</a> property <a href="../surface/Surface/corners.html">corners</a>;</li>
+<li>properties <a href="../surface/Surface/tappable.html">tappable</a>, <a href="../surface/Surface/onTap.html">onTap</a>, <a href="../surface/Surface/providesFeedback.html">providesFeedback</a> &amp; <a href="../surface/Surface/inkHighlightColor.html">inkHighlightColor</a>, <a href="../surface/Surface/inkSplashColor.html">inkSplashColor</a>;</li>
+<li><a href="../surface/SurfaceFilter-class.html">SurfaceFilter</a> passed as <a href="../surface/Surface/filterStyle.html">filterStyle</a> and related <code>double</code>s <a href="../surface/Surface/filterSurfaceBlur.html">filterSurfaceBlur</a>,
+<a href="../surface/Surface/filterMaterialBlur.html">filterMaterialBlur</a> &amp; <a href="../surface/Surface/filterChildBlur.html">filterChildBlur</a>;</li>
+<li>and the <a href="../surface/Surface/duration.html">duration</a> property for intrinsic property-change animations;</li>
+</ol>
+<p>A <a href="../surface/Surface-class.html">Surface</a> is robustly customizable and, <em>watch out</em>, could also be expensive.</p>
+<ul>
+<li>
+<p><strong>If <a href="../surface/Surface/gradient.html">gradient</a> is passed a value</strong> then <a href="../surface/Surface/color.html">color</a> is ignored.
+Same applies to <a href="../surface/Surface/borderGradient.html">borderGradient</a>.</p>
+</li>
+<li>
+<p><strong>If <a href="../surface/Surface/corners.html">corners</a> is passed <a href="../surface/SurfaceCorners-class.html">SurfaceCorners.SQUARE</a></strong> then <a href="../surface/Surface/radius.html">radius</a> is ignored.</p>
+</li>
+<li>
+<p><strong>If <a href="../surface/Surface/corners.html">corners</a> is passed <a href="../surface/SurfaceCorners-class.html">SurfaceCorners.BEVEL</a></strong> then <code>bool</code> <a href="../surface/Surface/flipBevels.html">flipBevels</a>
+can mirror the cut corners horizontally. Ignored otherwise.</p>
+</li>
+<li>
+<p><strong>Passing <a href="../surface/Surface/borderRatio.html">borderRatio</a> a value of <code>1</code></strong> will negate any passed value to <a href="../surface/Surface/borderAlignment.html">borderAlignment</a>.</p>
+</li>
+<li>
+<p>Similarly, <strong>passing <a href="../surface/Surface/borderRatio.html">borderRatio</a> in the range <code>0..1</code></strong> will actually make
+the <a href="../surface/Surface/borderAlignment.html">borderAlignment</a> aligned border(s) <em>thinner</em> than the others.</p>
+</li>
+<li>
+<p>By default <strong><a href="../surface/Surface/tappable.html">tappable</a> is true and <a href="../surface/Surface/providesFeedback.html">providesFeedback</a> is false</strong>.
+The former includes an <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a> that calls <a href="../surface/Surface/onTap.html">onTap</a> and the latter
+enables <a href="https://api.flutter.dev/flutter/services/HapticFeedback-class.html">HapticFeedback</a>.</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><em><strong>WARNING</strong></em> Only pass <a href="../surface/Surface/filterStyle.html">filterStyle</a> parameter for which you intend on
+passing each relevant <code>filterBlur</code> parameter.
+<ul>
+<li>Not only are the blurry <a href="https://api.flutter.dev/flutter/widgets/BackdropFilter-class.html">BackdropFilter</a>s expensive, but the
+inheritance/ancestory behavior is strange.</li>
+<li>If all thee filters are active via <code>SurfaceFilter.MULTILAYER</code>, passing
+<code>filterBorderBlur: 0</code> eliminates the remaining children filters,
+regardless of their passed blur value.</li>
+<li>This behavior can be worked-around by setting any parent filter value
+(<code>BORDER &gt; MATERIAL &gt; CHILD</code>) to just above 0, specifically <code>&gt; 0.0003</code>,
+but in this case a different <a href="../surface/Surface/filterStyle.html">filterStyle</a> value should be used anyway
+that only employs the one or two appropriate filter(s).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<hr>
+<p>TODO: Examples:</p>
+<pre class="language-dart"><code>// white [Surface] with a black border that's thicker on bottom &amp; right, with rounded corners
+Surface(borderAlignment: Alignment.bottomRight, borderRadius: 10)
+// red [Surface] with symmetrical thick, black border and square corners (borderRadius is ignored)
+Surface(borderThickness: 6, corners: SurfaceCorners.SQUARE, color: Colors.red, borderRadius: 5)
+// white [Surface] with a gradient border that's thicker on top and left, with two beveled corners
+Surface(borderAlignment: Alignment.topLeft, corners: SurfaceCorners.BEVEL, flipBevels: true, borderGradient: LinearGradient(...))
+</code></pre>
+    </section>
+    
+    <section>
+      <dl class="dl-horizontal">
+        <dt>Inheritance</dt>
+        <dd><ul class="gt-separated dark clazz-relationships">
+          <li><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></li>
+          <li><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree-class.html">DiagnosticableTree</a></li>
+          <li><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></li>
+          <li><a href="https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html">StatelessWidget</a></li>
+          <li>Surface</li>
+        </ul></dd>
+
+
+
+
+
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor" id="constructors">
+      <h2>Constructors</h2>
+
+      <dl class="constructor-summary-list">
+        <dt id="Surface" class="callable">
+          <span class="name"><a href="../surface/Surface/Surface.html">Surface</a></span><span class="signature">(<span class="parameter" id="-param-width">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">width</span>, </span><span class="parameter" id="-param-height"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">height</span>, </span><span class="parameter" id="-param-color"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">color</span> = <span class="default-value">_DEFAULT_COLOR</span>, </span><span class="parameter" id="-param-disableBorder"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">disableBorder</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-tappable"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">tappable</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-corners"><span class="type-annotation"><a href="../surface/SurfaceCorners-class.html">SurfaceCorners</a></span> <span class="parameter-name">corners</span> = <span class="default-value">SurfaceCorners.ROUND</span>, </span><span class="parameter" id="-param-radius"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">radius</span>, </span><span class="parameter" id="-param-borderThickness"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">borderThickness</span> = <span class="default-value">3.0</span>, </span><span class="parameter" id="-param-borderColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">borderColor</span> = <span class="default-value">_DEFAULT_COLOR_BORDER</span>, </span><span class="parameter" id="-param-borderAlignment"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/AlignmentGeometry-class.html">AlignmentGeometry</a></span> <span class="parameter-name">borderAlignment</span>, </span><span class="parameter" id="-param-borderRatio"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">borderRatio</span> = <span class="default-value">2.0</span>, </span><span class="parameter" id="-param-gradient"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Gradient-class.html">Gradient</a></span> <span class="parameter-name">gradient</span>, </span><span class="parameter" id="-param-borderGradient"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/Gradient-class.html">Gradient</a></span> <span class="parameter-name">borderGradient</span>, </span><span class="parameter" id="-param-inkSplashColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">inkSplashColor</span>, </span><span class="parameter" id="-param-inkHighlightColor"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span> <span class="parameter-name">inkHighlightColor</span>, </span><span class="parameter" id="-param-filterStyle"><span class="type-annotation"><a href="../surface/SurfaceFilter-class.html">SurfaceFilter</a></span> <span class="parameter-name">filterStyle</span> = <span class="default-value">SurfaceFilter.NONE</span>, </span><span class="parameter" id="-param-duration"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Duration-class.html">Duration</a></span> <span class="parameter-name">duration</span> = <span class="default-value">_DEFAULT_DURATION</span>, </span><span class="parameter" id="-param-curve"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/animation/Curve-class.html">Curve</a></span> <span class="parameter-name">curve</span> = <span class="default-value">Curves.easeIn</span>, </span><span class="parameter" id="-param-providesFeedback"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">providesFeedback</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-margin"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/EdgeInsets-class.html">EdgeInsets</a></span> <span class="parameter-name">margin</span> = <span class="default-value">const EdgeInsets.all(0)</span>, </span><span class="parameter" id="-param-padding"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/painting/EdgeInsets-class.html">EdgeInsets</a></span> <span class="parameter-name">padding</span> = <span class="default-value">const EdgeInsets.all(0)</span>, </span><span class="parameter" id="-param-paddingStyle"><span class="type-annotation"><a href="../surface/SurfacePadding-class.html">SurfacePadding</a></span> <span class="parameter-name">paddingStyle</span> = <span class="default-value">SurfacePadding.PAD_CHILD</span>, </span><span class="parameter" id="-param-flipBevels"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">flipBevels</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-filterSurfaceBlur"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">filterSurfaceBlur</span> = <span class="default-value">_DEFAULT_BLUR</span>, </span><span class="parameter" id="-param-filterMaterialBlur"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">filterMaterialBlur</span> = <span class="default-value">_DEFAULT_BLUR</span>, </span><span class="parameter" id="-param-filterChildBlur"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span> <span class="parameter-name">filterChildBlur</span> = <span class="default-value">_DEFAULT_BLUR</span>, </span><span class="parameter" id="-param-onTap"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a></span> <span class="parameter-name">onTap</span>, </span><span class="parameter" id="-param-child"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span> <span class="parameter-name">child</span>}</span>)</span>
+        </dt>
+        <dd>
+           
+          <div class="constructor-modifier features">const</div>
+        </dd>
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="borderAlignment" class="property">
+          <span class="name"><a href="../surface/Surface/borderAlignment.html">borderAlignment</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/AlignmentGeometry-class.html">AlignmentGeometry</a></span>         
+        </dt>
+        <dd>
+          Using an <a href="https://api.flutter.dev/flutter/painting/Alignment-class.html">Alignment</a>, determine a side or sides to receive a special treatment. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="borderColor" class="property">
+          <span class="name"><a href="../surface/Surface/borderColor.html">borderColor</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>         
+        </dt>
+        <dd>
+          If passed <a href="../surface/Surface/gradient.html">gradient</a> or <a href="../surface/Surface/borderGradient.html">borderGradient</a>, the <code>Color</code> parameters are ignored. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="borderGradient" class="property">
+          <span class="name"><a href="../surface/Surface/borderGradient.html">borderGradient</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Gradient-class.html">Gradient</a></span>         
+        </dt>
+        <dd>
+          If gradients are passed, then <code>Color</code> parameters are ignored. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="borderRatio" class="property">
+          <span class="name"><a href="../surface/Surface/borderRatio.html">borderRatio</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span>         
+        </dt>
+        <dd>
+          <a href="../surface/Surface/borderThickness.html">borderThickness</a> is applied as <code>padding</code> to <code>innerContainer</code> insetting the <code>innerSurface</code>. <a href="../surface/Surface/borderRatio.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="borderThickness" class="property">
+          <span class="name"><a href="../surface/Surface/borderThickness.html">borderThickness</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span>         
+        </dt>
+        <dd>
+          <a href="../surface/Surface/borderThickness.html">borderThickness</a> is applied as <code>padding</code> to <code>innerContainer</code> insetting the <code>innerSurface</code>. <a href="../surface/Surface/borderThickness.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="child" class="property">
+          <span class="name"><a href="../surface/Surface/child.html">child</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span>         
+        </dt>
+        <dd>
+          The Widget to render inside considering all layout parameters. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="color" class="property">
+          <span class="name"><a href="../surface/Surface/color.html">color</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>         
+        </dt>
+        <dd>
+          If passed <a href="../surface/Surface/gradient.html">gradient</a> or <a href="../surface/Surface/borderGradient.html">borderGradient</a>, the <code>Color</code> parameters are ignored. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="corners" class="property">
+          <span class="name"><a href="../surface/Surface/corners.html">corners</a></span>
+          <span class="signature">&#8594; <a href="../surface/SurfaceCorners-class.html">SurfaceCorners</a></span>         
+        </dt>
+        <dd>
+          See <a href="../surface/SurfaceCorners-class.html">SurfaceCorners</a> for a small list of availabe <a href="../surface/Surface-class.html">Surface</a> shapes.
+Default is <a href="../surface/SurfaceCorners-class.html">SurfaceCorners.ROUND</a>, but <a href="../surface/SurfaceCorners-class.html">SurfaceCorners.BEVEL</a> is fun. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="curve" class="property">
+          <span class="name"><a href="../surface/Surface/curve.html">curve</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/animation/Curve-class.html">Curve</a></span>         
+        </dt>
+        <dd>
+          The animation <a href="https://api.flutter.dev/flutter/animation/Curve-class.html">Curve</a> to employ when this <a href="../surface/Surface-class.html">Surface</a> is intrinsically animated. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="disableBorder" class="property">
+          <span class="name"><a href="../surface/Surface/disableBorder.html">disableBorder</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>         
+        </dt>
+        <dd>
+          The <code>borderContainer</code> will not be rendered if <code>true</code>. <a href="../surface/Surface/disableBorder.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="duration" class="property">
+          <span class="name"><a href="../surface/Surface/duration.html">duration</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Duration-class.html">Duration</a></span>         
+        </dt>
+        <dd>
+          The <a href="https://api.flutter.dev/flutter/dart-core/Duration-class.html">Duration</a> that the internal <a href="https://api.flutter.dev/flutter/widgets/AnimatedContainer-class.html">AnimatedContainer</a>s use for
+intrinsic property-change animations. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="filterChildBlur" class="property">
+          <span class="name"><a href="../surface/Surface/filterChildBlur.html">filterChildBlur</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span>         
+        </dt>
+        <dd>
+          <code>filterBlur</code> parameters default to <code>_MINIMUM_BLUR</code> <code>== 0.0000001</code> so that
+upper-layered filters are not erased by an ancestor filter having 0 radius. <a href="../surface/Surface/filterChildBlur.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="filterMaterialBlur" class="property">
+          <span class="name"><a href="../surface/Surface/filterMaterialBlur.html">filterMaterialBlur</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span>         
+        </dt>
+        <dd>
+          <code>filterBlur</code> parameters default to <code>_MINIMUM_BLUR</code> <code>== 0.0000001</code> so that
+upper-layered filters are not erased by an ancestor filter having 0 radius. <a href="../surface/Surface/filterMaterialBlur.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="filterStyle" class="property">
+          <span class="name"><a href="../surface/Surface/filterStyle.html">filterStyle</a></span>
+          <span class="signature">&#8594; <a href="../surface/SurfaceFilter-class.html">SurfaceFilter</a></span>         
+        </dt>
+        <dd>
+          See <a href="../surface/SurfaceFilter-class.html">SurfaceFilter</a> for a breakdown on the layering of up to three blur filters.
+Radii of blur filters handled independently by <a href="../surface/Surface/filterSurfaceBlur.html">filterSurfaceBlur</a>,
+<a href="../surface/Surface/filterMaterialBlur.html">filterMaterialBlur</a>, and <a href="../surface/Surface/filterChildBlur.html">filterChildBlur</a>, supplied in asending z-axis order. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="filterSurfaceBlur" class="property">
+          <span class="name"><a href="../surface/Surface/filterSurfaceBlur.html">filterSurfaceBlur</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span>         
+        </dt>
+        <dd>
+          <code>filterBlur</code> parameters default to <code>_MINIMUM_BLUR</code> <code>== 0.0000001</code> so that
+upper-layered filters are not erased by an ancestor filter having 0 radius. <a href="../surface/Surface/filterSurfaceBlur.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="flipBevels" class="property">
+          <span class="name"><a href="../surface/Surface/flipBevels.html">flipBevels</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>         
+        </dt>
+        <dd>
+          Only if <a href="../surface/Surface/corners.html">corners</a> <code>==</code> <a href="../surface/SurfaceCorners-class.html">SurfaceCorners.BEVEL</a> will this parameter then
+flip the two beveled corners horizontally across x-axis. <a href="../surface/Surface/flipBevels.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="gradient" class="property">
+          <span class="name"><a href="../surface/Surface/gradient.html">gradient</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/Gradient-class.html">Gradient</a></span>         
+        </dt>
+        <dd>
+          If gradients are passed, then <code>Color</code> parameters are ignored. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="hashCode" class="property inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/widgets/Widget/hashCode.html">hashCode</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>         
+        </dt>
+        <dd class="inherited">
+          The hash code for this object. <a href="https://api.flutter.dev/flutter/widgets/Widget/hashCode.html">[...]</a>
+                  <div class="features">@<a href="https://pub.dev/documentation/meta/1.3.0-nullsafety.3/meta/nonVirtual-constant.html">nonVirtual</a>, read-only, inherited</div>
+</dd>
+        <dt id="height" class="property">
+          <span class="name"><a href="../surface/Surface/height.html">height</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span>         
+        </dt>
+        <dd>
+          The <a href="../surface/Surface/width.html">width</a> and <a href="../surface/Surface/height.html">height</a> follow rules of <a href="https://api.flutter.dev/flutter/widgets/AnimatedContainer-class.html">AnimatedContainer</a>, but apply
+to either the <code>Surface.borderContainer</code> or, if <code>disableBorers: true</code>, the <code>Surface.innerSurface</code> directly. <a href="../surface/Surface/height.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="inkHighlightColor" class="property">
+          <span class="name"><a href="../surface/Surface/inkHighlightColor.html">inkHighlightColor</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>         
+        </dt>
+        <dd>
+          If <a href="../surface/Surface/tappable.html">tappable</a> <code>== true</code> the <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a> appearance may be customized.
+Otherwise no <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a> is rendered with the <a href="../surface/Surface-class.html">Surface</a>. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="inkSplashColor" class="property">
+          <span class="name"><a href="../surface/Surface/inkSplashColor.html">inkSplashColor</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/Color-class.html">Color</a></span>         
+        </dt>
+        <dd>
+          If <a href="../surface/Surface/tappable.html">tappable</a> <code>== true</code> the <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a> appearance may be customized.
+Otherwise no <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a> is rendered with the <a href="../surface/Surface-class.html">Surface</a>. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="key" class="property inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/widgets/Widget/key.html">key</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/foundation/Key-class.html">Key</a></span>         
+        </dt>
+        <dd class="inherited">
+          Controls how one widget replaces another widget in the tree. <a href="https://api.flutter.dev/flutter/widgets/Widget/key.html">[...]</a>
+                  <div class="features">final, inherited</div>
+</dd>
+        <dt id="margin" class="property">
+          <span class="name"><a href="../surface/Surface/margin.html">margin</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/EdgeInsets-class.html">EdgeInsets</a></span>         
+        </dt>
+        <dd>
+          If <a href="../surface/Surface/disableBorder.html">disableBorder</a> <code>== true</code> the <a href="../surface/Surface-class.html">Surface</a> margin is properly handled by
+<code>innerSurface</code>; but otherwise <a href="../surface/Surface/margin.html">margin</a> applies to <code>borderContainer</code> and
+the <a href="../surface/Surface-class.html">Surface</a> as a whole, ignored by <code>innerSurface</code>. <a href="../surface/Surface/margin.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="onTap" class="property">
+          <span class="name"><a href="../surface/Surface/onTap.html">onTap</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-ui/VoidCallback.html">VoidCallback</a></span>         
+        </dt>
+        <dd>
+          Disabled by <a href="../surface/Surface/tappable.html">tappable</a> <code>== false</code>. Pass a <code>function</code> to peform any time
+the <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a> on this <a href="../surface/Surface-class.html">Surface</a> responds to a tap input. 
+                  <div class="features">final</div>
+</dd>
+        <dt id="padding" class="property">
+          <span class="name"><a href="../surface/Surface/padding.html">padding</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/painting/EdgeInsets-class.html">EdgeInsets</a></span>         
+        </dt>
+        <dd>
+          If <a href="../surface/Surface/disableBorder.html">disableBorder</a> <code>== true</code> the <a href="../surface/Surface-class.html">Surface</a> margin is properly handled by
+<code>innerSurface</code>; but otherwise <a href="../surface/Surface/margin.html">margin</a> applies to <code>borderContainer</code> and
+the <a href="../surface/Surface-class.html">Surface</a> as a whole, ignored by <code>innerSurface</code>. <a href="../surface/Surface/padding.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="paddingStyle" class="property">
+          <span class="name"><a href="../surface/Surface/paddingStyle.html">paddingStyle</a></span>
+          <span class="signature">&#8594; <a href="../surface/SurfacePadding-class.html">SurfacePadding</a></span>         
+        </dt>
+        <dd>
+          The <a href="../surface/Surface/padding.html">padding</a> value may be (default) passed entirely to the <a href="../surface/Surface/child.html">child</a>, but
+optionally may be given to a <a href="../surface/Surface/clipper.html">clipper</a> within <code>innerSurface</code> before
+rendering <a href="../surface/Surface/child.html">child</a>, or split evenly between the two. <a href="../surface/Surface/paddingStyle.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="providesFeedback" class="property">
+          <span class="name"><a href="../surface/Surface/providesFeedback.html">providesFeedback</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>         
+        </dt>
+        <dd>
+          Not only does <a href="../surface/Surface/tappable.html">tappable</a> mean the <a href="../surface/Surface-class.html">Surface</a> will provide <a href="../surface/Surface/onTap.html">onTap</a>, it also
+adds an <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a> to the <a href="https://api.flutter.dev/flutter/material/Material-class.html">Material</a> before rendering <a href="../surface/Surface/child.html">child</a>. <a href="../surface/Surface/providesFeedback.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="radius" class="property">
+          <span class="name"><a href="../surface/Surface/radius.html">radius</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span>         
+        </dt>
+        <dd>
+          The <a href="../surface/Surface/width.html">width</a> and <a href="../surface/Surface/height.html">height</a> follow rules of <a href="https://api.flutter.dev/flutter/widgets/AnimatedContainer-class.html">AnimatedContainer</a>, but apply
+to either the <code>Surface.borderContainer</code> or, if <code>disableBorers: true</code>, the <code>Surface.innerSurface</code> directly. <a href="../surface/Surface/radius.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="runtimeType" class="property inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Type-class.html">Type</a></span>         
+        </dt>
+        <dd class="inherited">
+          A representation of the runtime type of the object. 
+                  <div class="features">read-only, inherited</div>
+</dd>
+        <dt id="tappable" class="property">
+          <span class="name"><a href="../surface/Surface/tappable.html">tappable</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>         
+        </dt>
+        <dd>
+          Not only does <a href="../surface/Surface/tappable.html">tappable</a> mean the <a href="../surface/Surface-class.html">Surface</a> will provide <a href="../surface/Surface/onTap.html">onTap</a>, it also
+adds an <a href="https://api.flutter.dev/flutter/material/InkResponse-class.html">InkResponse</a> to the <a href="https://api.flutter.dev/flutter/material/Material-class.html">Material</a> before rendering <a href="../surface/Surface/child.html">child</a>. <a href="../surface/Surface/tappable.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+        <dt id="width" class="property">
+          <span class="name"><a href="../surface/Surface/width.html">width</a></span>
+          <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/double-class.html">double</a></span>         
+        </dt>
+        <dd>
+          The <a href="../surface/Surface/width.html">width</a> and <a href="../surface/Surface/height.html">height</a> follow rules of <a href="https://api.flutter.dev/flutter/widgets/AnimatedContainer-class.html">AnimatedContainer</a>, but apply
+to either the <code>Surface.borderContainer</code> or, if <code>disableBorers: true</code>, the <code>Surface.innerSurface</code> directly. <a href="../surface/Surface/width.html">[...]</a>
+                  <div class="features">final</div>
+</dd>
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor" id="instance-methods">
+      <h2>Methods</h2>
+      <dl class="callables">
+        <dt id="build" class="callable">
+          <span class="name"><a href="../surface/Surface/build.html">build</a></span><span class="signature">(<wbr><span class="parameter" id="build-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span></span>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span>
+          </span>
+                  </dt>
+        <dd>
+          👷‍♂️ Build <a href="../surface/Surface-class.html">Surface</a> 
+                  <div class="features">override</div>
+</dd>
+        <dt id="clipper" class="callable">
+          <span class="name"><a href="../surface/Surface/clipper.html">clipper</a></span><span class="signature">(<wbr><span class="parameter" id="clipper-param-layer">{<span class="type-annotation"><a href="../surface/SurfaceLayer-class.html">SurfaceLayer</a></span> <span class="parameter-name">layer</span>, </span><span class="parameter" id="clipper-param-content"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span> <span class="parameter-name">content</span>}</span>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/widgets/ClipPath-class.html">ClipPath</a></span>
+          </span>
+                  </dt>
+        <dd>
+          🔧🔪 Shortcut <a href="../surface/Surface/clipper.html">clipper</a> since a <a href="https://api.flutter.dev/flutter/widgets/ClipPath-class.html">ClipPath</a> is employed similarly
+in more than one context. 
+                  
+</dd>
+        <dt id="createElement" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/widgets/StatelessWidget/createElement.html">createElement</a></span><span class="signature">(<wbr>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/widgets/StatelessElement-class.html">StatelessElement</a></span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Creates a <a href="https://api.flutter.dev/flutter/widgets/StatelessElement-class.html">StatelessElement</a> to manage this widget's location in the tree. <a href="https://api.flutter.dev/flutter/widgets/StatelessWidget/createElement.html">[...]</a>
+                  <div class="features">inherited</div>
+</dd>
+        <dt id="debugDescribeChildren" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/debugDescribeChildren.html">debugDescribeChildren</a></span><span class="signature">(<wbr>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode-class.html">DiagnosticsNode</a></span>&gt;</span></span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Returns a list of <a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode-class.html">DiagnosticsNode</a> objects describing this node's
+children. <a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/debugDescribeChildren.html">[...]</a>
+                  <div class="features">@<a href="https://pub.dev/documentation/meta/1.3.0-nullsafety.3/meta/protected-constant.html">protected</a>, inherited</div>
+</dd>
+        <dt id="debugFillProperties" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/widgets/Widget/debugFillProperties.html">debugFillProperties</a></span><span class="signature">(<wbr><span class="parameter" id="debugFillProperties-param-properties"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticPropertiesBuilder-class.html">DiagnosticPropertiesBuilder</a></span> <span class="parameter-name">properties</span></span>)
+            <span class="returntype parameter">&#8594; void</span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Add additional properties associated with the node. <a href="https://api.flutter.dev/flutter/widgets/Widget/debugFillProperties.html">[...]</a>
+                  <div class="features">inherited</div>
+</dd>
+        <dt id="noSuchMethod" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+            <span class="returntype parameter">&#8594; dynamic</span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Invoked when a non-existent method or property is accessed. <a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">[...]</a>
+                  <div class="features">inherited</div>
+</dd>
+        <dt id="toDiagnosticsNode" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toDiagnosticsNode.html">toDiagnosticsNode</a></span><span class="signature">(<wbr><span class="parameter" id="toDiagnosticsNode-param-name">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">name</span>, </span><span class="parameter" id="toDiagnosticsNode-param-style"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticsTreeStyle-class.html">DiagnosticsTreeStyle</a></span> <span class="parameter-name">style</span>}</span>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode-class.html">DiagnosticsNode</a></span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Returns a debug representation of the object that is used by debugging
+tools and by <a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode/toStringDeep.html">DiagnosticsNode.toStringDeep</a>. <a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toDiagnosticsNode.html">[...]</a>
+                  <div class="features">inherited</div>
+</dd>
+        <dt id="toString" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toString.html">toString</a></span><span class="signature">(<wbr><span class="parameter" id="toString-param-minLevel">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticLevel-class.html">DiagnosticLevel</a></span> <span class="parameter-name">minLevel</span> = <span class="default-value">DiagnosticLevel.info</span>}</span>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Returns a string representation of this object. 
+                  <div class="features">inherited</div>
+</dd>
+        <dt id="toStringDeep" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringDeep.html">toStringDeep</a></span><span class="signature">(<wbr><span class="parameter" id="toStringDeep-param-prefixLineOne">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">prefixLineOne</span> = <span class="default-value">&#39;&#39;</span>, </span><span class="parameter" id="toStringDeep-param-prefixOtherLines"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">prefixOtherLines</span>, </span><span class="parameter" id="toStringDeep-param-minLevel"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticLevel-class.html">DiagnosticLevel</a></span> <span class="parameter-name">minLevel</span> = <span class="default-value">DiagnosticLevel.debug</span>}</span>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Returns a string representation of this node and its descendants. <a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringDeep.html">[...]</a>
+                  <div class="features">inherited</div>
+</dd>
+        <dt id="toStringShallow" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringShallow.html">toStringShallow</a></span><span class="signature">(<wbr><span class="parameter" id="toStringShallow-param-joiner">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">joiner</span> = <span class="default-value">&#39;, &#39;</span>, </span><span class="parameter" id="toStringShallow-param-minLevel"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticLevel-class.html">DiagnosticLevel</a></span> <span class="parameter-name">minLevel</span> = <span class="default-value">DiagnosticLevel.debug</span>}</span>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          Returns a one-line detailed description of the object. <a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringShallow.html">[...]</a>
+                  <div class="features">inherited</div>
+</dd>
+        <dt id="toStringShort" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/widgets/Widget/toStringShort.html">toStringShort</a></span><span class="signature">(<wbr>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          A short, textual description of this widget. 
+                  <div class="features">inherited</div>
+</dd>
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor inherited" id="operators">
+      <h2>Operators</h2>
+      <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+          <span class="name"><a href="https://api.flutter.dev/flutter/widgets/Widget/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+          </span>
+                  </dt>
+        <dd class="inherited">
+          The equality operator. <a href="https://api.flutter.dev/flutter/widgets/Widget/operator_equals.html">[...]</a>
+                  <div class="features">@<a href="https://pub.dev/documentation/meta/1.3.0-nullsafety.3/meta/nonVirtual-constant.html">nonVirtual</a>, inherited</div>
+</dd>
+      </dl>
+    </section>
+
+
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <ol>
+
+    <li class="section-title"><a href="../surface/Surface-class.html#constructors">Constructors</a></li>
+    <li><a href="../surface/Surface/Surface.html">Surface</a></li>
+
+
+    <li class="section-title">
+      <a href="../surface/Surface-class.html#instance-properties">Properties</a>
+    </li>
+    <li><a href="../surface/Surface/borderAlignment.html">borderAlignment</a></li>
+    <li><a href="../surface/Surface/borderColor.html">borderColor</a></li>
+    <li><a href="../surface/Surface/borderGradient.html">borderGradient</a></li>
+    <li><a href="../surface/Surface/borderRatio.html">borderRatio</a></li>
+    <li><a href="../surface/Surface/borderThickness.html">borderThickness</a></li>
+    <li><a href="../surface/Surface/child.html">child</a></li>
+    <li><a href="../surface/Surface/color.html">color</a></li>
+    <li><a href="../surface/Surface/corners.html">corners</a></li>
+    <li><a href="../surface/Surface/curve.html">curve</a></li>
+    <li><a href="../surface/Surface/disableBorder.html">disableBorder</a></li>
+    <li><a href="../surface/Surface/duration.html">duration</a></li>
+    <li><a href="../surface/Surface/filterChildBlur.html">filterChildBlur</a></li>
+    <li><a href="../surface/Surface/filterMaterialBlur.html">filterMaterialBlur</a></li>
+    <li><a href="../surface/Surface/filterStyle.html">filterStyle</a></li>
+    <li><a href="../surface/Surface/filterSurfaceBlur.html">filterSurfaceBlur</a></li>
+    <li><a href="../surface/Surface/flipBevels.html">flipBevels</a></li>
+    <li><a href="../surface/Surface/gradient.html">gradient</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/hashCode.html">hashCode</a></li>
+    <li><a href="../surface/Surface/height.html">height</a></li>
+    <li><a href="../surface/Surface/inkHighlightColor.html">inkHighlightColor</a></li>
+    <li><a href="../surface/Surface/inkSplashColor.html">inkSplashColor</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/key.html">key</a></li>
+    <li><a href="../surface/Surface/margin.html">margin</a></li>
+    <li><a href="../surface/Surface/onTap.html">onTap</a></li>
+    <li><a href="../surface/Surface/padding.html">padding</a></li>
+    <li><a href="../surface/Surface/paddingStyle.html">paddingStyle</a></li>
+    <li><a href="../surface/Surface/providesFeedback.html">providesFeedback</a></li>
+    <li><a href="../surface/Surface/radius.html">radius</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+    <li><a href="../surface/Surface/tappable.html">tappable</a></li>
+    <li><a href="../surface/Surface/width.html">width</a></li>
+
+    <li class="section-title"><a href="../surface/Surface-class.html#instance-methods">Methods</a></li>
+    <li><a href="../surface/Surface/build.html">build</a></li>
+    <li><a href="../surface/Surface/clipper.html">clipper</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/StatelessWidget/createElement.html">createElement</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/debugDescribeChildren.html">debugDescribeChildren</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/debugFillProperties.html">debugFillProperties</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toDiagnosticsNode.html">toDiagnosticsNode</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toString.html">toString</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringDeep.html">toStringDeep</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/toStringShallow.html">toStringShallow</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/toStringShort.html">toStringShort</a></li>
+
+    <li class="section-title inherited"><a href="../surface/Surface-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    surface
+      0.0.1
+  </span>
+
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="../static-assets/typeahead.bundle.min.js"></script>
+<script src="../static-assets/highlight.pack.js"></script>
+<script src="../static-assets/script.js"></script>
+
+
+</body>
+
+</html>

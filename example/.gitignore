@@ -29,16 +29,10 @@
 .packages
 .pub-cache/
 .pub/
-/build/647fa92c23aa2689b9fc849e1b92e91e
-/build/kotlin
-/build/f872507f30e2ff2523f0f1d19160266e.cache.dill.track.dill
-/build/app/generated
-/build/app/intermediates
-/build/app/kotlin
-/build/app/reports
-/build/app/tmp
-/build/app/outputs/apk
-/build/app/outputs/logs
+/build/
+
+# Exceptions to above rules.
+!/build/**/flutter-apk/
 
 # Web related
 lib/generated_plugin_registrant.dart
