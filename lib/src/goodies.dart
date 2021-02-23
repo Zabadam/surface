@@ -1,9 +1,10 @@
-/// ## Just a few extra things for fun.
+/// ## 🎊 Just a few extra goodies for fun.
 ///
 /// ### `goodies.dart` adds a few items to namespace currently... sorry!
-/// - `fullPrint(String text)` to receive really long Strings in console log
-/// - Color extensions `.withBlack(int subtract)` and `.withWhite(int add)`
-/// - `Transform ScaleAxis({double dx =1.0, double dy =1.0, Offset origin, AlignmentGeometry alignment, Widget child})`
+/// - 👨‍💻 `fullPrint(String text)` to receive really long Strings in console log
+/// - Color extensions ⬛ `.withBlack(int subtract)` and ⬜ `.withWhite(int add)`
+/// - 🤚 `DragNub({double width, double height, Color color, double borderWidth})`
+/// - 📏 `Transform ScaleAxis(Widget child, {Key key, double dx =1.0, double dy =1.0, Offset origin, AlignmentGeometry alignment})`
 library surface;
 
 import 'package:flutter/material.dart';

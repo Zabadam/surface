@@ -1,7 +1,7 @@
-/// ## A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].
+/// ## 🖋👆 A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].
 ///
 /// ### `custom_ink.dart` adds a few items to namespace currently... sorry!
-/// - `CustomInk.splashFactory` - New InteractiveInkFeatureFactory from modified [Material.InkRipple]
+/// - 🖋👆 `CustomInk.splashFactory` - New InteractiveInkFeatureFactory from modified [Material.InkRipple]
 library surface;
 
 // Modified to custom_ink.dart by Adam Skelton (Zabadam) 2021.

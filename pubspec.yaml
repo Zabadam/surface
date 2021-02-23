@@ -1,7 +1,8 @@
 name: surface
-description: A shapeable, layered, intrinsincally animated container Widget that supports blurring ImageFilters, Material InkResponse, and HapticFeedback; and offers a number of parameters for both appearance and behavior.
-version: 0.0.2
-homepage: https://github.com/Zabadam
+description: Shapeable, layered, intrinsincally animated container with convenient access to blurs, InkResponse, and HapticFeedback; plus a number of customization parameters.
+version: 0.0.3+2
+repository: https://github.com/Zabadam/surface
+issue_tracker: https://github.com/Zabadam/surface/issues
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

@@ -1,9 +1,11 @@
 ### WIP
 # Surface Example
 
-![Animated GIF preview of Surface Example app](https://github.com/Zabadam/surface/blob/main/doc/Surface-Example.gif)
+![Animated GIF preview of Surface Example app](https://github.com/Zabadam/surface/blob/main/doc/Surface-Example.gif?raw-true)
 
-Example usage of the [Surface](https://github.com/Zabadam/surface) package for Flutter. See [Surface Example Android source](https://github.com/Zabadam/surface/tree/main/example/lib/main.dart): `/example/lib/main.dart` and [Surface Example APK](https://github.com/Zabadam/surface/tree/main/example/build/app/outputs/flutter-apk/app-release.apk).
+Example usage of the [Surface](https://github.com/Zabadam/surface) package for Flutter.
+- [Surface Example Android source](https://github.com/Zabadam/surface/tree/main/example/lib/main.dart): `/example/lib/main.dart`
+- [Surface Example APK](https://github.com/Zabadam/surface/tree/main/example/build/app/outputs/flutter-apk/app-release.apk)
 
 ## TODO:
 
@@ -13,4 +15,4 @@ Example usage of the [Surface](https://github.com/Zabadam/surface) package for F
     - This "aggravates" the simplicity of [Surface] to develop, but would provide a better end-user result: more accurate and performant animations that are just as easy to use. (Almost effortless? 😉)
 
 - Differed radius on [innerSurface] when using [SurfaceCorners.ROUND] vs [borderContainer]
-    - Smaller inner radius gives a better aesthetic for nested rounded rectangles
+    - Differed inner radius gives a better aesthetic for nested rounded rectangles

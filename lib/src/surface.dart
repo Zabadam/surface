@@ -1,4 +1,6 @@
-/// ## An [AnimatedContainer] and [Material] with a number of convenience parameters and customization options, through standard approaches and bespoke shape-crafting.
+/// ## 📦 [Surface] is a shapeable, layered, intrinsincally animated container Widget
+/// offering convenient access to blurring ImageFilters, Material InkResponse,
+/// and HapticFeedback; plus a number of customization parameters.
 ///
 /// Options to render an [InkResponse], blurry
 /// [ImageFilter]s in preconfigured [SurfaceFilter] arrangements, a
@@ -9,7 +11,7 @@
 /// as giving special treatment, generally a thicker appearance, to selected
 /// side(s) by passing [Surface.borderAlignment] and tuning with [Surface.borderRatio].
 ///
-/// [biBeveledShape] is responsible for the [SurfaceCorners.BEVEL] custom shape.
+/// 🔰 [biBeveledShape] is responsible for the [SurfaceCorners.BEVEL] custom shape.
 library surface;
 
 import 'dart:ui';
@@ -228,26 +230,26 @@ BeveledRectangleBorder biBeveledShape({
 ///   passing each relevant `filterBlur` parameter.
 ///     - Not only are the blurry [BackdropFilter]s expensive, but the
 ///       inheritance/ancestory behavior is strange.
-///     - If all thee filters are active via [SurfaceFilter.MULTILAYER], passing
+///     - If all three filters are active via [SurfaceFilter.MULTILAYER], passing
 ///       `filterBorderBlur: 0` eliminates the remaining children filters,
 ///       regardless of their passed blur value.
 ///     - This behavior can be worked-around by setting any parent filter value
-///       (`BORDER > MATERIAL > CHILD`) to just above 0, specifically `> 0.0003`,
+///       (`BORDER > MATERIAL > CHILD`) to just above 0, specifically `> (`[_MINIMUM_BLUR]` == 0.0003)`,
 ///       but in this case a different [filterStyle] value should be used anyway
 ///       that only employs the one or two appropriate filter(s).
 ///
 /// ------
 /// ------
 ///
-/// TODO: Examples:
-///
-///     // white [Surface] with a black border that's thicker on bottom & right, with rounded corners
-///     Surface(borderAlignment: Alignment.bottomRight, borderRadius: 10)
-///     // red [Surface] with symmetrical thick, black border and square corners (borderRadius is ignored)
-///     Surface(borderThickness: 6, corners: SurfaceCorners.SQUARE, color: Colors.red, borderRadius: 5)
-///     // white [Surface] with a gradient border that's thicker on top and left, with two beveled corners
-///     Surface(borderAlignment: Alignment.topLeft, corners: SurfaceCorners.BEVEL, flipBevels: true, borderGradient: LinearGradient(...))
-///
+/// Simple Examples:
+/// ```dart
+/// // white [Surface] with a black border that's thicker on bottom & right, with rounded corners
+/// Surface(borderAlignment: Alignment.bottomRight, borderRadius: 10)
+/// // red [Surface] with symmetrical thick, black border and square corners (borderRadius is ignored)
+/// Surface(borderThickness: 6, corners: SurfaceCorners.SQUARE, color: Colors.red, borderRadius: 5)
+/// // white [Surface] with a gradient border that's thicker on top and left, with two beveled corners
+/// Surface(borderAlignment: Alignment.topLeft, corners: SurfaceCorners.BEVEL, flipBevels: true, borderGradient: LinearGradient(...))
+/// ```
 class Surface extends StatelessWidget {
   /// ## 🏃‍♂️ Default Duration: 500ms
   static const _DEFAULT_DURATION = Duration(milliseconds: 500);

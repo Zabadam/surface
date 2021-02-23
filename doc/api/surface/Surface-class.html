@@ -134,11 +134,11 @@ passing each relevant <code>filterBlur</code> parameter.
 <ul>
 <li>Not only are the blurry <a href="https://api.flutter.dev/flutter/widgets/BackdropFilter-class.html">BackdropFilter</a>s expensive, but the
 inheritance/ancestory behavior is strange.</li>
-<li>If all thee filters are active via <code>SurfaceFilter.MULTILAYER</code>, passing
+<li>If all three filters are active via <code>SurfaceFilter.MULTILAYER</code>, passing
 <code>filterBorderBlur: 0</code> eliminates the remaining children filters,
 regardless of their passed blur value.</li>
 <li>This behavior can be worked-around by setting any parent filter value
-(<code>BORDER &gt; MATERIAL &gt; CHILD</code>) to just above 0, specifically <code>&gt; 0.0003</code>,
+(<code>BORDER &gt; MATERIAL &gt; CHILD</code>) to just above 0, specifically <code>&gt; (</code><code>_MINIMUM_BLUR</code><code>== 0.0003)</code>,
 but in this case a different <a href="../surface/Surface/filterStyle.html">filterStyle</a> value should be used anyway
 that only employs the one or two appropriate filter(s).</li>
 </ul>
@@ -146,8 +146,8 @@ that only employs the one or two appropriate filter(s).</li>
 </ul>
 <hr>
 <hr>
-<p>TODO: Examples:</p>
-<pre class="language-dart"><code>// white [Surface] with a black border that's thicker on bottom &amp; right, with rounded corners
+<p>Simple Examples:</p>
+<pre class="language-dart"><code class="language-dart">// white [Surface] with a black border that's thicker on bottom &amp; right, with rounded corners
 Surface(borderAlignment: Alignment.bottomRight, borderRadius: 10)
 // red [Surface] with symmetrical thick, black border and square corners (borderRadius is ignored)
 Surface(borderThickness: 6, corners: SurfaceCorners.SQUARE, color: Colors.red, borderRadius: 5)
@@ -414,7 +414,7 @@ the <a href="../surface/Surface-class.html">Surface</a> as a whole, ignored by <
         </dt>
         <dd>
           The <a href="../surface/Surface/padding.html">padding</a> value may be (default) passed entirely to the <a href="../surface/Surface/child.html">child</a>, but
-optionally may be given to a <a href="../surface/Surface/clipper.html">clipper</a> within <code>innerSurface</code> before
+optionally may be given to a <code>_clipper</code> within <code>innerSurface</code> before
 rendering <a href="../surface/Surface/child.html">child</a>, or split evenly between the two. <a href="../surface/Surface/paddingStyle.html">[...]</a>
                   <div class="features">final</div>
 </dd>
@@ -476,16 +476,6 @@ to either the <code>Surface.borderContainer</code> or, if <code>disableBorers: t
         <dd>
           👷‍♂️ Build <a href="../surface/Surface-class.html">Surface</a> 
                   <div class="features">override</div>
-</dd>
-        <dt id="clipper" class="callable">
-          <span class="name"><a href="../surface/Surface/clipper.html">clipper</a></span><span class="signature">(<wbr><span class="parameter" id="clipper-param-layer">{<span class="type-annotation"><a href="../surface/SurfaceLayer-class.html">SurfaceLayer</a></span> <span class="parameter-name">layer</span>, </span><span class="parameter" id="clipper-param-content"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span> <span class="parameter-name">content</span>}</span>)
-            <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/widgets/ClipPath-class.html">ClipPath</a></span>
-          </span>
-                  </dt>
-        <dd>
-          🔧🔪 Shortcut <a href="../surface/Surface/clipper.html">clipper</a> since a <a href="https://api.flutter.dev/flutter/widgets/ClipPath-class.html">ClipPath</a> is employed similarly
-in more than one context. 
-                  
 </dd>
         <dt id="createElement" class="callable inherited">
           <span class="name"><a href="https://api.flutter.dev/flutter/widgets/StatelessWidget/createElement.html">createElement</a></span><span class="signature">(<wbr>)
@@ -637,7 +627,6 @@ tools and by <a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode
 
     <li class="section-title"><a href="../surface/Surface-class.html#instance-methods">Methods</a></li>
     <li><a href="../surface/Surface/build.html">build</a></li>
-    <li><a href="../surface/Surface/clipper.html">clipper</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/StatelessWidget/createElement.html">createElement</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/DiagnosticableTree/debugDescribeChildren.html">debugDescribeChildren</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/Widget/debugFillProperties.html">debugFillProperties</a></li>
@@ -663,7 +652,7 @@ tools and by <a href="https://api.flutter.dev/flutter/foundation/DiagnosticsNode
 <footer>
   <span class="no-break">
     surface
-      0.0.1
+      0.0.3+2
   </span>
 
 </footer>
