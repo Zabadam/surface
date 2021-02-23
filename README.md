@@ -26,7 +26,7 @@
     - Smaller inner radius gives a better aesthetic for nested rounded rectangles
 
 ### WIP
-# [Surface Example](https://github.com/Zabadam/surface/example)
+# [Surface Example](https://github.com/Zabadam/surface/tree/main/example)
 
 See some example usage of the Surface package for Flutter included here.
 - [Surface Example Android source](https://github.com/Zabadam/surface/tree/main/example/lib/main.dart): `/example/lib/main.dart`
