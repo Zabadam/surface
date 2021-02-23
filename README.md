@@ -1,6 +1,8 @@
 ### WIP
 # 'Surface' Flutter Package
 
+![Animated GIF preview of Surface Example app](https://github.com/Zabadam/surface/blob/main/doc/Surface-Example.gif)
+
 [Surface](https://github.com/Zabadam/surface) is an AnimatedContainer and Material with a number of convenience parameters and customization options, through standard approaches and bespoke shape-crafting.
 
  * Work in progress transfer from an [Android application](https://play.google.com/store/apps/details?id=com.zaba.bug_bash 'Bug Bash in the Play Store') on which I am primarily focused.

@@ -1,6 +1,8 @@
 ### WIP
 # Surface Example
 
+![Animated GIF preview of Surface Example app](https://github.com/Zabadam/surface/blob/main/doc/Surface-Example.gif)
+
 Example usage of the [Surface](https://github.com/Zabadam/surface) package for Flutter. See [Surface Example Android source](https://github.com/Zabadam/surface/tree/main/example/lib/main.dart): `/example/lib/main.dart` and [Surface Example APK](https://github.com/Zabadam/surface/tree/main/example/build/app/outputs/flutter-apk/app-release.apk).
 
 ## TODO:
