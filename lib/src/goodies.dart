@@ -1,32 +1,31 @@
 /// ## 🎊 Just a few extra goodies for fun.
 ///
-/// ### `goodies.dart` adds a few items to namespace currently... sorry!
-/// - 👨‍💻 `fullPrint(String text)` to receive really long Strings in console log
-/// - Color extensions ⬛ `.withBlack(int subtract)` and ⬜ `.withWhite(int add)`
-/// - 🤚 `DragNub({double width, double height, Color color, double borderWidth})`
-/// - 📏 `Transform ScaleAxis(Widget child, {Key key, double dx =1.0, double dy =1.0, Offset origin, AlignmentGeometry alignment})`
+/// ### References
+/// - 🔦 [WithShading] `Color` extension
+///   - ⬛ [withBlack] `.withBlack(int subtract)`
+///   - ⬜ [withWhite] `.withWhite(int add)`
+/// - 🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
+/// - 👨‍💻 [fullPrint] - To receive really long `String`s in console log
+/// - 📏 [scaleAxis] - For a [Transform.scale]-like return that accepts independent `dx` and `dy` scaling
 library surface;
 
 import 'package:flutter/material.dart';
 
-/// ### 👨‍💻 Full Print
-/// Gives larger debug print output
+/// ---
+/// ### 🔦 [WithShading] extends [Color]
 ///
-///     void fullPrint(String text)
-void fullPrint(String text) {
-  /// 800 is the size of each chunk
-  final pattern = RegExp('.{1,800}');
-  pattern.allMatches(text).forEach((match) => print(match.group(0)));
-}
-
-/// ### ⬛⬜ [Color] Extension [WithShading]
-/// #### ⬛ `Color.withBlack(int subtract)` darkens [Color]'s RGB values by [subtract] (result >= 0)
-/// #### ⬜ `Color.withWhite(int add)` brightens [Color]'s RGB values by [add] (result <= 255)
+/// #### ⬛ [withBlack]
+///      Color.withBlack(int subtract)
+///
+/// #### ⬜ [withWhite]
+///      Color.withWhite(int add)
 extension WithShading on Color {
-  /// ⬜
+  /// #### ⬜ With White
   ///
-  ///     Color.withWhite(int add)
-  /// brightens [Color]'s RGB values by [add] (result <= 255)
+  /// ```
+  /// Color.withWhite(int add)
+  /// // Brightens Color's RGB values by `add` (result <= 255)
+  /// ```
   Color withWhite(int add) {
     int red = this.red ?? 0;
     int green = this.green ?? 0;
@@ -48,10 +47,12 @@ extension WithShading on Color {
     return this.withRed(red).withGreen(green).withBlue(blue);
   }
 
-  /// ⬛
+  /// #### ⬛ With Black
   ///
-  ///     Color.withBlack(int subtract)
-  /// darkens [Color]'s RGB values by [subtract] (result >= 0)
+  /// ```
+  /// Color.withBlack(int subtract)
+  /// // Darkens Color's RGB values by `subtract` (result >= 0)
+  /// ```
   Color withBlack(int subtract) {
     int red = this.red ?? 0;
     int green = this.green ?? 0;
@@ -74,11 +75,18 @@ extension WithShading on Color {
   }
 }
 
-/// ### ✋ [DragNub] is a small, round "handle" indicator
-/// used to visualize the impression of a moving sheet or draggable material.
+/// ---
+/// ### ✋ Drag Nub
+/// A small, round "handle" indicator used to visualize
+/// the impression of a moving sheet or draggable material.
 ///
-///     Widget DragNub({double width, double height, Color color, double borderWidth})
+/// ```
+/// Widget DragNub({double width, double height, Color color, double borderWidth})
+/// ```
 class DragNub extends StatelessWidget {
+  /// ### ✋ Drag Nub
+  /// Aa small, round "handle" indicator used to visualize
+  /// the impression of a moving sheet or draggable material.
   const DragNub({
     this.width,
     this.height,
@@ -119,18 +127,35 @@ class DragNub extends StatelessWidget {
   }
 }
 
-/// ### 📏 Scale Axis:
-/// A [Transform.scale]-like return that accepts independent horizontal [dx] and vertical [dy]
-/// scale doubles and manually plugs these in a [Matrix4] for a returned [Transform].
+/// ---
+/// ### 👨‍💻 Full Print
+/// Gives larger debug print output
 ///
-///     scaleAxis(dx: 0.5, dy: 0.25, child: anotherWidget)
-/// returns a horizontally-half-scaled, vertically-quarter-scaled [anotherWidget].
-Transform scaleAxis(
-    {double dx = 1.0,
-    double dy = 1.0,
-    Offset origin = const Offset(0, 0),
-    AlignmentGeometry alignment = Alignment.center,
-    Widget child}) {
+///     void fullPrint(String text)
+void fullPrint(String text) {
+  /// 800 is the size of each chunk
+  final pattern = RegExp('.{1,800}');
+  pattern.allMatches(text).forEach((match) => print(match.group(0)));
+}
+
+/// ---
+/// ### 📏 Scale Axis
+/// A [Transform.scale]-like return that accepts
+/// independent horizontal [dx] and vertical [dy]
+/// scale doubles and manually plugs these in a
+/// [Matrix4] for a returned `Transform`.
+///
+/// ```
+/// scaleAxis(dx: 0.5, dy: 0.25, child: anotherWidget)
+/// // returns a horizontally-half-scaled, vertically-quarter-scaled [anotherWidget]
+/// ```
+Transform scaleAxis({
+  double dx = 1.0,
+  double dy = 1.0,
+  Offset origin = const Offset(0, 0),
+  AlignmentGeometry alignment = Alignment.center,
+  Widget child,
+}) {
   return Transform(
       transform: Matrix4.diagonal3Values(dx, dy, 1.0),
       child: child ?? Container(width: 0, height: 0));

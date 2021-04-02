@@ -38,7 +38,7 @@ class SurfaceExample extends StatelessWidget {
         /// CustomInk is another goodie included with the Surface package.
         splashFactory: CustomInk.splashFactory,
 
-        /// Surface `TapSpec.inkHighlightColor` and `inkSplashColor` default to ThemeData.
+        /// Surface `SurfaceTapSpec.inkHighlightColor` and `inkSplashColor` default to ThemeData.
         splashColor: _COLOR_ACCENT,
         highlightColor: _COLOR_PRIMARY.withOpacity(0.3),
       ),
@@ -105,17 +105,17 @@ class _LandingState extends State<Landing> {
         disableBase: true,
         color: Theme.of(context).backgroundColor,
 
-        /// Because a Surface is `TapSpec.tappable` by default,
+        /// Because a Surface is `SurfaceTapSpec.tappable` by default,
         /// these two `Color` params will customize the appearance of
         /// the long-press InkResponse... which are initialized indentically
         /// in main MaterialApp `ThemeData`.
         ///
-        /// As these Theme colors are defaulted to by TapSpec,
-        /// we will skip initializing them on future Surface TapSpecs.
+        /// As these Theme colors are defaulted to by SurfaceTapSpec,
+        /// we will skip initializing them on future Surface SurfaceTapSpecs.
         ///
         /// Also see main ThemeData where Surface goodies extra
         /// [CustomInk.splashFactory] is established for the ink stylization.
-        tapSpec: TapSpec(
+        tapSpec: SurfaceTapSpec(
           inkSplashColor: _accent,
           inkHighlightColor: _primary.withOpacity(0.5),
         ),
@@ -155,7 +155,7 @@ class _LandingState extends State<Landing> {
                   Positioned(
                     top: _height * 0.075,
                     left: _width / 10,
-                    child: surfaceAsWindow(
+                    child: _surfaceAsWindow(
                       context,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -201,19 +201,19 @@ class _LandingState extends State<Landing> {
             /// 🔘 Surface as Floating Action Button
             children: [
               _surfaceAsFAB(
-                passedFilterStyle: SurfaceFilter.MATERIAL,
-                passedString: 'SurfaceFilter.\nMATERIAL',
+                filteredLayers: {SurfaceLayer.MATERIAL},
+                passedString: 'filteredLayers:\nMATERIAL',
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _surfaceAsFAB(
-                    passedFilterStyle: SurfaceFilter.BASE,
-                    passedString: 'SurfaceFilter.\nBASE',
+                    filteredLayers: {SurfaceLayer.BASE},
+                    passedString: 'filteredLayers:\nBASE',
                   ),
                   _surfaceAsFAB(
-                    passedFilterStyle: SurfaceFilter.BASE_AND_MATERIAL,
-                    passedString: 'SurfaceFilter.\nBASE_\nAND_MATERIAL',
+                    filteredLayers: {SurfaceLayer.BASE, SurfaceLayer.MATERIAL},
+                    passedString: 'filteredLayers:\nBASE &\nMATERIAL',
                   ),
                 ],
               ),
@@ -269,7 +269,7 @@ class _LandingState extends State<Landing> {
       /// Ensure the border is very thin at edges of screen to not obscure system
       /// navbar, but use [borderAlignment] & [borderRatio] to give the
       /// bottom edge some girth.
-      peekSpec: PeekSpec(
+      peekSpec: SurfacePeekSpec(
         peekAlignment: Alignment.bottomCenter,
         peek: 1.5,
         peekRatio: 3.5,
@@ -290,7 +290,7 @@ class _LandingState extends State<Landing> {
   }
 
   /// ### 🔳 Surface As Window
-  Surface surfaceAsWindow(
+  Surface _surfaceAsWindow(
     BuildContext context, {
     @required Widget child,
   }) {
@@ -304,7 +304,7 @@ class _LandingState extends State<Landing> {
           (_isExampleBeveled) ? SurfaceCorners.BEVEL : SurfaceCorners.ROUND,
       flipBevels: (_isExampleBeveled) ? true : null,
       radius: 50,
-      peekSpec: PeekSpec(
+      peekSpec: SurfacePeekSpec(
         peek: 20,
         peekRatio: (_isExampleBeveled) ? 2.5 : 5,
         peekAlignment:
@@ -313,7 +313,10 @@ class _LandingState extends State<Landing> {
 
       duration: _DURATION,
       curve: _CURVE,
-      filterStyle: SurfaceFilter.MATERIAL, // default blur radius of 4.0
+      filterSpec: SurfaceFilterSpec(
+        // default blur radius of 4.0
+        filteredLayers: {SurfaceLayer.MATERIAL},
+      ),
 
       baseColor: Colors.black38,
       // This [color] pass is overridden by [gradient].
@@ -360,51 +363,45 @@ class _LandingState extends State<Landing> {
     );
   }
 
-  /// 🔘
+  /// 🔘 Surface As FAB
   Surface _surfaceAsFAB({
-    @required SurfaceFilter passedFilterStyle,
+    @required Set<SurfaceLayer> filteredLayers,
     @required String passedString,
   }) {
     return Surface(
-        duration: _DURATION,
-
-        /// Default [Surface.corners] is [SurfaceCorners.ROUND]
-        radius: 100,
-        peekSpec: PeekSpec(
-          peek: 30,
-        ),
-        // paddingStyle: SurfacePadding.PAD_SURFACE,  // Default is [SurfacePadding.PAD_CHILD].
-        padding: const EdgeInsets.all(10),
-
-        /// Transparent color allows the blur effect to be seen purely
-        /// in these example cases.
-        color: Colors.transparent,
-        // color: Colors.white12,
 
         /// `bool _showExamplePopup` is an overlaid window, but the FABs would
         /// still above it if we did not consider `_showExamplePopup` when
         /// sizing/displaying them.
         width: (_showExamplePopup) ? 0 : 175,
         height: (_showExamplePopup) ? 0 : 175,
+        // padLayer: SurfaceLayer.MATERIAL,  // Default is [SurfacePadding.PAD_CHILD].
+        padding: const EdgeInsets.all(10),
+        duration: _DURATION,
+        peekSpec: SurfacePeekSpec(peek: 30),
 
-        /// Fun Colow swap when using the [stateControlButton]
+        /// Default [Surface.corners] is [SurfaceCorners.ROUND]
+        radius: 100,
+
+        /// Transparent color allows the blur effect to be seen purely
+        /// in these example cases.
+        color: Colors.transparent,
+        // color: Colors.white12,
+
+        /// Fun Color swap when using the [_stateControlButton]
         baseColor: (_isExampleBeveled)
             ? _accent.withWhite(25).withOpacity(0.25)
             : _primary.withWhite(25).withOpacity(0.25),
-
-        /// 🔬 [SurfaceFilter.SURFACE_AND_MATERIAL] results in two layers of
-        /// blur filtering, while the the other two options here
-        /// result in only one layer of blur.
-        filterStyle: passedFilterStyle,
-        // filterStyle: SurfaceFilter.SURFACE_AND_MATERIAL,
-        // filterStyle: SurfaceFilter.SURFACE,
-        // filterStyle: SurfaceFilter.MATERIAL,
-        filterRadius: {SurfaceLayer.BASE: 3.0, SurfaceLayer.MATERIAL: 15.0},
+        filterSpec: SurfaceFilterSpec(
+          filteredLayers: filteredLayers,
+          radiusMap: {SurfaceLayer.BASE: 3.0, SurfaceLayer.MATERIAL: 15.0},
+          // Declaring a radiusMap is like explicitly declaring the doubles here:
+          // baseRadius: 3.0,
+          // materialRadius: 15.0,
+        ),
 
         /// Obligatory Counter Example implementation;
-        /// By default, a [Surface] is tappable with an [InkResponse], but
-        /// [providesFeedback] vibration is disabled by default.
-        tapSpec: TapSpec(
+        tapSpec: SurfaceTapSpec(
           // tappable: false, // `true` by default
           providesFeedback: true, // `false` by default
           onTap: _incrementCounter,
@@ -429,14 +426,14 @@ class _LandingState extends State<Landing> {
             ]));
   }
 
-  /// ❗
+  /// ❗ Surface As Popup
   Surface _surfaceAsPopup() {
     return Surface(
       /// Cover most of the screen
       width: (_showExamplePopup) ? _width - 50 : 0,
       height: (_showExamplePopup) ? _height / 2 : 0,
       padding: const EdgeInsets.all(75),
-      paddingStyle: SurfacePadding.PAD_MATERIAL,
+      padLayer: SurfaceLayer.MATERIAL,
       duration: _DURATION,
       curve: _CURVE,
 
@@ -448,24 +445,30 @@ class _LandingState extends State<Landing> {
 
       /// Giving a *thicker* edge when the [surfaceAsPopup] is hidden `!(_showExamplePopup)`
       /// results in a neat expansion during the entrance animation.
-      peekSpec: PeekSpec(
+      peekSpec: SurfacePeekSpec(
         peek: (_showExamplePopup) ? 25 : 30,
         peekRatio: (_showExamplePopup) ? 4 : 7,
         peekAlignment: Alignment.topLeft,
       ),
 
-      tapSpec: TapSpec(
+      tapSpec: SurfaceTapSpec(
         /// onTap here will just refresh the build and give a new random color
         onTap: () => setState(() {}),
         providesFeedback: true,
       ),
 
-      filterStyle: SurfaceFilter.TRILAYER,
-      filterRadius: {
-        SurfaceLayer.BASE: 3.0,
-        SurfaceLayer.MATERIAL: 4.0,
-        SurfaceLayer.CHILD: 20.0
-      },
+      filterSpec: SurfaceFilterSpec(
+        filteredLayers: {
+          SurfaceLayer.BASE,
+          SurfaceLayer.MATERIAL,
+          SurfaceLayer.CHILD,
+        },
+        radiusMap: {
+          SurfaceLayer.BASE: 3.0,
+          SurfaceLayer.MATERIAL: 4.0,
+          SurfaceLayer.CHILD: 20.0
+        },
+      ),
 
       /// Contents of [_surfaceAsPopup]
       child: Container(

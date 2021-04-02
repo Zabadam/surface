@@ -1,8 +1,13 @@
-/// ## 👆 A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].
-/// To specify this type of ink splash for an
-/// [InkWell], [InkResponse] or material [Theme]:
+/// ## 🏓 Custom Ink
+/// A delightfully bouncy and position-mirroring reaction
+/// to user input on a piece of [Material].
+///
+///
+/// Use this [InteractiveInkFeatureFactory] to specify
+/// 🏓 [CustomInk] as the splash for an [InkWell], [InkResponse]
+/// or material [Theme].
 /// ```
-/// InteractiveInkFeatureFactory customInk = CustomInk.splashFactory;
+/// static const CustomInk.splashFactory
 /// ```
 library surface;
 
@@ -77,8 +82,9 @@ class _CustomInkFactory extends InteractiveInkFeatureFactory {
   }
 }
 
-/// 👆 A delightfully bouncy and position-mirroring reaction to user input
-/// on a piece of [Material].
+/// ### 🏓 [CustomInk]
+/// A delightfully bouncy and position-mirroring reaction
+/// to user input on a piece of [Material].
 ///
 /// A circular ink feature whose origin immediately moves from input touch point
 /// to an X- and Y-mirrored point opposite the touch point; and whose radius
@@ -207,7 +213,12 @@ class CustomInk extends InteractiveInkFeature {
   Animation<int> _fadeOut;
   AnimationController _fadeOutController;
 
-  /// Used to specify this type of ink splash for an [InkWell], [InkResponse]
+  /// ### 🏓 [CustomInk]
+  /// A delightfully bouncy and position-mirroring reaction
+  /// to user input on a piece of [Material].
+  ///
+  /// Use this [InteractiveInkFeatureFactory] to specify
+  /// 🏓 [CustomInk] as the splash for an [InkWell], [InkResponse]
   /// or material [Theme].
   static const InteractiveInkFeatureFactory splashFactory = _CustomInkFactory();
 

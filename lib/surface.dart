@@ -1,30 +1,41 @@
 /// ## 🌟 Surface
-/// is a shapeable, layered, intrinsincally animated container Widget
+/// A shapeable, layered, intrinsincally animated container Widget
 /// offering convenient access to blurring ImageFilters, Material InkResponse,
 /// and HapticFeedback.
 ///
-/// Options exist to render BackdropFilter in preconfigured
-/// 👓 `SurfaceFilter` arrangements; an InkResponse and
-/// HapticFeedback shortcut via 👆 [TapSpec]; and support for both
-/// `Color`s and `Gradient`s in both `SurfaceLayer.BASE` and `SurfaceLayer.MATERIAL` layers.
+/// 📚 [SurfaceLayer] container layering offers robust customization.
+/// - Support for both [Color]s and [Gradient]s
+///   in both 📚 [SurfaceLayer] `BASE` and `MATERIAL` layers.
 ///
-/// A 🔲 `PeekSpec` may be provided to alter the Surface "border".
-/// 📐 `SurfaceCorners` parameter `corner` and `double radius` will
-/// configure the shape.
+/// Use 🔘 [Surface.radius] and 📐 [SurfaceCorners] parameter [Surface.corners]
+/// to configure the shape.
 ///
-/// Give special treatment, generally a thicker appearance, to selected
-/// side(s) by passing 🔲 `PeekSpec.peekAlignment` and tuning with 🔲 `PeekSpec.peekRatio`.
+/// A 👆 [SurfaceTapSpec] offers [InkResponse] customization and [HapticFeedback] shortcut.
 ///
-/// 🔰 `BiBeveledShape` is responsible for the
-/// 📐 `SurfaceCorners.BEVEL` custom shape.
+/// A 🔲 [SurfacePeekSpec] may be provided to alter the Surface "peek"
+/// (`MATERIAL` inset or "border") with parameter 🔲 [SurfacePeekSpec.peek].
+/// - Give special treatment, generally a thicker appearance, to selected
+///   side(s) by passing 🔲 [SurfacePeekSpec.peekAlignment] and tuning with 🔲 [SurfacePeekSpec.peekRatio].
 ///
-/// ### `surface.dart` adds a few items to namespace currently... sorry!
-/// - 👆 `CustomInk.splashFactory` - New InteractiveInkFeatureFactory from
-///   modified [Material.InkRipple]
-/// - 👨‍💻 `fullPrint(String text)` to receive really long Strings in console log
-/// - Color extensions ⬛ `.withBlack(int subtract)` and ⬜ `.withWhite(int add)`
-/// - 🤚 `DragNub({double width, double height, Color color, double borderWidth})`
-/// - 📏 `Transform ScaleAxis(Widget child, {Key key, double dx =1.0, double dy =1.0, Offset origin, AlignmentGeometry alignment})`
+/// Specify a 🔬 [SurfaceFilterSpec] with options to render 💧 [Blur.ry]
+/// backdrop [ImageFilter]s in a configured 👓 [SurfaceFilterSpec.filteredLayers] `Set`
+/// and whose strength is mapped with 💧 [SurfaceFilterSpec.radiusMap].
+///
+/// 🔰 [BiBeveledShape] is responsible for the
+/// 📐 [SurfaceCorners.BEVEL] custom shape.
+///
+/// ### References
+/// - 🌟 [Surface] - A shapeable, layered, animated container Widget
+/// - 🔲 [SurfacePeekSpec] - An Object with optional parameters to customize a Surface's "peek"
+/// - 👆 [SurfaceTapSpec] - An Object with optional parameters to customize a Surface's tap behavior
+/// - 🔬 [SurfaceFilterSpec] - An Object with optional parameters to customize a Surface's blurring filters
+/// - 🏓 [CustomInk] - A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].
+/// - 🔦 [WithShading] `Color` extension
+///   - ⬛ [withBlack] `.withBlack(int subtract)`
+///   - ⬜ [withWhite] `.withWhite(int add)`
+/// - 🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
+/// - 👨‍💻 [fullPrint] - To receive really long `String`s in console log
+/// - 📏 [scaleAxis] - For a [Transform.scale]-like return that accepts independent `dx` and `dy` scaling
 library surface;
 
 export 'src/surface.dart';

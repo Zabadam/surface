@@ -1,12 +1,20 @@
+## [0.0.5+4] - 02 APR 21
+
+* Further modification to initialization parameters for Surface constructor.
+* Filter strength and the [SurfaceLayer]s on which they are enabled are now set and mapped with a bespoke [SurfaceFilterSpec] Object.
+  * Enable blurry filters by passing the desired [SurfaceLayer]s into [SurfaceFilterSpec.filteredLayers] as a `Set`.
+  * Strength radii can be initialized formally or with a `Map<SurfaceLayer, double>` called [SurfaceFilterSpec.radiusMap].
+  * [SurfaceFilter] enum removed, as it redundantly represented the idea of [SurfaceLayer]s in a `Set`
+
 ## [0.0.4+3] - 01 APR 21
 
 * Reduction in initialization parameters for Surface constructor. This is achieved:
   * in one instance by joining three similar values in a Map (`filterRadius`)
-  * by introducing `PeekSpec` and `TapSpec` classes to encapsulate other related parameters
+  * by introducing [SurfacePeekSpec] and [SurfaceTapSpec] classes to encapsulate other related parameters
 * Renamed `SurfaceLayer.BASE` from BORDER.
   * Changed or removed any references to "border"
   * Now refer to "base inset" or `peek`.
-    * Consider the old `Surface.borderRatio` is the new `PeekSpec.peekRatio`.
+    * Consider the old `Surface.borderRatio` is the new `SurfacePeekSpec.peekRatio`.
 * Altered default `Color` handling.
   * `InkResponse` splashes and highlights now defer to `Theme`.
   * Without passing a `Surface.color`, deafult to `ColorScheme.surface`

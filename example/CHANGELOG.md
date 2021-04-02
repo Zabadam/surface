@@ -1,3 +1,7 @@
+## [0.1.1+4] - 02 APR 21
+
+* Updated Example to support new Surface parameters.
+
 ## [0.1.0+3] - 01 APR 21
 
 * Updated Example to support new Surface parameters.
