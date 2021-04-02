@@ -22,17 +22,17 @@ Specify a 🔬 [SurfaceFilterSpec] with options to render 💧 [Blur.ry] backdro
 🔰 [BiBeveledShape] is responsible for the 📐 [SurfaceCorners.BEVEL] custom shape.
 
 ### References
-🌟 [Surface] - A shapeable, layered, animated container Widget
-🔲 [SurfacePeekSpec] - An Object with optional parameters to customize a Surface's "peek"
-👆 [SurfaceTapSpec] - An Object with optional parameters to customize a Surface's tap behavior
-🔬 [SurfaceFilterSpec] - An Object with optional parameters to customize a Surface's blurring filters
-🏓 [CustomInk] - A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].
-🔦 [WithShading] `Color` extension
+- 🌟 [Surface] - A shapeable, layered, animated container Widget
+- 🔲 [SurfacePeekSpec] - An Object with optional parameters to customize a Surface's "peek"
+- 👆 [SurfaceTapSpec] - An Object with optional parameters to customize a Surface's tap behavior
+- 🔬 [SurfaceFilterSpec] - An Object with optional parameters to customize a Surface's blurring filters
+- 🏓 [CustomInk] - A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].
+- 🔦 [WithShading] `Color` extension
    - ⬛ [withBlack] `.withBlack(int subtract)`
    - ⬜ [withWhite] `.withWhite(int add)`
-🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
-👨‍💻 [fullPrint] - To receive really long `String`s in console log
-📏 [scaleAxis] - For a [Transform.scale]-like return that accepts independent `dx` and `dy` scaling
+- 🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
+- 👨‍💻 [fullPrint] - To receive really long `String`s in console log
+- 📏 [scaleAxis] - For a [Transform.scale]-like return that accepts independent `dx` and `dy` scaling
 
 ## TODO:
 
