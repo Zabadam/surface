@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:surface/surface.dart';
-import 'dart:math';
 import 'dart:async';
+import 'dart:math';
+import 'package:flutter/material.dart';
 
-const _PRIMARY_SWATCH = Colors.red;
-const _ACCENT_COLOR = Colors.blue;
-const _DURATION = Duration(milliseconds: 300);
-const _CURVE = Curves.fastOutSlowIn;
+import 'package:surface/surface.dart';
+
+const _COLOR_PRIMARY = Colors.red;
+const _COLOR_ACCENT = Colors.blue;
+const _DURATION = Duration(milliseconds: 450);
+const _CURVE = Curves.easeInOutCirc;
 
 void main() {
   runApp(SurfaceExample());
@@ -21,17 +22,26 @@ class SurfaceExample extends StatelessWidget {
       themeMode: ThemeMode.dark,
       darkTheme: ThemeData.from(
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: _PRIMARY_SWATCH,
+          /// `ColorScheme.primaryVariant` is fallback for `Surface.baseColor`.
+          primarySwatch: _COLOR_PRIMARY,
           brightness: Brightness.light,
-          accentColor: _ACCENT_COLOR,
+          accentColor: _COLOR_ACCENT,
 
-          /// Color extension `Color.withBlack(int subtract)` added as an
-          /// extra goodie from Surface package.
-          backgroundColor: _PRIMARY_SWATCH.withBlack(150),
+          /// Color extension `Color.withBlack(int subtract)`
+          /// added as an extra goodie from Surface package.
+          backgroundColor: _COLOR_PRIMARY.withBlack(150),
+        ).copyWith(
+          /// `ColorScheme.surface` is fallback for `Surface.color`.
+          surface: _COLOR_PRIMARY.withBlack(100).withOpacity(0.3),
         ),
+      ).copyWith(
+        /// CustomInk is another goodie included with the Surface package.
+        splashFactory: CustomInk.splashFactory,
 
-        /// [CustomInk] is another goodie included with the Surface package
-      ).copyWith(splashFactory: CustomInk.splashFactory),
+        /// Surface `TapSpec.inkHighlightColor` and `inkSplashColor` default to ThemeData.
+        splashColor: _COLOR_ACCENT,
+        highlightColor: _COLOR_PRIMARY.withOpacity(0.3),
+      ),
       home: Landing(),
     );
   }
@@ -53,11 +63,7 @@ class _LandingState extends State<Landing> {
   Timer appBarGradientTimer;
 
   /// Because this is a sample app...
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  void _incrementCounter() => setState(() => _counter++);
 
   /// Override the initState and seet a Timer
   @override
@@ -67,8 +73,10 @@ class _LandingState extends State<Landing> {
     /// Showing the intrinsic animations of [Surface] by changing the LinearGradient
     /// in [surfaceAsAppBar] after a few seconds, around the time the [buildBackground]
     /// image loads in.
-    appBarGradientTimer = Timer(Duration(milliseconds: 2600),
-        () => setState(() => _flipGradient = true));
+    appBarGradientTimer = Timer(
+      Duration(milliseconds: 2600),
+      () => setState(() => _flipGradient = true),
+    );
   }
 
   @override
@@ -83,105 +91,141 @@ class _LandingState extends State<Landing> {
 
     /// This base Surface's color is only visually present beneath and before
     /// [_LandingState.buildBackground] loads the background graphic.
-    return Surface(
-      corners: SurfaceCorners.SQUARE,
-      disableBorder: true,
-      color: Theme.of(context).backgroundColor,
+    return WillPopScope(
+      onWillPop: () async {
+        if (_showExamplePopup) {
+          setState(() => _showExamplePopup = false);
+          return false;
+        }
 
-      /// Because a [Surface] is [tappable] by default, these two Color params
-      /// will customize the appearance of the long-press InkResponse.
-      ///
-      /// See [ThemeData] in [MaterialApp] where [CustomInk.splashFactory] i
-      /// provided for the stylization.
-      inkSplashColor: _accent,
-      inkHighlightColor: _primary.withOpacity(0.5),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
+        return true;
+      },
+      child: Surface(
+        corners: SurfaceCorners.SQUARE,
+        disableBase: true,
+        color: Theme.of(context).backgroundColor,
+
+        /// Because a Surface is `TapSpec.tappable` by default,
+        /// these two `Color` params will customize the appearance of
+        /// the long-press InkResponse... which are initialized indentically
+        /// in main MaterialApp `ThemeData`.
+        ///
+        /// As these Theme colors are defaulted to by TapSpec,
+        /// we will skip initializing them on future Surface TapSpecs.
+        ///
+        /// Also see main ThemeData where Surface goodies extra
+        /// [CustomInk.splashFactory] is established for the ink stylization.
+        tapSpec: TapSpec(
+          inkSplashColor: _accent,
+          inkHighlightColor: _primary.withOpacity(0.5),
+        ),
+
+        /// Application Scaffold
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
             title: Text('Surface Example'),
 
             /// ➖ Surface as AppBar
-            flexibleSpace: surfaceAsAppBar(),
+            flexibleSpace: _surfaceAsAppBar(),
 
             /// This button in the AppBar will toggle the bool that displays
             /// [surfaceAsPopup] found later in this Stack
             /// (and above [surfaceAsWindow] in Z-Axis).
             actions: [
               IconButton(
-                icon: Icon(Icons.note_add_outlined),
+                icon: Icon((_showExamplePopup)
+                    ? Icons.close
+                    : Icons.note_add_outlined),
                 onPressed: () =>
                     setState(() => _showExamplePopup = !_showExamplePopup),
               )
-            ]),
+            ],
+          ),
 
-        /// Scaffold Body
-        body: Stack(children: [
-          /// 🌆 Background Graphic
-          buildBackground(),
+          /// Scaffold Body
+          body: Stack(
+            children: [
+              /// 🌆 Background Image
+              _buildBackground(),
 
-          /// 🔳 Surface as Window
-          Stack(children: [
-            Positioned(
-              top: _height * 0.075,
-              left: _width / 10,
-              child: surfaceAsWindow(context,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'A nice, basic counter example'.toUpperCase(),
-                          style: Theme.of(context).textTheme.overline,
-                        ),
-                        Text(
-                          'Number of + Presses:',
-                          style: Theme.of(context).textTheme.headline4,
-                        ),
-                        Text(
-                          '$_counter',
-                          style: Theme.of(context).textTheme.headline1,
-                        )
-                      ])),
-            ),
+              /// 🔳 Surface as Window
+              Stack(
+                children: [
+                  Positioned(
+                    top: _height * 0.075,
+                    left: _width / 10,
+                    child: surfaceAsWindow(
+                      context,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'A nice, basic counter example'.toUpperCase(),
+                            style: Theme.of(context).textTheme.overline,
+                          ),
+                          Text(
+                            'Number of + Presses:',
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                          Text(
+                            '$_counter',
+                            style: Theme.of(context).textTheme.headline1,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
 
-            /// ✂ State-control button swaps a few colors in the app and toggles
-            /// the [corners] property of [surfaceAsWindow] between ROUND and BEVEL.
-            stateControlButton(isShadow: true),
-            stateControlButton(),
-          ]),
+                  /// ✂ State-control button swaps a few colors in the app and toggles
+                  /// the [corners] property of [surfaceAsWindow] between ROUND and BEVEL.
+                  _stateControlButton(isShadow: true),
+                  _stateControlButton(),
+                ],
+              ),
 
-          /// ❗ Surface as Popup
-          Center(child: surfaceAsPopup()),
-        ]),
+              /// ❗ Surface as Popup
+              /// Visually not present unless [_showExamplePopup] == true.
+              Center(
+                child: _surfaceAsPopup(),
+              ),
+            ],
+          ),
 
-        /// FAB
-        floatingActionButton: Column(
+          /// FAB
+          floatingActionButton: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
 
             /// 🔘 Surface as Floating Action Button
             children: [
-              surfaceAsFAB(
+              _surfaceAsFAB(
                 passedFilterStyle: SurfaceFilter.MATERIAL,
                 passedString: 'SurfaceFilter.\nMATERIAL',
               ),
-              Row(mainAxisSize: MainAxisSize.min, children: [
-                surfaceAsFAB(
-                  passedFilterStyle: SurfaceFilter.SURFACE,
-                  passedString: 'SurfaceFilter.\nSURFACE',
-                ),
-                surfaceAsFAB(
-                  passedFilterStyle: SurfaceFilter.SURFACE_AND_MATERIAL,
-                  passedString: 'SurfaceFilter.\nSURFACE_\nAND_MATERIAL',
-                ),
-              ]),
-            ]),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _surfaceAsFAB(
+                    passedFilterStyle: SurfaceFilter.BASE,
+                    passedString: 'SurfaceFilter.\nBASE',
+                  ),
+                  _surfaceAsFAB(
+                    passedFilterStyle: SurfaceFilter.BASE_AND_MATERIAL,
+                    passedString: 'SurfaceFilter.\nBASE_\nAND_MATERIAL',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  /// 🌆
-  Image buildBackground() {
+  /// 🌆 Background Image
+  Image _buildBackground() {
     return Image.network(
       'https://apod.nasa.gov/apod/image/2102/rosette_goldman_2500.jpg',
 
@@ -203,8 +247,8 @@ class _LandingState extends State<Landing> {
     );
   }
 
-  /// ➖
-  Surface surfaceAsAppBar() {
+  /// ### ➖ Surface As AppBar
+  Surface _surfaceAsAppBar() {
     return Surface(
       duration: _DURATION * 4,
       curve: _CURVE,
@@ -225,13 +269,15 @@ class _LandingState extends State<Landing> {
       /// Ensure the border is very thin at edges of screen to not obscure system
       /// navbar, but use [borderAlignment] & [borderRatio] to give the
       /// bottom edge some girth.
-      borderAlignment: Alignment.bottomCenter,
-      borderThickness: 1.5,
-      borderRatio: 3.5,
+      peekSpec: PeekSpec(
+        peekAlignment: Alignment.bottomCenter,
+        peek: 1.5,
+        peekRatio: 3.5,
+      ),
 
       /// Easily we've given the system navbar a bright shine at top-left edge
       /// corner with this gradient Alignment and the [borderGradient] parameter.
-      borderGradient: LinearGradient(
+      baseGradient: LinearGradient(
         begin: Alignment(-1, -1),
         end: Alignment(-0.97, 1),
         colors: [
@@ -240,54 +286,56 @@ class _LandingState extends State<Landing> {
           _primary.withBlack(50),
         ],
       ),
-      inkSplashColor: _accent,
-      inkHighlightColor: _primary.withOpacity(0.5),
     );
   }
 
-  /// 🔳
+  /// ### 🔳 Surface As Window
   Surface surfaceAsWindow(
     BuildContext context, {
     @required Widget child,
   }) {
     return Surface(
+      child: child,
       width: _width * 0.8,
       height: _height * 0.75,
       padding: const EdgeInsets.all(15),
-      duration: _DURATION,
-      curve: _CURVE,
-      filterStyle: SurfaceFilter.MATERIAL,
+
       corners:
           (_isExampleBeveled) ? SurfaceCorners.BEVEL : SurfaceCorners.ROUND,
       flipBevels: (_isExampleBeveled) ? true : null,
+      radius: 50,
+      peekSpec: PeekSpec(
+        peek: 20,
+        peekRatio: (_isExampleBeveled) ? 2.5 : 5,
+        peekAlignment:
+            (_isExampleBeveled) ? Alignment.bottomRight : Alignment.topCenter,
+      ),
 
-      /// This [color] pass would make a print in console and be replaced
-      /// by [gradient] underneath.
-      // color: _primary,
+      duration: _DURATION,
+      curve: _CURVE,
+      filterStyle: SurfaceFilter.MATERIAL, // default blur radius of 4.0
+
+      baseColor: Colors.black38,
+      // This [color] pass is overridden by [gradient].
+      color: ((_isExampleBeveled) ? _primary : _accent).withOpacity(0.3),
       gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
         colors: (_isExampleBeveled)
-            ? [_primary.withWhite(50), _primary.withBlack(50)]
+            ? [
+                _primary.withWhite(50).withOpacity(0.5),
+                _primary.withBlack(50).withOpacity(0.5)
+              ]
             : [
                 _accent.withWhite(50).withOpacity(0.5),
                 _accent.withBlack(50).withOpacity(0.5)
               ],
       ),
-      borderColor: Colors.black54,
-      radius: 50,
-      borderAlignment:
-          (_isExampleBeveled) ? Alignment.bottomRight : Alignment.topCenter,
-      borderThickness: 20,
-      borderRatio: (_isExampleBeveled) ? 2.5 : 5,
-      inkSplashColor: _accent,
-      inkHighlightColor: _primary.withOpacity(0.5),
-      child: child,
     );
   }
 
-  /// ✂
-  Widget stateControlButton({bool isShadow = false}) {
+  /// ### ✂ State Control Button
+  Widget _stateControlButton({bool isShadow = false}) {
     double top = (_isExampleBeveled) ? _height * 0.1 : (_height * 0.1) / 2;
     double left = (_isExampleBeveled) ? _width / 7 : (_width / 7) / 3;
     Color color = (_isExampleBeveled) ? _accent : _primary;
@@ -313,7 +361,7 @@ class _LandingState extends State<Landing> {
   }
 
   /// 🔘
-  Surface surfaceAsFAB({
+  Surface _surfaceAsFAB({
     @required SurfaceFilter passedFilterStyle,
     @required String passedString,
   }) {
@@ -322,7 +370,9 @@ class _LandingState extends State<Landing> {
 
         /// Default [Surface.corners] is [SurfaceCorners.ROUND]
         radius: 100,
-        borderThickness: 30,
+        peekSpec: PeekSpec(
+          peek: 30,
+        ),
         // paddingStyle: SurfacePadding.PAD_SURFACE,  // Default is [SurfacePadding.PAD_CHILD].
         padding: const EdgeInsets.all(10),
 
@@ -338,7 +388,7 @@ class _LandingState extends State<Landing> {
         height: (_showExamplePopup) ? 0 : 175,
 
         /// Fun Colow swap when using the [stateControlButton]
-        borderColor: (_isExampleBeveled)
+        baseColor: (_isExampleBeveled)
             ? _accent.withWhite(25).withOpacity(0.25)
             : _primary.withWhite(25).withOpacity(0.25),
 
@@ -349,15 +399,16 @@ class _LandingState extends State<Landing> {
         // filterStyle: SurfaceFilter.SURFACE_AND_MATERIAL,
         // filterStyle: SurfaceFilter.SURFACE,
         // filterStyle: SurfaceFilter.MATERIAL,
-        filterSurfaceBlur: 3,
-        filterMaterialBlur: 15,
+        filterRadius: {SurfaceLayer.BASE: 3.0, SurfaceLayer.MATERIAL: 15.0},
 
         /// Obligatory Counter Example implementation;
         /// By default, a [Surface] is tappable with an [InkResponse], but
         /// [providesFeedback] vibration is disabled by default.
-        onTap: _incrementCounter,
-        providesFeedback: true, // `false` by default
-        // tappable: false, // `true` by default
+        tapSpec: TapSpec(
+          // tappable: false, // `true` by default
+          providesFeedback: true, // `false` by default
+          onTap: _incrementCounter,
+        ),
 
         /// Plus Icon and Label required [passedString]
         child: Column(
@@ -366,57 +417,66 @@ class _LandingState extends State<Landing> {
 
             /// If the [surfaceAsPopup] is present on screen, hide the FABs
             /// children (as well as sizing the FABs down to 0) to prevent overflow.
-            children: (_showExamplePopup)
-                ? []
-                : [
-                    Icon(Icons.add, color: Colors.white),
-                    Text(
-                      passedString,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    )
-                  ]));
+            children: [
+              Flexible(child: Icon(Icons.add, color: Colors.white)),
+              Flexible(
+                child: Text(
+                  passedString,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: Colors.white),
+                ),
+              )
+            ]));
   }
 
   /// ❗
-  Surface surfaceAsPopup() {
+  Surface _surfaceAsPopup() {
     return Surface(
       /// Cover most of the screen
       width: (_showExamplePopup) ? _width - 50 : 0,
       height: (_showExamplePopup) ? _height / 2 : 0,
-
-      /// Random color from Material accents
-      color: Colors.accents[Random().nextInt(Colors.accents.length)]
-          .withWhite(50)
-          .withOpacity(0.4),
-
-      /// Giving a *thicker* border when the [surfaceAsPopup] is hidden
-      /// !(_showExamplePopup) results in a neat expansion during the appearance animation.
-      borderThickness: (_showExamplePopup) ? 20 : 30,
-      borderRatio: (_showExamplePopup) ? 3 : 7,
-      borderAlignment: Alignment.topCenter,
-      borderColor: (_showExamplePopup) ? Colors.black26 : Colors.transparent,
-
-      /// These would be fine-tuned for the appearance you are looking to achieve.
+      padding: const EdgeInsets.all(75),
+      paddingStyle: SurfacePadding.PAD_MATERIAL,
       duration: _DURATION,
       curve: _CURVE,
-      providesFeedback: true,
+
+      /// Random color from Material primaries
+      color: Colors.primaries[Random().nextInt(Colors.accents.length)]
+          .withBlack(75)
+          .withOpacity(0.2),
+      // baseColor: Colors.black26, // defaults to `ColorScheme.primaryVariant`
+
+      /// Giving a *thicker* edge when the [surfaceAsPopup] is hidden `!(_showExamplePopup)`
+      /// results in a neat expansion during the entrance animation.
+      peekSpec: PeekSpec(
+        peek: (_showExamplePopup) ? 25 : 30,
+        peekRatio: (_showExamplePopup) ? 4 : 7,
+        peekAlignment: Alignment.topLeft,
+      ),
+
+      tapSpec: TapSpec(
+        /// onTap here will just refresh the build and give a new random color
+        onTap: () => setState(() {}),
+        providesFeedback: true,
+      ),
+
       filterStyle: SurfaceFilter.TRILAYER,
-      filterSurfaceBlur: 3,
-      filterMaterialBlur: 5,
-      filterChildBlur: 50,
-      padding: const EdgeInsets.all(75),
-      paddingStyle: SurfacePadding.PAD_SURFACE,
+      filterRadius: {
+        SurfaceLayer.BASE: 3.0,
+        SurfaceLayer.MATERIAL: 4.0,
+        SurfaceLayer.CHILD: 20.0
+      },
 
-      /// onTap here will just refresh the build and give a new random color
-      onTap: () => setState(() {}),
-
-      /// Contents of [surfaceAsPopup]
+      /// Contents of [_surfaceAsPopup]
       child: Container(
-        color: Colors.transparent,
+        color: Colors.black12,
         alignment: Alignment.center,
-        child: Text('p o p u p',
-            style: TextStyle(color: Colors.white, fontSize: 40)),
+        child: FittedBox(
+          child: Text(
+            'p o p u p',
+            style: TextStyle(color: Colors.white, fontSize: 40),
+          ),
+        ),
       ),
     );
   }

@@ -3,7 +3,7 @@
 
 ![Animated GIF preview of Surface Example app](https://github.com/Zabadam/surface/blob/main/doc/Surface-Example.gif?raw=true)
 
-[Surface](https://github.com/Zabadam/surface) is a shapeable, layered, intrinsincally animated container Widget offering convenient access to blurring ImageFilters, Material InkResponse, and HapticFeedback; plus a number of customization parameters.
+[Surface](https://github.com/Zabadam/surface) is a shapeable, layered, intrinsincally animated container Widget offering convenient access to blurring ImageFilters, Material InkResponse, and HapticFeedback.
 
 - Work in progress transfer from an [Android application](https://play.google.com/store/apps/details?id=com.zaba.bug_bash 'Bug Bash in the Play Store') on which I am primarily focused.
 - Standard approaches and a bit of bespoke shape-crafting; more options should be available down the line.

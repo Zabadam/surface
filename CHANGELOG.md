@@ -1,3 +1,18 @@
+## [0.0.4+3] - 01 APR 21
+
+* Reduction in initialization parameters for Surface constructor. This is achieved:
+  * in one instance by joining three similar values in a Map (`filterRadius`)
+  * by introducing `PeekSpec` and `TapSpec` classes to encapsulate other related parameters
+* Renamed `SurfaceLayer.BASE` from BORDER.
+  * Changed or removed any references to "border"
+  * Now refer to "base inset" or `peek`.
+    * Consider the old `Surface.borderRatio` is the new `PeekSpec.peekRatio`.
+* Altered default `Color` handling.
+  * `InkResponse` splashes and highlights now defer to `Theme`.
+  * Without passing a `Surface.color`, deafult to `ColorScheme.surface`
+  * Without passing a `Surface.baseColor`, deafult to `ColorScheme.primaryVariant`
+* Organized documentation. Added iconography through emoji.
+
 ## [0.0.3+2] - 23 FEB 21
 
 * Improving layout and comments for pub.dev listing
@@ -9,7 +24,7 @@
     * Updated comments and documentation; fixed M⬇; ran `dartdoc`.
     * Cleaned and linked READMEs; added hyperlinks to Surface Example.
 * Removed Color and Duration constants from goodies.
-* Goodie [scaleAxis] simplified
+* Goodie `scaleAxis` simplified
 
 ## [0.0.1+0] - 22 FEB 21
 
