@@ -1,3 +1,10 @@
+## [0.1.0+5] - 04 APR 21
+
+* Added [Surface.baseRadius].
+  * 🔘 [baseRadius] may be specified separately from [radius], but is optional and will only impact the 📚 [SurfaceLayer.BASE].
+  * If not provided, uses [Surface.radius], which itself defaults to [Surface._RADIUS] `== 3.0`.
+* Added [SurfaceFilterSpec.extendBaseFilter] boolean which will apply the 📚 `BASE` blurry filter to the [Surface.margin].
+
 ## [0.0.5+4] - 02 APR 21
 
 * Further modification to initialization parameters for Surface constructor.
