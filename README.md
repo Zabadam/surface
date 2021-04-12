@@ -1,39 +1,49 @@
 # 'Surface' Flutter Package
+### Null-Safety Support - as of v0.2.0+6
 
 ![Animated GIF preview of Surface Example app](https://github.com/Zabadam/surface/blob/main/doc/Surface-Example.gif?raw=true)
+> (Some details in the screenshot above are from an outdated version.)
 
 
-🌟 [Surface](https://github.com/Zabadam/surface) is  shapeable, layered, intrinsincally animated container Widget
+## 🌟 [Surface](https://github.com/Zabadam/surface)
+is  shapeable, layered, intrinsincally animated container Widget
 offering convenient access to blurring ImageFilters, Material InkResponse, and HapticFeedback.
 
 
-📚 [SurfaceLayer] container layering offers robust customization.
+## 📚 [SurfaceLayer] Container Division
+Offers robust customization for a set app-wide style or on-the-fly changes.
 - Support for both [Color]s and [Gradient]s in both 📚 [SurfaceLayer] `BASE` and `MATERIAL` layers.
+- Support for three different blur filters and their strengths.
+  - The top-most of which can blur any InkResponse that occurs on the middle 📚 [SurfaceLayer].
+- EdgeInsets may be divided amongst different 📚 layers by 🔛 [Surface.padLayer].
 
 
-Use 🔘 [Surface.radius] and 📐 [SurfaceCorners] parameter [Surface.corners] to configure the shape.
-- The 🔘 [baseRadius] may be specified separately, but is optional and will only impact the 📚 [SurfaceLayer.BASE].
+## 🔘📐 Shape Customization
+🔘 [Surface.radius] and 📐 [SurfaceCorners] parameter [Surface.corners] offer shape customization.
+The 🔘 [baseRadius] may be specified separately, but is optional and will only impact the 📚 [SurfaceLayer.BASE].
 
 
-A 🔲 [SurfacePeekSpec] may be provided to alter the Surface "peek"
-(`MATERIAL` inset or "border") with parameter 🔲 [SurfacePeekSpec.peek].
+## 🔲 [SurfacePeekSpec] for bespoke "peek" effect
+`MATERIAL` inset or "border", the size of which is set by parameter 🔲 [SurfacePeekSpec.peek].
 - Give special treatment, generally a thicker appearance, to selected
   side(s) by passing 🔲 [SurfacePeekSpec.peekAlignment]
   and tuning with 🔲 [SurfacePeekSpec.peekRatio].
 
 
-Specify a 🔬 [SurfaceFilterSpec] with options to render 💧 [Blur.ry] backdrop [ImageFilter]s
+## 🔬 [SurfaceFilterSpec] defines 💧 [Blur.ry] backdrop [ImageFilter]s
 - In configured 👓 [SurfaceFilterSpec.filteredLayers] `Set`
 - Whose radii (blur strength) are mapped with 💧 [SurfaceFilterSpec.radiusMap]
   - A 📚 [SurfaceLayer.BASE] filter may be extended through the [Surface.margin] with [SurfaceFilterSpec.extendBaseFilter]
 
 
-A 👆 [SurfaceTapSpec] offers [SurfaceTapSpec.onTap] `VoidCallback`,
-[InkResponse] customization, and a [HapticFeedback] shortcut.
+## 👆 [SurfaceTapSpec] Controls Touch Feedback
+If the 🌟 [Surface] is 👆 [TapSpec.tappable] then [SurfaceTapSpec.onTap] `VoidCallback` becomes available.
+Colors may be provided for [InkResponse] customization--though ThemeData defaults are accessed otherwise.
+Finally, consider a [HapticFeedback] shortcut [TapSpec.providesFeedback].
 
 
-🔰 [BiBeveledShape] is responsible for the
-📐 [SurfaceCorners.BEVEL] custom shape.
+## 🔰 [SurfaceShape] Open to Grow
+The class currently only responsible for the 📐 [SurfaceCorners.BEVEL] custom shape by 🔰 [SurfaceShape.biBeveledRectangle].
 
 
 ### References

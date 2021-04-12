@@ -34,7 +34,7 @@
 /// [InkResponse] customization, and a [HapticFeedback] shortcut.
 /// ---
 ///
-/// 🔰 [BiBeveledShape] is responsible for the
+/// 🔰 [SurfaceShape.biBeveledRectangle] is responsible for the
 /// 📐 [SurfaceCorners.BEVEL] custom shape.
 /// ---
 ///
@@ -50,8 +50,6 @@
 ///   - ⬛ [withBlack] `.withBlack(int subtract)`
 ///   - ⬜ [withWhite] `.withWhite(int add)`
 /// - 🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
-/// - 👨‍💻 [fullPrint] - To receive really long `String`s in console log
-/// - 📏 [scaleAxis] - For a [Transform.scale]-like return that accepts independent `dx` and `dy` scaling
 library surface;
 
 export 'src/surface.dart';

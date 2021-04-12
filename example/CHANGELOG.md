@@ -1,3 +1,8 @@
+## [0.2.1+6] - 12 APR 21
+#### Surface [0.2.0+6]
+
+* Example migrate to sound null safety.
+
 ## [0.2.0+5] - 04 APR 21
 #### Surface [0.1.0+5]
 

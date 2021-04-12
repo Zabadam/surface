@@ -5,8 +5,6 @@
 ///   - ⬛ [withBlack] `.withBlack(int subtract)`
 ///   - ⬜ [withWhite] `.withWhite(int add)`
 /// - 🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
-/// - 👨‍💻 [fullPrint] - To receive really long `String`s in console log
-/// - 📏 [scaleAxis] - For a [Transform.scale]-like return that accepts independent `dx` and `dy` scaling
 library surface;
 
 import 'package:flutter/material.dart';
@@ -27,24 +25,12 @@ extension WithShading on Color {
   /// // Brightens Color's RGB values by `add` (result <= 255)
   /// ```
   Color withWhite(int add) {
-    int red = this.red ?? 0;
-    int green = this.green ?? 0;
-    int blue = this.blue ?? 0;
-
-    if (red + add > 255)
-      red = 255;
-    else
-      red += add;
-    if (green + add > 255)
-      green = 255;
-    else
-      green += add;
-    if (blue + add > 255)
-      blue = 255;
-    else
-      blue += add;
-
-    return this.withRed(red).withGreen(green).withBlue(blue);
+    return Color.fromARGB(
+      this.alpha,
+      (this.red + add).clamp(0, 255),
+      (this.green + add).clamp(0, 255),
+      (this.blue + add).clamp(0, 255),
+    );
   }
 
   /// #### ⬛ With Black
@@ -54,24 +40,12 @@ extension WithShading on Color {
   /// // Darkens Color's RGB values by `subtract` (result >= 0)
   /// ```
   Color withBlack(int subtract) {
-    int red = this.red ?? 0;
-    int green = this.green ?? 0;
-    int blue = this.blue ?? 0;
-
-    if (red - subtract < 0)
-      red = 0;
-    else
-      red -= subtract;
-    if (green - subtract < 0)
-      green = 0;
-    else
-      green -= subtract;
-    if (blue - subtract < 0)
-      blue = 0;
-    else
-      blue -= subtract;
-
-    return this.withRed(red).withGreen(green).withBlue(blue);
+    return Color.fromARGB(
+      this.alpha,
+      (this.red - subtract).clamp(0, 255),
+      (this.green - subtract).clamp(0, 255),
+      (this.blue - subtract).clamp(0, 255),
+    );
   }
 }
 
@@ -94,9 +68,9 @@ class DragNub extends StatelessWidget {
     this.borderWidth,
   });
 
-  final double width, height;
-  final double borderWidth;
-  final Color color;
+  final double? width, height;
+  final double? borderWidth;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -125,38 +99,4 @@ class DragNub extends StatelessWidget {
       ),
     );
   }
-}
-
-/// ---
-/// ### 👨‍💻 Full Print
-/// Gives larger debug print output
-///
-///     void fullPrint(String text)
-void fullPrint(String text) {
-  /// 800 is the size of each chunk
-  final pattern = RegExp('.{1,800}');
-  pattern.allMatches(text).forEach((match) => print(match.group(0)));
-}
-
-/// ---
-/// ### 📏 Scale Axis
-/// A [Transform.scale]-like return that accepts
-/// independent horizontal [dx] and vertical [dy]
-/// scale doubles and manually plugs these in a
-/// [Matrix4] for a returned `Transform`.
-///
-/// ```
-/// scaleAxis(dx: 0.5, dy: 0.25, child: anotherWidget)
-/// // returns a horizontally-half-scaled, vertically-quarter-scaled [anotherWidget]
-/// ```
-Transform scaleAxis({
-  double dx = 1.0,
-  double dy = 1.0,
-  Offset origin = const Offset(0, 0),
-  AlignmentGeometry alignment = Alignment.center,
-  Widget child,
-}) {
-  return Transform(
-      transform: Matrix4.diagonal3Values(dx, dy, 1.0),
-      child: child ?? Container(width: 0, height: 0));
 }

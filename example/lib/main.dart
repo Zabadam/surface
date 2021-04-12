@@ -53,7 +53,7 @@ class SurfaceExample extends StatelessWidget {
 
 class SurfaceExampleDrawer extends StatelessWidget {
   const SurfaceExampleDrawer({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -91,7 +91,7 @@ class SurfaceExampleDrawer extends StatelessWidget {
 }
 
 class Landing extends StatefulWidget {
-  const Landing({Key key}) : super(key: key);
+  const Landing({Key? key}) : super(key: key);
 
   @override
   _LandingState createState() => _LandingState();
@@ -99,17 +99,17 @@ class Landing extends StatefulWidget {
 
 class _LandingState extends State<Landing> {
   int _counter = 0;
-  double _width, _height;
-  Color _primary, _accent;
+  late double _width, _height;
+  late Color _primary, _accent;
   bool _isExampleBeveled = true,
       _showExamplePopup = false,
       _flipGradient = false;
-  Timer appBarGradientTimer;
+  late Timer appBarGradientTimer;
 
   /// Because this is a sample app...
   void _incrementCounter() => setState(() => _counter++);
 
-  /// Override the initState and seet a Timer
+  /// Override the initState and set a Timer
   @override
   void initState() {
     super.initState();
@@ -151,7 +151,7 @@ class _LandingState extends State<Landing> {
 
         /// Because a Surface is `SurfaceTapSpec.tappable` by default,
         /// these two `Color` params will customize the appearance of
-        /// the long-press InkResponse... which are initialized indentically
+        /// the long-press InkResponse... which are initialized identically
         /// in main MaterialApp `ThemeData`.
         ///
         /// As these Theme colors are defaulted to by SurfaceTapSpec,
@@ -340,7 +340,7 @@ class _LandingState extends State<Landing> {
   /// ### 🔳 Surface As Window
   Surface _surfaceAsWindow(
     BuildContext context, {
-    @required Widget child,
+    required Widget child,
   }) {
     return Surface(
       child: child,
@@ -349,7 +349,7 @@ class _LandingState extends State<Landing> {
       padding: const EdgeInsets.all(15),
       corners:
           (_isExampleBeveled) ? SurfaceCorners.BEVEL : SurfaceCorners.ROUND,
-      flipBevels: (_isExampleBeveled) ? true : null,
+      flipBevels: true,
       radius: 50,
       peekSpec: SurfacePeekSpec(
         peek: 20,
@@ -408,8 +408,8 @@ class _LandingState extends State<Landing> {
 
   /// 🔘 Surface As FAB
   Surface _surfaceAsFAB({
-    @required Set<SurfaceLayer> filteredLayers,
-    @required String passedString,
+    required Set<SurfaceLayer> filteredLayers,
+    required String passedString,
   }) {
     return Surface(
       /// `surfaceAsPopup` is an overlaid window, but the FABs would

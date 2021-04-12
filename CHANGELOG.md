@@ -1,3 +1,13 @@
+## [0.2.0+6] - 12 APR 21
+
+* Migrated package to sound null safety.
+* Cleaned up internal [SurfaceFilterSpec] code a bit while adding relevant `constants`
+  * One [DEFAULT_SPEC] is used by a `new` 🌟 [Surface]
+  * And several more that are `const` options for 👓 [filteredLayers]:
+    * `Set<SurfaceLayer>` that resemble old [SurfaceFilter] `enum`
+* 🔰 [BiBeveledShape.build] becomes 🔰 [SurfaceShape.biBeveledRectangle] for growth potential
+* Removed `fullPrint` and `scaleAxis`.
+
 ## [0.1.0+5] - 04 APR 21
 
 * Added [Surface.baseRadius].

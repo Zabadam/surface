@@ -29,8 +29,8 @@ const Duration _kCancelDuration = Duration(milliseconds: 75);
 /// ? The fade out begins 225ms after the _fadeOutController starts. See confirm().
 const double _kFadeOutIntervalStart = 225.0 / 500.0;
 
-RectCallback _getClipCallback(
-    RenderBox referenceBox, bool containedInkWell, RectCallback rectCallback) {
+RectCallback? _getClipCallback(
+    RenderBox referenceBox, bool containedInkWell, RectCallback? rectCallback) {
   if (rectCallback != null) {
     assert(containedInkWell);
     return rectCallback;
@@ -40,7 +40,7 @@ RectCallback _getClipCallback(
 }
 
 double _getTargetRadius(RenderBox referenceBox, bool containedInkWell,
-    RectCallback rectCallback, Offset position) {
+    RectCallback? rectCallback, Offset position) {
   final Size size =
       rectCallback != null ? rectCallback().size : referenceBox.size;
   final double d1 = size.bottomRight(Offset.zero).distance;
@@ -54,17 +54,17 @@ class _CustomInkFactory extends InteractiveInkFeatureFactory {
 
   @override
   InteractiveInkFeature create({
-    @required MaterialInkController controller,
-    @required RenderBox referenceBox,
-    @required Offset position,
-    @required Color color,
-    @required TextDirection textDirection,
+    required MaterialInkController controller,
+    required RenderBox referenceBox,
+    required Offset position,
+    required Color color,
+    required TextDirection textDirection,
     bool containedInkWell = false,
-    RectCallback rectCallback,
-    BorderRadius borderRadius,
-    ShapeBorder customBorder,
-    double radius,
-    VoidCallback onRemoved,
+    RectCallback? rectCallback,
+    BorderRadius? borderRadius,
+    ShapeBorder? customBorder,
+    double? radius,
+    VoidCallback? onRemoved,
   }) {
     return CustomInk(
       controller: controller,
@@ -127,21 +127,18 @@ class CustomInk extends InteractiveInkFeature {
   ///
   /// When the ripple is removed, [onRemoved] will be called.
   CustomInk({
-    @required MaterialInkController controller,
-    @required RenderBox referenceBox,
-    @required Offset position,
-    @required Color color,
-    @required TextDirection textDirection,
+    required MaterialInkController controller,
+    required RenderBox referenceBox,
+    required Offset position,
+    required Color color,
+    required TextDirection textDirection,
     bool containedInkWell = false,
-    RectCallback rectCallback,
-    BorderRadius borderRadius,
-    ShapeBorder customBorder,
-    double radius,
-    VoidCallback onRemoved,
-  })  : assert(color != null),
-        assert(position != null),
-        assert(textDirection != null),
-        _position = position,
+    RectCallback? rectCallback,
+    BorderRadius? borderRadius,
+    ShapeBorder? customBorder,
+    double? radius,
+    VoidCallback? onRemoved,
+  })  : _position = position,
         _borderRadius = borderRadius ?? BorderRadius.zero,
         _customBorder = customBorder,
         _textDirection = textDirection,
@@ -155,8 +152,6 @@ class CustomInk extends InteractiveInkFeature {
             referenceBox: referenceBox,
             color: color,
             onRemoved: onRemoved) {
-    assert(_borderRadius != null);
-
     /// Immediately begin fading-in the initial splash.
     _fadeInController =
         AnimationController(duration: _kFadeInDuration, vsync: controller.vsync)
@@ -199,19 +194,19 @@ class CustomInk extends InteractiveInkFeature {
 
   final Offset _position;
   final BorderRadius _borderRadius;
-  final ShapeBorder _customBorder;
+  final ShapeBorder? _customBorder;
   final double _targetRadius;
-  final RectCallback _clipCallback;
+  final RectCallback? _clipCallback;
   final TextDirection _textDirection;
 
-  Animation<double> _radius;
-  AnimationController _radiusController;
+  late Animation<double> _radius;
+  late AnimationController _radiusController;
 
-  Animation<int> _fadeIn;
-  AnimationController _fadeInController;
+  late Animation<int> _fadeIn;
+  late AnimationController _fadeInController;
 
-  Animation<int> _fadeOut;
-  AnimationController _fadeOutController;
+  late Animation<int> _fadeOut;
+  late AnimationController _fadeOutController;
 
   /// ### 🏓 [CustomInk]
   /// A delightfully bouncy and position-mirroring reaction
@@ -282,7 +277,7 @@ class CustomInk extends InteractiveInkFeature {
         Offset(dx, dy),
       ),
       Curves.elasticOut.transform(_radiusController.value),
-    );
+    )!;
 
     paintInkCircle(
       canvas: canvas,

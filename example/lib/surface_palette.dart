@@ -1,3 +1,8 @@
+// Copyright 2021 Adam Skelton (Zabadam)
+// Parts of code Copyright 2019 The Flutter team. All rights reserved.
+// Use of that source code is governed by a BSD-style license that can be
+// found in the Flutter LICENSE file.
+
 import 'package:flutter/material.dart';
 import 'package:surface/surface.dart';
 
@@ -13,17 +18,15 @@ const _BACKGROUND =
 class Palette {
   /// Define properties for a [Palette].
   const Palette({
-    @required this.name,
-    @required this.primary,
+    required this.name,
+    required this.primary,
     this.accent,
     this.threshold = 900,
-  })  : assert(name != null),
-        assert(primary != null),
-        assert(threshold != null);
+  });
 
   final String name;
   final MaterialColor primary;
-  final MaterialAccentColor accent;
+  final MaterialAccentColor? accent;
   // Titles for indices > threshold are white, otherwise black.
   final int threshold;
 }
@@ -147,22 +150,19 @@ class ColorItem extends StatelessWidget {
   ///
   /// Represents a single [MaterialColor] shade.
   const ColorItem({
-    @required this.index,
-    @required this.color,
+    Key? key,
+    required this.index,
+    required this.color,
     this.prefix = '',
-    @required this.brightness,
+    required this.brightness,
     this.tapSpec,
-    Key key,
-  })  : assert(index != null),
-        assert(color != null),
-        assert(prefix != null),
-        super(key: key);
+  }) : super(key: key);
 
   final int index;
   final Color color;
   final String prefix;
   final Brightness brightness;
-  final SurfaceTapSpec tapSpec;
+  final SurfaceTapSpec? tapSpec;
 
   String get _colorString =>
       "#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}";
@@ -204,7 +204,7 @@ class ColorItem extends StatelessWidget {
                   SurfaceLayer.MATERIAL: 15.0,
                 },
               ),
-              tapSpec: tapSpec,
+              tapSpec: tapSpec!,
               child: Center(
                 child: FittedBox(child: Text(_colorString, style: style)),
               ),
@@ -249,10 +249,9 @@ class PaletteTabView extends StatelessWidget {
 
   /// ListView of [ColorItem] Widgets.
   const PaletteTabView({
-    @required this.palette,
-    Key key,
-  })  : assert(palette != null),
-        super(key: key);
+    Key? key,
+    required this.palette,
+  }) : super(key: key);
 
   final Palette palette;
 
@@ -267,10 +266,11 @@ class PaletteTabView extends StatelessWidget {
           ((palette.accent != null) ? KEYS_ACCENTS.length : 0),
       itemBuilder: (_, index) {
         final SurfaceTapSpec tapSpec = SurfaceTapSpec(
-          inkHighlightColor:
-              ((palette.accent != null) ? palette.accent[400] : palette.primary)
-                  .withOpacity(0.8),
-          inkSplashColor: palette.primary[900].withBlack(100),
+          inkHighlightColor: ((palette.accent != null)
+                  ? palette.accent![400]
+                  : palette.primary)!
+              .withOpacity(0.8),
+          inkSplashColor: palette.primary[900]!.withBlack(100),
         );
 
         /// Having an accent MaterialColor, a [ColorItem] still has a primary to display.
@@ -278,7 +278,7 @@ class PaletteTabView extends StatelessWidget {
           final primariesIndex = KEYS_PRIMARIES[index];
           return ColorItem(
             index: primariesIndex,
-            color: palette.primary[primariesIndex],
+            color: palette.primary[primariesIndex]!,
             brightness: primariesIndex > palette.threshold
                 ? Brightness.dark
                 : Brightness.light,
@@ -287,7 +287,7 @@ class PaletteTabView extends StatelessWidget {
         }
 
         /// Else with an `index` beyond the length of KEYS_PRIMARIES,
-        /// `itemCount` has already checked and apprioriately sized this ListView.
+        /// `itemCount` has already checked and appropriately sized this ListView.
         ///
         /// Subtract KEYS_PRIMARIES when considering `index` in terms of the accent colors.
         else if (palette.accent != null &&
@@ -295,7 +295,7 @@ class PaletteTabView extends StatelessWidget {
           final accentsIndex = KEYS_ACCENTS[index - KEYS_PRIMARIES.length];
           return ColorItem(
             index: accentsIndex,
-            color: palette.accent[accentsIndex],
+            color: palette.accent![accentsIndex]!,
             prefix: 'A',
             brightness: accentsIndex > palette.threshold
                 ? Brightness.dark
@@ -310,7 +310,7 @@ class PaletteTabView extends StatelessWidget {
             margin: const EdgeInsets.all(_ITEM_PADDING * 2),
             padding: const EdgeInsets.all(10),
             color: Colors.transparent,
-            baseColor: palette.primary[900].withOpacity(0.5),
+            baseColor: palette.primary[900]!.withOpacity(0.5),
             tapSpec: tapSpec,
             filterSpec: const SurfaceFilterSpec(
               filteredLayers: {SurfaceLayer.BASE},
@@ -329,11 +329,11 @@ class PaletteTabView extends StatelessWidget {
                       fontWeight: FontWeight.w900,
                       shadows: [
                         Shadow(
-                          color: palette.primary[50],
+                          color: palette.primary[50]!,
                           offset: Offset(0, -1),
                         ),
                         Shadow(
-                          color: palette.primary[900].withBlack(25),
+                          color: palette.primary[900]!.withBlack(25),
                           offset: Offset(0, 5),
                         )
                       ]),
@@ -350,7 +350,7 @@ class PaletteTabView extends StatelessWidget {
 /// A tabbed view that presents a MaterialColor on each tab,
 /// with shades presented with the use of [Surface]s.
 class SurfacePalette extends StatefulWidget {
-  const SurfacePalette();
+  const SurfacePalette({Key? key}) : super(key: key);
 
   @override
   _SurfacePaletteState createState() => _SurfacePaletteState();
@@ -358,7 +358,7 @@ class SurfacePalette extends StatefulWidget {
 
 class _SurfacePaletteState extends State<SurfacePalette>
     with SingleTickerProviderStateMixin {
-  TabController _controller;
+  late TabController _controller;
 
   @override
   void initState() {
@@ -376,16 +376,16 @@ class _SurfacePaletteState extends State<SurfacePalette>
   }
 
   Palette get palette {
-    return PALETTES[_controller.animation.value.round()];
+    return PALETTES[_controller.animation!.value.round()];
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller.animation.drive(CurveTween(curve: _CURVE)),
+      animation: _controller.animation!.drive(CurveTween(curve: _CURVE)),
       builder: (_, __) {
         return Scaffold(
-          backgroundColor: palette.primary[900].withBlack(75),
+          backgroundColor: palette.primary[900]!.withBlack(75),
           appBar: AppBar(
             backgroundColor: palette.primary[500],
             toolbarHeight: 160,
@@ -454,17 +454,17 @@ class _SurfacePaletteState extends State<SurfacePalette>
                   final ppsQualifies = pps.distanceSquared > 500000;
 
                   if (ppsQualifies)
-                    _controller.animateTo(
-                        ((_controller.index + details.primaryVelocity.sign * -1)
-                                .toInt())
-                            .clamp(0, PALETTES.length - 1));
+                    _controller.animateTo(((_controller.index +
+                                details.primaryVelocity!.sign * -1)
+                            .toInt())
+                        .clamp(0, PALETTES.length - 1));
                 },
                 child: [
                   for (final palette in PALETTES)
                     PaletteTabView(
                       palette: palette,
                     ),
-                ][_controller.animation.value.round()],
+                ][_controller.animation!.value.round()],
               ),
             ],
           ),

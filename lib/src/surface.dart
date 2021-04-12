@@ -34,7 +34,7 @@
 /// [InkResponse] customization, and a [HapticFeedback] shortcut.
 /// ---
 ///
-/// 🔰 [BiBeveledShape] is responsible for the
+/// 🔰 [SurfaceShape.biBeveledRectangle] is responsible for the
 /// 📐 [SurfaceCorners.BEVEL] custom shape.
 /// ---
 ///
@@ -105,7 +105,7 @@ enum SurfaceCorners {
   ROUND,
 
   /// ### 📐 Beveled Surface Corners
-  /// Only *two* diagonally-oppposite corners will be beveled
+  /// Only *two* diagonally-opposite corners will be beveled
   /// by 🔘 [Surface.radius], while the other two remain square.
   ///
   /// Mirror the shape with `bool` parameter 🔁 [Surface.flipBevels].
@@ -127,7 +127,7 @@ class SurfacePeekSpec {
     this.peek = 3.0,
     this.peekRatio = 2.0,
     this.peekAlignment = Alignment.center,
-  }) : assert((peek ?? 0) >= 0,
+  }) : assert(peek >= 0,
             '[SurfacePeekSpec] > Please provide a non-negative [peek].');
 
   /// The 🔲 [peek] is a `double` applied as `padding` to
@@ -150,21 +150,141 @@ class SurfacePeekSpec {
   /// - [peekAlignment] defaults [Alignment.center]
   ///   such that no sides receive special treatment.
   final AlignmentGeometry peekAlignment;
+
+  // 🔢 Establish the thickness of each base side "peek" or "border-side"
+  // (`padding` property for 📚 [SurfaceLayer.BASE])
+  // based on [peek] and considering [peekAlignment] & [peekRatio]
+  double get _peekLeft => (peekAlignment == Alignment.topLeft ||
+          peekAlignment == Alignment.centerLeft ||
+          peekAlignment == Alignment.bottomLeft)
+      ? peek * peekRatio
+      : peek;
+  double get _peekTop => (peekAlignment == Alignment.topLeft ||
+          peekAlignment == Alignment.topCenter ||
+          peekAlignment == Alignment.topRight)
+      ? peek * peekRatio
+      : peek;
+  double get _peekRight => (peekAlignment == Alignment.topRight ||
+          peekAlignment == Alignment.centerRight ||
+          peekAlignment == Alignment.bottomRight)
+      ? peek * peekRatio
+      : peek;
+  double get _peekBottom => (peekAlignment == Alignment.bottomLeft ||
+          peekAlignment == Alignment.bottomCenter ||
+          peekAlignment == Alignment.bottomRight)
+      ? peek * peekRatio
+      : peek;
 }
 
 /// ---
 /// ### 🔬 [SurfaceFilterSpec]
-/// A 🌟 [Surface] may be provided a 🔬 [SurfaceFilterSpec] to change
+/// A 🌟 [Surface] may be provided a 🔬 [SurfaceFilterSpec] to alter
 /// filter appearance at all 📚 [SurfaceLayer]s.
 class SurfaceFilterSpec {
-  static const _VANILLA = SurfaceFilterSpec(filteredLayers: {}, radiusMap: {});
+  /// A new 🌟 [Surface] defaults 🔬 [Surface.filterSpec] to this [DEFAULT_SPEC].
+  /// ```
+  /// - filteredLayers: SurfaceFilterSpec.NONE // <SurfaceLayer>{}
+  /// - radiusMap: <SurfaceLayer, double>{}
+  /// ```
+  static const DEFAULT_SPEC = SurfaceFilterSpec(
+    filteredLayers: NONE,
+    radiusMap: <SurfaceLayer, double>{},
+  );
+
+  /// #### 👓 None
+  /// No 💧 [Blur.ry] filters.
+  static const NONE = <SurfaceLayer>{};
+
+  /// #### 👓 Trilayer
+  /// 3x 💧 [Blur.ry] filters, one at each layer of build:
+  /// - under 📚 [SurfaceLayer.BASE]
+  /// - under 📚 [SurfaceLayer.MATERIAL]
+  /// - under 📚 [SurfaceLayer.CHILD]
+  static const TRILAYER = <SurfaceLayer>{
+    SurfaceLayer.BASE,
+    SurfaceLayer.MATERIAL,
+    SurfaceLayer.CHILD,
+  };
+
+  /// #### 👓 Inner Bilayer
+  /// 2x 💧 [Blur.ry] filters:
+  /// - under 📚 [SurfaceLayer.MATERIAL]
+  /// - under 📚 [SurfaceLayer.CHILD]
+  ///
+  /// Absent under 📚 [SurfaceLayer.BASE], which will receive no blur.
+  ///
+  /// Furthermore, the blur under the 📚 Child may appear doubled
+  /// unless the 🔛 [Surface.padLayer] `!=` 📚 [SurfaceLayer.CHILD] and
+  /// [Surface.padding] is non-negligible.
+  static const INNER_BILAYER = <SurfaceLayer>{
+    SurfaceLayer.MATERIAL,
+    SurfaceLayer.CHILD,
+  };
+
+  /// #### 👓 Base & Child
+  /// 2x 💧 [Blur.ry] filters:
+  /// - under 📚 [SurfaceLayer.BASE]
+  /// - under 📚 [SurfaceLayer.CHILD]
+  ///
+  /// Absent under 📚 [SurfaceLayer.MATERIAL], which will receive no blur.
+  ///
+  /// Functionality may match 👓 [BASE_AND_MATERIAL] when
+  /// 🔛 [Surface.padLayer] `==` 📚 [SurfaceLayer.CHILD] (default behavior).
+  static const BASE_AND_CHILD = <SurfaceLayer>{
+    SurfaceLayer.BASE,
+    SurfaceLayer.CHILD,
+  };
+
+  /// #### 👓 Base & Material
+  /// 2x 💧 [Blur.ry] filters:
+  /// - under 📚 [SurfaceLayer.BASE]
+  /// - under 📚 [SurfaceLayer.MATERIAL]
+  ///
+  /// Absent under 📚 [SurfaceLayer.CHILD], which will receive no blur.
+  ///
+  /// Functionality may match 👓 [BASE_AND_CHILD] when
+  /// 🔛 [Surface.padLayer] `==` 📚 [SurfaceLayer.CHILD] (default behavior).
+  static const BASE_AND_MATERIAL = <SurfaceLayer>{
+    SurfaceLayer.BASE,
+    SurfaceLayer.MATERIAL,
+  };
+
+  /// #### 👓 Base
+  /// 1x 💧 [Blur.ry] filter:
+  /// - under 📚 [SurfaceLayer.BASE]
+  /// And the entire 🌟 [Surface] as a result.
+  static const BASE = <SurfaceLayer>{SurfaceLayer.BASE};
+
+  /// #### 👓 Material
+  /// 1x 💧 [Blur.ry] filter:
+  /// - under 📚 [SurfaceLayer.MATERIAL]
+  /// After any inset from the 🔲 [SurfacePeekSpec.peek].
+  static const MATERIAL = <SurfaceLayer>{SurfaceLayer.MATERIAL};
+
+  /// #### 👓 Child
+  /// 1x 💧 [Blur.ry] filter
+  /// - under 📚 [SurfaceLayer.BASE], after any inset from [Surface.padding]
+  static const CHILD = <SurfaceLayer>{SurfaceLayer.CHILD};
 
   /// ### 🔬 [SurfaceFilterSpec]
-  /// A 🌟 [Surface] may be provided a 🔬 [SurfaceFilterSpec] to change filter appearance
-  /// at all 📚 [SurfaceLayer]s.
+  /// A 🌟 [Surface] may be provided a 🔬 [SurfaceFilterSpec]
+  /// to change filter appearance at all 📚 [SurfaceLayer]s.
+  /// - `Set<SurfaceLayer>` 👓 [filteredLayers] determines which 📚 Layers have filters
+  /// - 💧 [radiusMap] or [baseRadius] && [materialRadius] && [childRadius]
+  ///   determine filter strength
+  /// - Use [extendBaseFilter] `== true` to have 📚 [SurfaceLayer.BASE]'s
+  ///   filter extend to cover the [Surface.margin] insets.
+  ///
+  /// While a `new` 🌟 [Surface] employs 🔬 [DEFAULT_SPEC],
+  /// where [filteredLayers] is [NONE], a `new` 🔬 [SurfaceFilterSpec]
+  /// defaults 👓 [filteredLayers] to [BASE].
+  /// - Default blur radius/strength is [_BLUR] `== 4.0`.
+  /// - Minimum accepted radius for an activated
+  /// 📚 Layer is [_BLUR_MINIMUM] `== 0.0003`.
+  /// * **❗ See CAUTION in [Surface] doc.**
   const SurfaceFilterSpec({
-    this.filteredLayers = const {},
-    this.radiusMap = const {},
+    this.filteredLayers = BASE,
+    this.radiusMap,
     this.baseRadius,
     this.materialRadius,
     this.childRadius,
@@ -192,11 +312,11 @@ class SurfaceFilterSpec {
   ///   any value passed to the higher-Z filter (highest-Z value: [SurfaceLayer.CHILD]).
   ///
   /// ### ❗ See ***CAUTION*** in [Surface] doc for more.
-  final Map<SurfaceLayer, double> radiusMap;
+  final Map<SurfaceLayer, double>? radiusMap;
 
   /// Instead of initializing a 💧 [radiusMap], opt to
   /// pass a specific layer's 💧 [Blur.ry] radius with this property.
-  final double baseRadius, materialRadius, childRadius;
+  final double? baseRadius, materialRadius, childRadius;
 
   /// If [extendBaseFilter] is `true`, the BackdropFilter for 📚 [SurfaceLayer.BASE]
   /// will extend to cover the [Surface.margin] padding.
@@ -206,38 +326,40 @@ class SurfaceFilterSpec {
   /// if not, then check if this 📚 [layer] was initialized a specific `double`
   /// (such as 💧 [baseRadius]) and return if so;
   /// finally, if all else fails, return const [_BLUR]
-  double _filterRadiusByLayer(SurfaceLayer layer) {
-    if (radiusMap.containsKey(layer))
-      return radiusMap[layer];
-    else if (layer == SurfaceLayer.BASE) if (baseRadius != null)
-      return baseRadius;
-    else if (layer == SurfaceLayer.MATERIAL) if (materialRadius != null)
-      return materialRadius;
-    else if (layer == SurfaceLayer.CHILD) if (childRadius != null)
-      return childRadius;
-    return _BLUR;
+  _filterRadiusByLayer(SurfaceLayer layer) {
+    switch (layer) {
+      case SurfaceLayer.BASE:
+        return _baseRadius;
+      case SurfaceLayer.MATERIAL:
+        return _materialRadius;
+      case SurfaceLayer.CHILD:
+        return _childRadius;
+    }
   }
-}
 
-/// Extension on [Map] specfically for handling a 💧 [SurfaceFilterSpec.radiusMap].
-extension RadiusMap on Map<SurfaceLayer, double> {
-  /// Extension on a 💧 [SurfaceFilterSpec.radiusMap] to allow comparing
-  /// the potential three 📚 [SurfaceLayer] `double` values
-  /// to a single [comparitor] `double`.
-  bool operator >=(Map<SurfaceLayer, double> comparitor) {
-    if (this.containsKey(comparitor.keys.single))
-      return this[comparitor.keys.single] >= comparitor.values.single;
+  double get _baseRadius => radiusMap?.containsKey(SurfaceLayer.BASE) ?? false
+      ? radiusMap![SurfaceLayer.BASE]!
+      : (baseRadius != null)
+          ? baseRadius!
+          : _BLUR;
+  double get _materialRadius =>
+      radiusMap?.containsKey(SurfaceLayer.MATERIAL) ?? false
+          ? radiusMap![SurfaceLayer.MATERIAL]!
+          : (materialRadius != null)
+              ? materialRadius!
+              : _BLUR;
 
-    print('[RadiusMap] $this>=($comparitor) : '
-        'Invalid comparison; returning null.');
-    return null;
-  }
+  double get _childRadius => radiusMap?.containsKey(SurfaceLayer.CHILD) ?? false
+      ? radiusMap![SurfaceLayer.CHILD]!
+      : (childRadius != null)
+          ? childRadius!
+          : _BLUR;
 }
 
 /// ---
 /// ### 👆 [SurfaceTapSpec]
-/// A 🌟 [Surface] may be provided a 👆 [SurfaceTapSpec] to define its "tappability"
-/// and appearance & behavior therein, if enabled.
+/// A 🌟 [Surface] may be provided a 👆 [SurfaceTapSpec] to define
+/// its "tappability" and appearance & behavior therein, if enabled.
 class SurfaceTapSpec {
   /// ### 👆 [SurfaceTapSpec]
   /// Not only does [tappable] provide [Surface.onTap] Callback,
@@ -256,22 +378,20 @@ class SurfaceTapSpec {
     this.onTap,
   });
 
-  /// Not only does [tappable] mean the Surface will provide [onTap] Callback,
-  /// it also adds an [InkResponse] to the [Material] before rendering [child].
+  /// Not only does [tappable] mean the Surface will provide 👆 [onTap] Callback,
+  /// it also enables `Color` parameters [inkHighlightColor] & [inkSplashColor].
   ///
   /// [providesFeedback] is a convenience to add a [HapticFeedback.vibrate] `onTap`.
   final bool tappable, providesFeedback;
 
   /// If [tappable] `== true` the [InkResponse] appearance may be customized.
-  ///
-  /// Otherwise no InkResponse is rendered with the Surface.
-  final Color inkSplashColor, inkHighlightColor;
+  final Color? inkSplashColor, inkHighlightColor;
 
   /// Disabled by [tappable] `== false`.
   ///
-  /// Pass a `function` to peform any time the [InkResponse]
+  /// Pass a [Function] to perform any time the [InkResponse]
   /// on this 🌟 [Surface] responds to a tap input.
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 }
 
 /// ---
@@ -286,13 +406,14 @@ class Blur {
 }
 
 /// ---
-/// ### 🔰 [BiBeveledShape]
-/// Returns a [BeveledRectangleBorder] where the passed 🔘 [radius] is applied to
-/// two diagonally opposite corners while the other two remain square.
+/// ### 🔰 [SurfaceShape]
+/// Offers [biBeveledRectangle] which returns a [BeveledRectangleBorder]
+/// where the passed 🔘 [radius] is applied to two diagonally opposite corners
+/// while the other two remain square.
 ///
-/// (See: [Surface._buildBiBeveledShape)
-class BiBeveledShape {
-  /// ### 🔰 [BiBeveledShape]
+/// See usage: [Surface._buildBiBeveledShape]
+class SurfaceShape {
+  /// ### 🔰 [SurfaceShape.biBeveledRectangle]
   ///
   /// Returns a [BeveledRectangleBorder] where the passed 🔘 [radius] is applied to
   /// two diagonally opposite corners while the other two remain square.
@@ -302,16 +423,16 @@ class BiBeveledShape {
   /// **Pass `true` to [shrinkOneCorner]** to increase the radius on one of the
   /// resultant beveled corners based on `Alignment` pass to [shrinkCornerAlignment].
   ///
-  /// This aids when stacking multiple 🔰 [BiBeveledShape] within one another when
+  /// This aids when stacking multiple 🔰 [SurfaceShape] within one another when
   /// offset with padding while a uniform border is desired.
   ///
   /// (See: [Surface._buildBiBeveledShape)
-  static BeveledRectangleBorder build({
+  static BeveledRectangleBorder biBeveledRectangle({
     bool flip = false,
     double radius = 5,
     bool shrinkOneCorner = false,
     double ratio = 5 / 4,
-    AlignmentGeometry shrinkCornerAlignment,
+    AlignmentGeometry? shrinkCornerAlignment,
   }) {
     double tr = (flip) ? 0.0 : radius;
     double bl = (flip) ? 0.0 : radius;
@@ -355,7 +476,7 @@ class BiBeveledShape {
 /// Only pass 👓 [SurfaceFilterSpec.filteredLayers] parameter for which you intend on
 /// passing each relevant 💧 [SurfaceFilterSpec.radiusMap] map parameter.
 ///   - Not only are the blurry [BackdropFilter]s expensive, but the
-///   inheritance/ancestory behavior is strange.
+///   inheritance/ancestry behavior is strange.
 ///   - If all three filters are active via 👓 [SurfaceFilterSpec.filteredLayers], passing
 ///   `baseRadius: 0` eliminates the remaining children filters,
 ///   regardless of their passed `radius`.
@@ -392,7 +513,7 @@ class Surface extends StatelessWidget {
   /// A 🌟 [Surface] is robustly customizable and, *watch out*, could also be expensive.
   ///
   /// - **If 🌆 [gradient] or 🌆 [baseGradient] is initialized,**
-  /// then resepctive 🎨 [color] or 🎨 [baseColor] parameter is ignored.
+  /// then respective 🎨 [color] or 🎨 [baseColor] parameter is ignored.
   ///
   /// > If not initialized, then default as follows:
   /// >   - 🎨 **[color]** - `Theme.of(context).colorScheme.surface.withOpacity(0.3)`
@@ -402,15 +523,16 @@ class Surface extends StatelessWidget {
   /// - **If [corners] is passed 📐 [SurfaceCorners.BEVEL]** then `bool` 🔁 [flipBevels]
   ///   can mirror the cut corners horizontally. Ignored otherwise.
   ///
-  /// - **Passing 🔲 [SurfacePeekSpec.peekRatio] a value of `1`** will negate any
-  ///   passed value to `peekAlignment`.
+  /// - **Passing 🔲 [SurfacePeekSpec.peekRatio] a value of `1`**
+  ///   will negate any passed value to `peekAlignment`.
   /// - Similarly, **passing `peekRatio` in the range `0..1`**
-  ///   will actually make the 🔲 [SurfacePeekSpec.peekAlignment] aligned side(s)
-  ///   *thinner* than the others.
+  ///   will actually make the 🔲 [SurfacePeekSpec.peekAlignment]
+  ///   aligned side(s) *thinner* than the others.
   ///
-  /// - By default **👆 [SurfaceTapSpec.tappable] is true and 👆 [SurfaceTapSpec.providesFeedback] is false**.
-  ///   The former includes an [InkResponse] that calls 👆 [SurfaceTapSpec.onTap] and the latter
-  ///   enables [HapticFeedback].
+  /// - By default **👆 [SurfaceTapSpec.tappable] is true and
+  ///   👆 [SurfaceTapSpec.providesFeedback] is false**.
+  ///   - The former includes an [InkResponse] that calls
+  ///   👆 [SurfaceTapSpec.onTap] and the latter enables [HapticFeedback].
   ///
   /// ---
   ///
@@ -418,7 +540,7 @@ class Surface extends StatelessWidget {
   /// Only pass 👓 [SurfaceFilterSpec.filteredLayers] parameter for which you intend on
   /// passing each relevant 💧 [SurfaceFilterSpec.radiusMap] map parameter.
   ///   - Not only are the blurry [BackdropFilter]s expensive, but the
-  ///   inheritance/ancestory behavior is strange.
+  ///   inheritance/ancestry behavior is strange.
   ///   - If all three filters are active via 👓 [SurfaceFilterSpec.filteredLayers], passing
   ///   `baseRadius: 0` eliminates the remaining children filters,
   ///   regardless of their passed `radius`.
@@ -466,11 +588,11 @@ class Surface extends StatelessWidget {
     this.baseRadius,
     this.peekSpec = const SurfacePeekSpec(),
     this.tapSpec = const SurfaceTapSpec(),
-    this.filterSpec = SurfaceFilterSpec._VANILLA,
+    this.filterSpec = SurfaceFilterSpec.DEFAULT_SPEC,
     this.padLayer = SurfaceLayer.CHILD,
     this.flipBevels = false,
     this.child,
-    Key key,
+    Key? key,
   })  : assert((radius ?? 0) >= 0,
             '[Surface] > Please provide a non-negative [radius].'),
         super(key: key);
@@ -478,7 +600,7 @@ class Surface extends StatelessWidget {
   /// The [width] and [height] follow rules of [AnimatedContainer],
   /// but apply to either the 📚 [SurfaceLayer.BASE] or,
   /// if `disableBase: true`, the 📚 [SurfaceLayer.MATERIAL] directly.
-  final double width, height;
+  final double? width, height;
 
   /// If [disableBase] `== true` the [margin] is properly handled by
   /// 📚 [SurfaceLayer.MATERIAL] but otherwise applies to 📚 [SurfaceLayer.BASE] and
@@ -500,11 +622,11 @@ class Surface extends StatelessWidget {
   /// If not initialized, then default as follows:
   /// - [color] - `Theme.of(context).colorScheme.surface.withOpacity(0.3)`
   /// - [baseColor] - `Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3)`
-  final Color color, baseColor;
+  final Color? color, baseColor;
 
   /// If 🌆 [gradient] or 🌆 [baseGradient] is initialized,
-  /// then resepctive `Color` parameter is ignored.
-  final Gradient gradient, baseGradient;
+  /// then respective `Color` parameter is ignored.
+  final Gradient? gradient, baseGradient;
 
   /// The Duration that the internal [AnimatedContainer]s use for
   /// intrinsic property-change animations.
@@ -531,7 +653,7 @@ class Surface extends StatelessWidget {
   ///
   /// The 🔘 [baseRadius] may be specified separately,
   /// but is optional and will only impact the 📚 [SurfaceLayer.BASE].
-  final double radius, baseRadius;
+  final double? radius, baseRadius;
 
   /// Surface 🔲 [SurfacePeekSpec.peek] is applied as `padding` to and insets 📚 [SurfaceLayer.MATERIAL].
   /// - It may be considered to function like a border for the [child] content.
@@ -553,19 +675,37 @@ class Surface extends StatelessWidget {
   /// to add a [HapticFeedback.vibrate] `onTap`.
   final SurfaceTapSpec tapSpec;
 
-  /// TODO:
+  /// Provided a 🔬 [SurfaceFilterSpec] to alter
+  /// filter appearance at all 📚 [SurfaceLayer]s.
+  /// - `Set<SurfaceLayer>` 👓 [SurfaceFilterSpec.filteredLayers]
+  ///   determines which 📚 Layers have filters
+  /// - 💧 [SurfaceFilterSpec.radiusMap] determines filter strength
+  ///   - Or [SurfaceFilterSpec.baseRadius] && `materialRadius` && `childRadius`
+  /// - Use [SurfaceFilterSpec.extendBaseFilter] `== true` to have
+  ///   📚 [SurfaceLayer.BASE]'s filter extend to cover
+  ///   the [Surface.margin] insets.
+  ///
+  /// While a `new` 🌟 [Surface] employs 🔬 [SurfaceFilterSpec.DEFAULT_SPEC],
+  /// where [SurfaceFilterSpec.filteredLayers] is [SurfaceFilterSpec.NONE],
+  /// a `new` 🔬 [SurfaceFilterSpec] defaults
+  /// 👓 [SurfaceFilterSpec.filteredLayers] to [BASE].
+  /// - Default blur radius/strength is [_BLUR] `== 4.0`.
+  /// - Minimum accepted radius for an activated
+  /// 📚 Layer is [_BLUR_MINIMUM] `== 0.0003`.
+  /// * **❗ See CAUTION in [Surface] doc.**
   final SurfaceFilterSpec filterSpec;
 
   /// Specify a 📚 [SurfaceLayer] as 🔛 [padLayer]
   /// to receive [Surface.padding] value.
   ///
   /// By default, passed entirely to 📚 [SurfaceLayer.CHILD], but
-  /// optionally may be given to a [_clipper] within 📚 [SurfaceLayer.MATERIAL]
-  /// before rendering [child].
+  /// optionally may be given to a 🔪 [_clipper] within 📚 [SurfaceLayer.MATERIAL]
+  /// before rendering 👶 [child].
   ///
-  /// The effect with [padLayer] `=` [SurfaceLayer.MATERIAL] can be neat as it adds
-  /// a third customizable layer to a 🌟 Surface
-  /// - Employed by 👓 [filterStyle] `=` 👓 [SurfaceFilter.TRILAYER].
+  /// The effect with 🔛 [padLayer] `=` 📚 [SurfaceLayer.MATERIAL] can be neat
+  /// with non-negligible [Surface.padding] as it adds a third customizable
+  /// 📚 Layer to a 🌟 Surface.
+  /// - Consider 👓 [SurfaceFilterSpec.filteredLayers] `=` 👓 [SurfaceFilterSpec.TRILAYER].
   ///
   /// ### ❗ Special Case
   /// Specifying 📚 [SurfaceLayer.BASE] is a special case in which
@@ -575,39 +715,15 @@ class Surface extends StatelessWidget {
   /// Only if [corners] `==` 📐 [SurfaceCorners.BEVEL] will 🔁 [flipBevels] then
   /// mirror the two beveled corners horizontally across x-axis; ignored otherwise.
   ///
-  /// See 🔰 [BiBeveledShape] which ultimately provides the
+  /// See 🔰 [SurfaceShape] which ultimately provides the
   /// [BeveledRectangleBorder] used throughout Surface.
   final bool flipBevels;
 
   /// The 👶 [child] Widget to render inside as the Surface content
   /// after considering all layout parameters.
-  final Widget child;
+  final Widget? child;
 
-  // 🔢 Establish the thickness of each base side "peek" or "border-side"
-  // (`padding` property for 📚 [SurfaceLayer.BASE])
-  // based on [peek] and considering [peekAlignment] & [peekRatio]
-  double get _peekLeft => (peekSpec.peekAlignment == Alignment.topLeft ||
-          peekSpec.peekAlignment == Alignment.centerLeft ||
-          peekSpec.peekAlignment == Alignment.bottomLeft)
-      ? peekSpec.peek * peekSpec.peekRatio
-      : peekSpec.peek;
-  double get _peekTop => (peekSpec.peekAlignment == Alignment.topLeft ||
-          peekSpec.peekAlignment == Alignment.topCenter ||
-          peekSpec.peekAlignment == Alignment.topRight)
-      ? peekSpec.peek * peekSpec.peekRatio
-      : peekSpec.peek;
-  double get _peekRight => (peekSpec.peekAlignment == Alignment.topRight ||
-          peekSpec.peekAlignment == Alignment.centerRight ||
-          peekSpec.peekAlignment == Alignment.bottomRight)
-      ? peekSpec.peek * peekSpec.peekRatio
-      : peekSpec.peek;
-  double get _peekBottom => (peekSpec.peekAlignment == Alignment.bottomLeft ||
-          peekSpec.peekAlignment == Alignment.bottomCenter ||
-          peekSpec.peekAlignment == Alignment.bottomRight)
-      ? peekSpec.peek * peekSpec.peekRatio
-      : peekSpec.peek;
-
-  double _getRadius([SurfaceLayer layer]) {
+  double _getRadius([SurfaceLayer? layer]) {
     return (layer == SurfaceLayer.BASE)
         ? (baseRadius ?? radius ?? _RADIUS)
         : (radius ?? _RADIUS);
@@ -620,40 +736,18 @@ class Surface extends StatelessWidget {
     /// ❗ See *CAUTION* in Surface doc for more information on
     /// 👓 [filterStyle] and [SurfaceFilterSpec.filterRadius] values.
     assert(
-        ((filterSpec.filteredLayers ==
-                    const {
-                      SurfaceLayer.BASE,
-                      SurfaceLayer.MATERIAL,
-                      SurfaceLayer.CHILD,
-                    })
-                ? (filterSpec.radiusMap >=
-                        const {SurfaceLayer.BASE: _BLUR_MINIMUM} &&
-                    filterSpec.radiusMap >=
-                        const {SurfaceLayer.MATERIAL: _BLUR_MINIMUM})
+        ((filterSpec.filteredLayers == SurfaceFilterSpec.TRILAYER)
+                ? (filterSpec._baseRadius >= _BLUR_MINIMUM &&
+                    filterSpec._materialRadius >= _BLUR_MINIMUM)
                 : true) ||
-            ((filterSpec.filteredLayers ==
-                    const {
-                      SurfaceLayer.MATERIAL,
-                      SurfaceLayer.CHILD,
-                    })
-                ? (filterSpec.radiusMap >=
-                    const {SurfaceLayer.MATERIAL: _BLUR_MINIMUM})
+            ((filterSpec.filteredLayers == SurfaceFilterSpec.INNER_BILAYER)
+                ? (filterSpec._materialRadius >= _BLUR_MINIMUM)
                 : true) ||
-            ((filterSpec.filteredLayers ==
-                    const {
-                      SurfaceLayer.BASE,
-                      SurfaceLayer.CHILD,
-                    })
-                ? (filterSpec.radiusMap >=
-                    const {SurfaceLayer.BASE: _BLUR_MINIMUM})
+            ((filterSpec.filteredLayers == SurfaceFilterSpec.BASE_AND_CHILD)
+                ? (filterSpec._baseRadius >= _BLUR_MINIMUM)
                 : true) ||
-            ((filterSpec.filteredLayers ==
-                    const {
-                      SurfaceLayer.BASE,
-                      SurfaceLayer.MATERIAL,
-                    })
-                ? (filterSpec.radiusMap >=
-                    const {SurfaceLayer.BASE: _BLUR_MINIMUM})
+            ((filterSpec.filteredLayers == SurfaceFilterSpec.BASE_AND_MATERIAL)
+                ? (filterSpec._baseRadius >= _BLUR_MINIMUM)
                 : true),
         '[Surface] > Upper-layered filters will be negated if ancestor filters are enabled that have radius < 0.0003.\n'
         'Increase blur radius of lower layer(s) or pass a different [SurfaceFilterSpec.filteredLayers].');
@@ -708,8 +802,12 @@ class Surface extends StatelessWidget {
 
       /// 🔲 This padding is effectively the "border" of the Surface.
       // Values generated at start of build() using 🔲 [SurfacePeekSpec].
-      padding:
-          EdgeInsets.fromLTRB(_peekLeft, _peekTop, _peekRight, _peekBottom),
+      padding: EdgeInsets.fromLTRB(
+        peekSpec._peekLeft,
+        peekSpec._peekTop,
+        peekSpec._peekRight,
+        peekSpec._peekBottom,
+      ),
 
       /// Build shape and color for 📚 [SurfaceLayer.BASE]
       decoration: _buildDecoration(
@@ -821,8 +919,8 @@ class Surface extends StatelessWidget {
   /// whether [Surface.gradient] is initialized.
   Decoration _buildDecoration(
     SurfaceLayer layer, {
-    @required bool isGradient,
-    @required Map<SurfaceLayer, Color> fallbacks,
+    required bool isGradient,
+    required Map<SurfaceLayer, Color> fallbacks,
   }) {
     return (isGradient)
         ? _buildGradientDecoration(layer)
@@ -885,22 +983,24 @@ class Surface extends StatelessWidget {
 
   /// ---
   /// 👷‍♂️: 🔰 [_buildBiBeveledShape]
-  /// Customized 🔰 [BiBeveledShape] so the 📚 [SurfaceLayer.MATERIAL]
+  /// Customized 🔰 [SurfaceShape] so the 📚 [SurfaceLayer.MATERIAL]
   /// may have a deeper-cut beveled corner if
   /// the property [peekAlignment] is passed and corner-set.
   ///
   /// Certainly repass 🔁 [flipBevels].
-  BeveledRectangleBorder _buildBiBeveledShape({@required SurfaceLayer layer}) {
-    return BiBeveledShape.build(
-      // radius: (radius ?? _DEFAULT_RADIUS) * (40 - borderThickness - 2.3 * borderThickness) / 40,
+  BeveledRectangleBorder _buildBiBeveledShape({required SurfaceLayer layer}) {
+    /// BiBeveledShape could provide more functionality in the future.
+    return SurfaceShape.biBeveledRectangle(
+      // radius: (radius) * (40 - peekSpec.peek - 2.3 * peekSpec.peek) / 40,
       radius: _getRadius(layer),
-      flip: flipBevels ?? false,
+      flip: flipBevels,
 
       /// A corner may indeed not be shrunken after all
       /// if [SurfacePeekSpec.peekAlignment] is not corner-set.
       ///
-      /// (See: [_determineShrinkCornerAlignment] final `else` returns `Alignment.center`
-      /// which 🔰 [BiBeveledShape] knows to ignore when shrinking a corner.)
+      /// (See: [_determineShrinkCornerAlignment] final `else`
+      /// returns `Alignment.center` which 🔰 [BiBeveledShape] knows
+      /// to ignore when shrinking a corner.)
       shrinkOneCorner: layer != SurfaceLayer.BASE,
       shrinkCornerAlignment: _determineShrinkCornerAlignment(),
     );
@@ -910,9 +1010,11 @@ class Surface extends StatelessWidget {
   /// ## 🔧: 🔪 Shortcut [_clipper] for a [ClipPath]
   /// Since several mostly-identical ClipPaths are employed,
   /// this method will speed things up.
+  ///
+  /// TODO: Altered inner radius
   ClipPath _clipper({
-    @required SurfaceLayer layer,
-    @required Widget content,
+    required SurfaceLayer layer,
+    required Widget content,
   }) {
     return ClipPath(
       child: content,
@@ -926,8 +1028,6 @@ class Surface extends StatelessWidget {
 
             /// A 📐 [SurfaceCorners.ROUND] or SQUARE Surface uses the same shape
             /// regardless of 📚 [SurfaceLayer].
-            ///
-            /// TODO: Altered inner radius for roundedRects
             : RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
                   (corners == SurfaceCorners.SQUARE) ? 0 : _getRadius(layer),
@@ -938,15 +1038,16 @@ class Surface extends StatelessWidget {
   }
 
   /// ---
-  /// ## 🔧: 👓💧 | 👶 Shortcut [_filterOrChild]
+  /// ## 🔧: 💧 | 👶 Shortcut [_filterOrChild]
   /// Returns [_clipper]-ed [ImageFilter] via [Blur.ry] *OR* [child] --
   /// appropriate for the currently rendering 📚 [SurfaceLayer], considering both
-  /// the parameter 👓 [SurfaceFilterSpec.filteredLayers] and the relevant `double`(s) mapped in [SurfaceFilterSpec.radiusMap].
+  /// the parameter 👓 [SurfaceFilterSpec.filteredLayers] and the relevant
+  /// 💧 [SurfaceFilterSpec._filterRadiusByLayer].
   ///
   /// If an [ImageFilter] is not needed, this method simply returns the child.
   _filterOrChild({
-    @required SurfaceLayer layer,
-    @required Widget child,
+    required SurfaceLayer layer,
+    required Widget child,
   }) {
     /// No filters.
     if (filterSpec.filteredLayers.isEmpty) return child;
