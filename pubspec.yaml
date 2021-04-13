@@ -1,6 +1,6 @@
 name: surface
 description: Shapeable, layered, intrinsincally animated container with convenient access to blurry ImageFilters, InkResponse, and HapticFeedback.
-version: 0.2.0+6
+version: 0.2.0+7
 repository: https://github.com/Zabadam/surface
 issue_tracker: https://github.com/Zabadam/surface/issues
 

@@ -1,4 +1,4 @@
-## [0.2.0+6] - 12 APR 21
+## [0.2.0+6] & [0.2.0+7] - 12 APR 21
 
 * Migrated package to sound null safety.
 * Cleaned up internal [SurfaceFilterSpec] code a bit while adding relevant `constants`

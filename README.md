@@ -32,14 +32,14 @@ The 🔘 [baseRadius] may be specified separately, but is optional and will only
 
 ## 🔬 [SurfaceFilterSpec] defines 💧 [Blur.ry] backdrop [ImageFilter]s
 - In configured 👓 [SurfaceFilterSpec.filteredLayers] `Set`
-- Whose radii (blur strength) are mapped with 💧 [SurfaceFilterSpec.radiusMap]
-  - A 📚 [SurfaceLayer.BASE] filter may be extended through the [Surface.margin] with [SurfaceFilterSpec.extendBaseFilter]
+  - Whose radii (blur strength) are mapped with 💧 [SurfaceFilterSpec.radiusMap]
+- A 📚 [SurfaceLayer.BASE] filter may be extended through the [Surface.margin] with [SurfaceFilterSpec.extendBaseFilter]
 
 
 ## 👆 [SurfaceTapSpec] Controls Touch Feedback
-If the 🌟 [Surface] is 👆 [TapSpec.tappable] then [SurfaceTapSpec.onTap] `VoidCallback` becomes available.
-Colors may be provided for [InkResponse] customization--though ThemeData defaults are accessed otherwise.
-Finally, consider a [HapticFeedback] shortcut [TapSpec.providesFeedback].
+- If the 🌟 [Surface] is 👆 [SurfaceTapSpec.tappable] then 👆 [SurfaceTapSpec.onTap] `VoidCallback` becomes available.
+- Colors may be provided for [InkResponse] customization--though ThemeData defaults are accessed otherwise.
+- Finally consider a [HapticFeedback] shortcut [SurfaceTapSpec.providesFeedback].
 
 
 ## 🔰 [SurfaceShape] Open to Grow
@@ -48,21 +48,18 @@ The class currently only responsible for the 📐 [SurfaceCorners.BEVEL] custom 
 
 ### References
 - 🌟 [Surface] - A shapeable, layered, animated container Widget
-- 🔲 [SurfacePeekSpec] - An Object with optional parameters to customize a Surface's "peek"
-- 👆 [SurfaceTapSpec] - An Object with optional parameters to customize a Surface's tap behavior
-- 🔬 [SurfaceFilterSpec] - An Object with optional parameters to customize a Surface's blurring filters
+- 🔲 [SurfacePeekSpec] - An Object with optional parameters to customize a 🌟 Surface's "peek"
+- 👆 [SurfaceTapSpec] - An Object with optional parameters to customize a 🌟 Surface's tap behavior
+- 🔬 [SurfaceFilterSpec] - An Object with optional parameters to customize a 🌟 Surface's blurring filters
 #### 🎊 Just a few extra goodies for fun.
 - 🏓 [CustomInk] - A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material]
 - 🔦 [WithShading] `Color` extension
    - ⬛ [withBlack] `.withBlack(int subtract)`
    - ⬜ [withWhite] `.withWhite(int add)`
 - 🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
-- 👨‍💻 [fullPrint] - To receive really long `String`s in console log
-- 📏 [scaleAxis] - For a [Transform.scale]-like return that accepts independent `dx` and `dy` scaling
 
 
 ## TODO:
-
 - Work in progress transfer from an
   [Android application](https://play.google.com/store/apps/details?id=com.zaba.bug_bash 'Bug Bash in the Play Store')
   on which I am primarily focused.
