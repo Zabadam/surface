@@ -1,6 +1,7 @@
 # 🌟 Surface
-## **[0.3.0+1] - 25 APR 21**
+## **[0.3.0+2] - 25 APR 21**
 - Large animated doc `gif` uploaded accidentally. Removed.
+- Corrected `export 'package:flutter/material.dart';`.
 
 ## **[0.3.0] - 25 APR 21**
 - Divided package into several bite-size `src` files

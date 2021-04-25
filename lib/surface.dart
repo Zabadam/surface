@@ -71,9 +71,6 @@
 /// - 🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
 library surface;
 
-export 'package:flutter/services.dart' show HapticFeedback;
-export 'package:flutter/material.dart';
-
 export 'package:ball/ball.dart';
 export 'src/surface.dart';
 export 'src/shape.dart';

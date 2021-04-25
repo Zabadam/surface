@@ -55,6 +55,9 @@
 /// or design your own with 🪀 [BouncyBall.mold].
 library surface;
 
+import 'package:flutter/services.dart' show HapticFeedback;
+import 'package:flutter/material.dart';
+
 import '../surface.dart';
 
 /// ### ❗ See ***CAUTION*** in [Surface] doc
