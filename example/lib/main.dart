@@ -1,9 +1,13 @@
+library surface_example;
+
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:surface/surface.dart';
+import 'package:ball/ball.dart';
 import 'surface_palette.dart';
+import 'ball_pit.dart';
 
 const _COLOR_PRIMARY = Colors.red;
 const _COLOR_ACCENT = Colors.blue;
@@ -12,42 +16,43 @@ const _CURVE = Curves.easeInOutCirc;
 const _BACKGROUND =
     'https://apod.nasa.gov/apod/image/2102/rosette_goldman_2500.jpg';
 
-void main() {
-  runApp(SurfaceExample());
-}
+void main() => runApp(SurfaceExample());
 
 class SurfaceExample extends StatelessWidget {
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        // debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        themeMode: ThemeMode.dark,
-        darkTheme: ThemeData.from(
-          colorScheme: ColorScheme.fromSwatch(
-            /// `ColorScheme.primaryVariant` is fallback for `Surface.baseColor`.
-            primarySwatch: _COLOR_PRIMARY,
-            brightness: Brightness.light,
-            accentColor: _COLOR_ACCENT,
+      // debugShowCheckedModeBanner: false,
+      title: 'Surface Example',
+      themeMode: ThemeMode.dark,
+      darkTheme: ThemeData.from(
+        colorScheme: ColorScheme.fromSwatch(
+          /// `ColorScheme.primary.withBlack(100)` is fallback for `Surface.baseColor`.
+          primarySwatch: _COLOR_PRIMARY,
+          brightness: Brightness.light,
+          accentColor: _COLOR_ACCENT,
 
-            /// Color extension `Color.withBlack(int subtract)`
-            /// added as an extra goodie from Surface package.
-            backgroundColor: _COLOR_PRIMARY.withBlack(150),
-          ).copyWith(
-            /// `ColorScheme.surface` is fallback for `Surface.color`.
-            surface: _COLOR_PRIMARY.withBlack(100).withOpacity(0.3),
-          ),
+          /// Color extension `Color.withBlack(int subtract)`
+          /// added as an extra goodie from Surface package.
+          backgroundColor: _COLOR_PRIMARY.withBlack(150),
         ).copyWith(
-          /// CustomInk is another goodie included with the Surface package.
-          splashFactory: CustomInk.splashFactory,
-
-          /// Surface `SurfaceTapSpec.inkHighlightColor` and `inkSplashColor` default to ThemeData.
-          splashColor: _COLOR_ACCENT,
-          highlightColor: _COLOR_PRIMARY.withOpacity(0.3),
+          /// `ColorScheme.surface` is fallback for `Surface.color`.
+          surface: _COLOR_ACCENT.withWhite(50).withOpacity(0.3),
         ),
-        routes: {
-          '/': (BuildContext context) => const Landing(),
-        });
+      ).copyWith(
+        /// 🏓 [BouncyBall] is another goodie included with the 🌟 [Surface] package.
+        splashFactory: BouncyBall.splashFactory,
+        // splashFactory: BouncyBall.splashFactory2,
+        // splashFactory: BouncyBall.splashFactory3,
+        // splashFactory: BouncyBall.splashFactory4,
+        // splashFactory: BouncyBall.marbleFactory,
+        // splashFactory: moldedBouncyBalls,
+
+        /// Surface `SurfaceTapSpec.inkHighlightColor` and `inkSplashColor` default to ThemeData.
+        splashColor: _COLOR_ACCENT,
+        highlightColor: _COLOR_PRIMARY.withOpacity(0.3),
+      ),
+      home: const Landing(),
+    );
   }
 }
 
@@ -59,31 +64,53 @@ class SurfaceExampleDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Center(
-        child: Surface(
-          padding: const EdgeInsets.all(25),
-          peekSpec: SurfacePeekSpec(peek: 10),
-          baseColor: _COLOR_ACCENT[700],
-          color: _COLOR_PRIMARY[900],
-          tapSpec: SurfaceTapSpec(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => const SurfacePalette(),
-              ),
-            ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          buildSurface(context,
+              onSurface: '🎨\n'
+                  'Surface\n'
+                  'Palette',
+              newView: const SurfacePalette()),
+          buildSurface(context,
+              onSurface: '🏓\n'
+                  'Ball\n'
+                  'Pit',
+              newView: const BallPit()),
+        ],
+      ),
+    );
+  }
+
+  Surface buildSurface(
+    BuildContext context, {
+    required Widget newView,
+    required String onSurface,
+  }) {
+    return Surface(
+      width: 250.0,
+      height: 250.0,
+      padding: const EdgeInsets.all(25),
+      peekSpec: const PeekSpec(peek: 10),
+      radius: 10.0,
+      baseRadius: 0.0,
+      baseColor: _COLOR_ACCENT[700],
+      color: _COLOR_PRIMARY[900],
+      tapSpec: TapSpec(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => newView,
           ),
-          child: const Text(
-            '🎨\n'
-            'Surface\n'
-            'Palette',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 50,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        ),
+      ),
+      child: Text(
+        onSurface,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 50,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -146,7 +173,8 @@ class _LandingState extends State<Landing> {
       },
       child: Surface(
         corners: SurfaceCorners.SQUARE,
-        disableBase: true,
+        // disableBase: true, // deprecated
+        peekSpec: const PeekSpec(peek: 0),
         color: Theme.of(context).backgroundColor,
 
         /// Because a Surface is `SurfaceTapSpec.tappable` by default,
@@ -159,7 +187,7 @@ class _LandingState extends State<Landing> {
         ///
         /// Also see main ThemeData where Surface goodies extra
         /// [CustomInk.splashFactory] is established for the ink stylization.
-        tapSpec: SurfaceTapSpec(
+        tapSpec: TapSpec(
           inkSplashColor: _accent,
           inkHighlightColor: _primary.withOpacity(0.5),
         ),
@@ -253,14 +281,16 @@ class _LandingState extends State<Landing> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _surfaceAsFAB(
-                    filteredLayers: const {SurfaceLayer.BASE},
+                    filteredLayers:
+                        FilterSpec.BASE, // const {SurfaceLayer.BASE}
                     passedString: 'filteredLayers:\nBASE',
                   ),
                   _surfaceAsFAB(
-                    filteredLayers: const {
-                      SurfaceLayer.BASE,
-                      SurfaceLayer.MATERIAL
-                    },
+                    filteredLayers: FilterSpec.BASE_AND_MATERIAL,
+                    // filteredLayers: const {
+                    //   SurfaceLayer.BASE,
+                    //   SurfaceLayer.MATERIAL
+                    // },
                     passedString: 'filteredLayers:\nBASE &\nMATERIAL',
                   ),
                 ],
@@ -317,9 +347,9 @@ class _LandingState extends State<Landing> {
       /// Ensure the border is very thin at edges of screen to not obscure system
       /// navbar, but use `peekAlignment` & `peekRatio` to give the
       /// bottom edge some girth.
-      peekSpec: const SurfacePeekSpec(
+      peekSpec: const PeekSpec(
         peek: 1.5,
-        peekRatio: 3.5,
+        peekRatio: 2,
         peekAlignment: Alignment.bottomCenter,
       ),
 
@@ -344,24 +374,40 @@ class _LandingState extends State<Landing> {
   }) {
     return Surface(
       child: child,
+      duration: _DURATION,
+      curve: _CURVE,
       width: _width * 0.8,
       height: _height * 0.75,
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(50),
+      padLayer: SurfaceLayer.MATERIAL,
       corners:
-          (_isExampleBeveled) ? SurfaceCorners.BEVEL : SurfaceCorners.ROUND,
+          (_isExampleBeveled) ? SurfaceCorners.BIBEVEL : SurfaceCorners.ROUND,
       flipBevels: true,
       radius: 50,
-      peekSpec: SurfacePeekSpec(
+      peekSpec: PeekSpec(
         peek: 20,
         peekRatio: (_isExampleBeveled) ? 2.5 : 5,
         peekAlignment:
             (_isExampleBeveled) ? Alignment.bottomRight : Alignment.topCenter,
       ),
-      duration: _DURATION,
-      curve: _CURVE,
-      filterSpec: const SurfaceFilterSpec(
-        // default blur radius of 4.0
-        filteredLayers: {SurfaceLayer.MATERIAL},
+      tapSpec: const TapSpec(
+        // tappable: false,
+        inkSplashColor: Colors.deepPurpleAccent,
+      ),
+      filterSpec: FilterSpec(
+        // filteredLayers: FilterSpec.TRILAYER,
+        filteredLayers: FilterSpec.NONE, // Override `radii` below
+        baseRadius: 1.0,
+        materialRadius: 2.0,
+        childRadius: 20.0,
+
+        /// `filteredLayers: FilterSpec.NONE` above so `specRadius` == 0,
+        /// but `SurfaceLayer` is still delivered.
+        effect: (double specRadius, SurfaceLayer layerForRender) =>
+
+            /// Overrides both the `filteredLayers` AND `radii` above
+            // FX.b(specRadius), // when `FilterSpec.NONE` -> `specRadius` == 0
+            FX.b(layerForRender == SurfaceLayer.CHILD ? specRadius : 2.5),
       ),
       baseColor: Colors.black38,
       gradient: LinearGradient(
@@ -420,7 +466,7 @@ class _LandingState extends State<Landing> {
       padding: const EdgeInsets.all(10),
       // padLayer: SurfaceLayer.MATERIAL,  // Default is [SurfacePadding.PAD_CHILD].
       duration: _DURATION,
-      peekSpec: const SurfacePeekSpec(peek: 30),
+      peekSpec: const PeekSpec(peek: 30),
 
       /// Default [Surface.corners] is [SurfaceCorners.ROUND]
       radius: 100,
@@ -434,7 +480,7 @@ class _LandingState extends State<Landing> {
       baseColor: (_isExampleBeveled)
           ? _accent.withWhite(25).withOpacity(0.25)
           : _primary.withWhite(25).withOpacity(0.25),
-      filterSpec: SurfaceFilterSpec(
+      filterSpec: FilterSpec(
         filteredLayers: filteredLayers,
         // Declaring a `radiusMap` is like explicitly declaring the doubles thus:
         // baseRadius: 3.0,
@@ -446,7 +492,7 @@ class _LandingState extends State<Landing> {
       ),
 
       /// Obligatory Counter Example implementation;
-      tapSpec: SurfaceTapSpec(
+      tapSpec: TapSpec(
         // tappable: false, // `true` by default
         providesFeedback: true, // `false` by default
         onTap: _incrementCounter,
@@ -489,19 +535,19 @@ class _LandingState extends State<Landing> {
 
       /// Giving a *thicker* edge when the [_surfaceAsPopup] is hidden `!(_showExamplePopup)`
       /// results in a neat expansion during the entrance animation.
-      peekSpec: SurfacePeekSpec(
+      peekSpec: PeekSpec(
         peek: (_showExamplePopup) ? 25 : 30,
         peekRatio: (_showExamplePopup) ? 4 : 7,
         peekAlignment: Alignment.topLeft,
       ),
 
-      tapSpec: SurfaceTapSpec(
+      tapSpec: TapSpec(
         /// onTap here will just refresh the build and give a new random color
         onTap: () => setState(() {}),
         providesFeedback: true,
       ),
 
-      filterSpec: const SurfaceFilterSpec(
+      filterSpec: const FilterSpec(
         filteredLayers: {
           SurfaceLayer.BASE,
           SurfaceLayer.MATERIAL,

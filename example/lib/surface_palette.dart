@@ -1,16 +1,17 @@
-// Copyright 2021 Adam Skelton (Zabadam)
-// Parts of code Copyright 2019 The Flutter team. All rights reserved.
-// Use of that source code is governed by a BSD-style license that can be
-// found in the Flutter LICENSE file.
+/// Copyright 2021 Adam Skelton (Zabadam)
+/// Parts of code Copyright 2019 The Flutter team. All rights reserved.
+/// Use of that source code is governed by a BSD-style license that can be
+/// found in the Flutter LICENSE file.
+library surface_example;
 
 import 'package:flutter/material.dart';
+
 import 'package:surface/surface.dart';
 
 const _ITEM_HEIGHT = 180.0;
 const _ITEM_PADDING = 10.0;
-// TODO: Work _DURATION into AnimatedBuilder for [SurfacePalette]
-const _DURATION = Duration(milliseconds: 2500);
-const _CURVE = Curves.decelerate;
+const _DURATION = Duration(milliseconds: 400);
+const _CURVE = Curves.fastOutSlowIn;
 const _BACKGROUND =
     'https://apod.nasa.gov/apod/image/2102/rosette_goldman_2500.jpg';
 
@@ -162,7 +163,7 @@ class ColorItem extends StatelessWidget {
   final Color color;
   final String prefix;
   final Brightness brightness;
-  final SurfaceTapSpec? tapSpec;
+  final TapSpec? tapSpec;
 
   String get _colorString =>
       "#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}";
@@ -191,12 +192,12 @@ class ColorItem extends StatelessWidget {
               baseColor: color.withOpacity(0.3),
               baseRadius: 100,
               radius: 5,
-              peekSpec: const SurfacePeekSpec(
+              peekSpec: const PeekSpec(
                 peek: 15,
                 peekAlignment: Alignment.centerLeft,
                 peekRatio: 10,
               ),
-              filterSpec: const SurfaceFilterSpec(
+              filterSpec: const FilterSpec(
                 extendBaseFilter: true, // default is `false`
                 filteredLayers: {SurfaceLayer.BASE, SurfaceLayer.MATERIAL},
                 radiusMap: {
@@ -265,7 +266,7 @@ class PaletteTabView extends StatelessWidget {
           KEYS_PRIMARIES.length +
           ((palette.accent != null) ? KEYS_ACCENTS.length : 0),
       itemBuilder: (_, index) {
-        final SurfaceTapSpec tapSpec = SurfaceTapSpec(
+        final TapSpec tapSpec = TapSpec(
           inkHighlightColor: ((palette.accent != null)
                   ? palette.accent![400]
                   : palette.primary)!
@@ -303,6 +304,8 @@ class PaletteTabView extends StatelessWidget {
             tapSpec: tapSpec,
           );
         }
+
+        /// Else
         return Center(
           child: Surface(
             width: double.infinity,
@@ -312,8 +315,8 @@ class PaletteTabView extends StatelessWidget {
             color: Colors.transparent,
             baseColor: palette.primary[900]!.withOpacity(0.5),
             tapSpec: tapSpec,
-            filterSpec: const SurfaceFilterSpec(
-              filteredLayers: {SurfaceLayer.BASE},
+            filterSpec: const FilterSpec(
+              filteredLayers: FilterSpec.BASE,
               baseRadius: 10,
             ),
             child: Center(
@@ -324,19 +327,20 @@ class PaletteTabView extends StatelessWidget {
                   'No Further Shades',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 100,
-                      color: palette.primary[300],
-                      fontWeight: FontWeight.w900,
-                      shadows: [
-                        Shadow(
-                          color: palette.primary[50]!,
-                          offset: Offset(0, -1),
-                        ),
-                        Shadow(
-                          color: palette.primary[900]!.withBlack(25),
-                          offset: Offset(0, 5),
-                        )
-                      ]),
+                    fontSize: 100,
+                    color: palette.primary[300],
+                    fontWeight: FontWeight.w900,
+                    shadows: [
+                      Shadow(
+                        color: palette.primary[50]!,
+                        offset: Offset(0, -1),
+                      ),
+                      Shadow(
+                        color: palette.primary[900]!.withBlack(25),
+                        offset: Offset(0, 5),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -351,8 +355,6 @@ class PaletteTabView extends StatelessWidget {
 /// with shades presented with the use of [Surface]s.
 class SurfacePalette extends StatefulWidget {
   const SurfacePalette({Key? key}) : super(key: key);
-
-  @override
   _SurfacePaletteState createState() => _SurfacePaletteState();
 }
 
@@ -454,10 +456,13 @@ class _SurfacePaletteState extends State<SurfacePalette>
                   final ppsQualifies = pps.distanceSquared > 500000;
 
                   if (ppsQualifies)
-                    _controller.animateTo(((_controller.index +
-                                details.primaryVelocity!.sign * -1)
-                            .toInt())
-                        .clamp(0, PALETTES.length - 1));
+                    _controller.animateTo(
+                      ((_controller.index + details.primaryVelocity!.sign * -1)
+                              .toInt())
+                          .clamp(0, PALETTES.length - 1),
+                      duration: _DURATION,
+                      curve: _CURVE,
+                    );
                 },
                 child: [
                   for (final palette in PALETTES)

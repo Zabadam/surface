@@ -1,7 +1,16 @@
-/// ## 🌟 Surface
+/// ## 🌟 Surface Library
 /// A shapeable, layered, intrinsincally animated container Widget
 /// offering convenient access to blurring ImageFilters, Material InkResponse,
 /// and HapticFeedback.
+///
+/// ### + 🏓 Bouncy Ball
+/// A delightfully bouncy and position-mirroring reaction
+/// to user input on a piece of [Material].
+///
+/// Turn ink splashes for an [InkWell], [InkResponse] or material [Theme]
+/// into 🏓 [BouncyBall]s or 🔮 `Glass` [BouncyBall]s
+/// with the built-in [InteractiveInkFeatureFactory]s,
+/// or design your own with 🪀 [BouncyBall.mold].
 /// ---
 ///
 /// 📚 [SurfaceLayer] container layering offers robust customization.
@@ -23,9 +32,9 @@
 /// ---
 ///
 /// Specify a 🔬 [SurfaceFilterSpec] with options
-/// to render 💧 [Blur.ry] backdrop [ImageFilter]s
+/// to render 🤹‍♂️ [SurfaceFX] backdrop [ImageFilter]s
 /// - In configured 👓 [SurfaceFilterSpec.filteredLayers] `Set`
-/// - Whose radii (blur strength) are mapped with 💧 [SurfaceFilterSpec.radiusMap]
+/// - Whose radii (🤹‍♂️ [effect] strength) are mapped with 📊 [SurfaceFilterSpec.radiusMap]
 ///   - A 📚 [SurfaceLayer.BASE] filter may be extended through the
 ///   [Surface.margin] with [SurfaceFilterSpec.extendBaseFilter]
 /// ---
@@ -35,23 +44,38 @@
 /// ---
 ///
 /// 🔰 [SurfaceShape.biBeveledRectangle] is responsible for the
-/// 📐 [SurfaceCorners.BEVEL] custom shape.
+/// 📐 [SurfaceCorners.BIBEVEL] custom shape.
 /// ---
 ///
 ///
 /// ### References
 /// - 🌟 [Surface] - A shapeable, layered, animated container Widget
-/// - 🔲 [SurfacePeekSpec] - An Object with optional parameters to customize a Surface's "peek"
-/// - 👆 [SurfaceTapSpec] - An Object with optional parameters to customize a Surface's tap behavior
-/// - 🔬 [SurfaceFilterSpec] - An Object with optional parameters to customize a Surface's blurring filters
+/// - 🔲 [PeekSpec] - An Object with optional parameters to customize a Surface's "peek"
+/// - 👆 [TapSpec] - An Object with optional parameters to customize a Surface's tap behavior
+/// - 🔬 [FilterSpec] - An Object with optional parameters to customize a 🌟 `Surface`'s 🤹‍♂️ filters/effects
+/// - 🔰 [SurfaceShape] - Handles the "biBevel" shape for 🌟 `Surface`, but could do more
+/// - 🤹‍♂️ [SurfaceFX] - `Function typedef` for custom [FilterSpec.effect]s!
+///
+/// ### 🏓 [BouncyBall]
+/// A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].
+///
+/// Turn ink splashes for an [InkWell], [InkResponse] or material [Theme]
+/// into 🏓 [BouncyBall]s or 🔮 `Glass` [BouncyBall]s
+/// with the built-in [InteractiveInkFeatureFactory]s,
+/// or design your own with 🪀 [BouncyBall.mold].
+///
 /// #### 🎊 Just a few extra goodies for fun.
-/// - 🏓 [CustomInk] - A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].
 /// - 🔦 [WithShading] `Color` extension
 ///   - ⬛ [withBlack] `.withBlack(int subtract)`
 ///   - ⬜ [withWhite] `.withWhite(int add)`
 /// - 🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
 library surface;
 
+export 'package:flutter/services.dart' show HapticFeedback;
+export 'package:flutter/material.dart';
+
+export 'package:ball/ball.dart';
 export 'src/surface.dart';
-export 'src/custom_ink.dart';
+export 'src/shape.dart';
+export 'src/effect.dart';
 export 'src/goodies.dart';

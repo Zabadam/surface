@@ -1,7 +1,8 @@
 name: surface_example
-description: Example usage of Surface widget.
+description: Example usage of Surface and Bouncy Ball.
 publish_to: 'none'
-version: 0.2.1+6
+version: 0.3.0
+# +7
 
 environment:
   sdk: '>=2.12.0 <3.0.0'

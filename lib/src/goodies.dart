@@ -1,4 +1,5 @@
-/// ## 🎊 Just a few extra goodies for fun.
+/// ## 🎊 Surface: Goodies
+/// Just for fun.
 ///
 /// ### References
 /// - 🔦 [WithShading] `Color` extension
@@ -7,7 +8,7 @@
 /// - 🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
 library surface;
 
-import 'package:flutter/material.dart';
+import '../surface.dart';
 
 /// ---
 /// ### 🔦 [WithShading] extends [Color]
@@ -24,14 +25,12 @@ extension WithShading on Color {
   /// Color.withWhite(int add)
   /// // Brightens Color's RGB values by `add` (result <= 255)
   /// ```
-  Color withWhite(int add) {
-    return Color.fromARGB(
-      this.alpha,
-      (this.red + add).clamp(0, 255),
-      (this.green + add).clamp(0, 255),
-      (this.blue + add).clamp(0, 255),
-    );
-  }
+  Color withWhite(int add) => Color.fromARGB(
+        this.alpha,
+        (this.red + add).clamp(0, 255),
+        (this.green + add).clamp(0, 255),
+        (this.blue + add).clamp(0, 255),
+      );
 
   /// #### ⬛ With Black
   ///
@@ -39,14 +38,12 @@ extension WithShading on Color {
   /// Color.withBlack(int subtract)
   /// // Darkens Color's RGB values by `subtract` (result >= 0)
   /// ```
-  Color withBlack(int subtract) {
-    return Color.fromARGB(
-      this.alpha,
-      (this.red - subtract).clamp(0, 255),
-      (this.green - subtract).clamp(0, 255),
-      (this.blue - subtract).clamp(0, 255),
-    );
-  }
+  Color withBlack(int subtract) => Color.fromARGB(
+        this.alpha,
+        (this.red - subtract).clamp(0, 255),
+        (this.green - subtract).clamp(0, 255),
+        (this.blue - subtract).clamp(0, 255),
+      );
 }
 
 /// ---
@@ -55,7 +52,7 @@ extension WithShading on Color {
 /// the impression of a moving sheet or draggable material.
 ///
 /// ```
-/// Widget DragNub({double width, double height, Color color, double borderWidth})
+/// DragNub({double width, double height, Color color, double borderWidth})
 /// ```
 class DragNub extends StatelessWidget {
   /// ### ✋ Drag Nub
@@ -66,7 +63,8 @@ class DragNub extends StatelessWidget {
     this.height,
     this.color,
     this.borderWidth,
-  });
+    Key? key,
+  }) : super(key: key);
 
   final double? width, height;
   final double? borderWidth;
@@ -88,7 +86,7 @@ class DragNub extends StatelessWidget {
             color: (color ?? Colors.black).withOpacity(0.5),
             border: Border.all(color: Colors.black54, width: borderWidth ?? 1),
             borderRadius: BorderRadius.all(Radius.circular(10)),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                   color: Colors.white24, blurRadius: 4, offset: Offset(-2, -2)),
               BoxShadow(
