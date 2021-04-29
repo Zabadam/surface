@@ -47,7 +47,7 @@ class SurfaceExample extends StatelessWidget {
         // splashFactory: BouncyBall.marbleFactory,
         // splashFactory: moldedBouncyBalls,
 
-        /// Surface `SurfaceTapSpec.inkHighlightColor` and `inkSplashColor` default to ThemeData.
+        /// Surface `TapSpec.inkHighlightColor` and `inkSplashColor` default to ThemeData.
         splashColor: _COLOR_ACCENT,
         highlightColor: _COLOR_PRIMARY.withOpacity(0.3),
       ),
@@ -67,12 +67,12 @@ class SurfaceExampleDrawer extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          buildSurface(context,
+          buildTile(context,
               onSurface: '🎨\n'
                   'Surface\n'
                   'Palette',
               newView: const SurfacePalette()),
-          buildSurface(context,
+          buildTile(context,
               onSurface: '🏓\n'
                   'Ball\n'
                   'Pit',
@@ -82,7 +82,7 @@ class SurfaceExampleDrawer extends StatelessWidget {
     );
   }
 
-  Surface buildSurface(
+  Surface buildTile(
     BuildContext context, {
     required Widget newView,
     required String onSurface,
@@ -91,9 +91,11 @@ class SurfaceExampleDrawer extends StatelessWidget {
       width: 250.0,
       height: 250.0,
       padding: const EdgeInsets.all(25),
-      peekSpec: const PeekSpec(peek: 10),
-      radius: 10.0,
-      baseRadius: 0.0,
+      peek: const Peek(peek: 10),
+      shape: const Shape(
+        corners: CornerSpec.ROUNDED,
+        baseCorners: CornerSpec.SQUARED,
+      ),
       baseColor: _COLOR_ACCENT[700],
       color: _COLOR_PRIMARY[900],
       tapSpec: TapSpec(
@@ -172,18 +174,19 @@ class _LandingState extends State<Landing> {
         return true;
       },
       child: Surface(
-        corners: SurfaceCorners.SQUARE,
-        // disableBase: true, // deprecated
-        peekSpec: const PeekSpec(peek: 0),
+        shape: const Shape(
+          corners: CornerSpec.SQUARED,
+        ),
+        peek: const Peek(peek: 0),
         color: Theme.of(context).backgroundColor,
 
-        /// Because a Surface is `SurfaceTapSpec.tappable` by default,
+        /// Because a Surface is `TapSpec.tappable` by default,
         /// these two `Color` params will customize the appearance of
         /// the long-press InkResponse... which are initialized identically
         /// in main MaterialApp `ThemeData`.
         ///
-        /// As these Theme colors are defaulted to by SurfaceTapSpec,
-        /// we will skip initializing them on future SurfaceTapSpecs.
+        /// As these Theme colors are defaulted to by TapSpec,
+        /// we will skip initializing them on future TapSpecs.
         ///
         /// Also see main ThemeData where Surface goodies extra
         /// [CustomInk.splashFactory] is established for the ink stylization.
@@ -281,12 +284,11 @@ class _LandingState extends State<Landing> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _surfaceAsFAB(
-                    filteredLayers:
-                        FilterSpec.BASE, // const {SurfaceLayer.BASE}
+                    filteredLayers: Filter.BASE, // const {SurfaceLayer.BASE}
                     passedString: 'filteredLayers:\nBASE',
                   ),
                   _surfaceAsFAB(
-                    filteredLayers: FilterSpec.BASE_AND_MATERIAL,
+                    filteredLayers: Filter.BASE_AND_MATERIAL,
                     // filteredLayers: const {
                     //   SurfaceLayer.BASE,
                     //   SurfaceLayer.MATERIAL
@@ -333,7 +335,7 @@ class _LandingState extends State<Landing> {
       curve: _CURVE,
       width: _width,
       height: double.infinity,
-      corners: SurfaceCorners.SQUARE,
+      shape: const Shape(corners: CornerSpec.SQUARED),
 
       /// The Timer created during initState() counts down a few seconds,
       /// then flips this gradient for a cool effect.
@@ -347,7 +349,7 @@ class _LandingState extends State<Landing> {
       /// Ensure the border is very thin at edges of screen to not obscure system
       /// navbar, but use `peekAlignment` & `peekRatio` to give the
       /// bottom edge some girth.
-      peekSpec: const PeekSpec(
+      peek: const Peek(
         peek: 1.5,
         peekRatio: 2,
         peekAlignment: Alignment.bottomCenter,
@@ -379,12 +381,26 @@ class _LandingState extends State<Landing> {
       width: _width * 0.8,
       height: _height * 0.75,
       padding: const EdgeInsets.all(50),
-      padLayer: SurfaceLayer.MATERIAL,
-      corners:
-          (_isExampleBeveled) ? SurfaceCorners.BIBEVEL : SurfaceCorners.ROUND,
-      flipBevels: true,
-      radius: 50,
-      peekSpec: PeekSpec(
+      shape: Shape(
+        // childScale: 0.75,
+        materialScale: 0.7,
+        // corners: (_isExampleBeveled)
+        //     ? CornerSpec.BIBEVELED_50_FLIP
+        //     : CornerSpec.CIRCLE,
+        corners: CornerSpec(
+          topLeft: (_isExampleBeveled) ? Corner.BEVEL : Corner.NONE,
+          topRight: (_isExampleBeveled) ? Corner.NONE : Corner.ROUND,
+          bottomRight: (_isExampleBeveled) ? Corner.SQUARE : Corner.BEVEL,
+          bottomLeft: (_isExampleBeveled) ? Corner.ROUND : Corner.SQUARE,
+          radius: BorderRadius.all(Radius.circular(35)),
+        ),
+        // baseCorners: CornerSpec(
+        //   topLeft: (_isExampleBeveled) ? Corner.BEVEL : Corner.SQUARE,
+        //   topRight: Corner.NONE,
+        //   radius: BorderRadius.all(Radius.circular(165)),
+        // ),
+      ),
+      peek: Peek(
         peek: 20,
         peekRatio: (_isExampleBeveled) ? 2.5 : 5,
         peekAlignment:
@@ -394,9 +410,9 @@ class _LandingState extends State<Landing> {
         // tappable: false,
         inkSplashColor: Colors.deepPurpleAccent,
       ),
-      filterSpec: FilterSpec(
+      filter: Filter(
         // filteredLayers: FilterSpec.TRILAYER,
-        filteredLayers: FilterSpec.NONE, // Override `radii` below
+        filteredLayers: Filter.NONE, // Override `radii` below
         baseRadius: 1.0,
         materialRadius: 2.0,
         childRadius: 20.0,
@@ -466,10 +482,17 @@ class _LandingState extends State<Landing> {
       padding: const EdgeInsets.all(10),
       // padLayer: SurfaceLayer.MATERIAL,  // Default is [SurfacePadding.PAD_CHILD].
       duration: _DURATION,
-      peekSpec: const PeekSpec(peek: 30),
+      peek: const Peek(
+        peek: 30,
+        // peekAlignment: Alignment.bottomCenter,
+        // peekRatio: 1.25,
+      ),
 
-      /// Default [Surface.corners] is [SurfaceCorners.ROUND]
-      radius: 100,
+      shape: const Shape(
+        corners: CornerSpec.CIRCLE,
+        baseBorder: BorderSide(color: Colors.black38, width: 5.0),
+        border: BorderSide.none,
+      ),
 
       /// Transparent color allows the blur effect to be seen purely
       /// in these example cases.
@@ -480,7 +503,7 @@ class _LandingState extends State<Landing> {
       baseColor: (_isExampleBeveled)
           ? _accent.withWhite(25).withOpacity(0.25)
           : _primary.withWhite(25).withOpacity(0.25),
-      filterSpec: FilterSpec(
+      filter: Filter(
         filteredLayers: filteredLayers,
         // Declaring a `radiusMap` is like explicitly declaring the doubles thus:
         // baseRadius: 3.0,
@@ -522,20 +545,36 @@ class _LandingState extends State<Landing> {
       /// Cover most of the screen
       width: (_showExamplePopup) ? _width - 50 : 0,
       height: (_showExamplePopup) ? _height / 2 : 0,
-      padding: const EdgeInsets.all(75),
-      padLayer: SurfaceLayer.MATERIAL,
+      padding: const EdgeInsets.all(50),
+      shape: Shape(
+        // childScale: 1.0,
+        // materialScale: 1.0,
+        // childScale: 0.5,
+        // materialScale: 0.8,
+        padLayer: SurfaceLayer.MATERIAL, // Distinguishable layer for Filter
+        corners: CornerSpec.beveledWith(
+          topLeft: Corner.SQUARE,
+          topRight: Corner.ROUND,
+          bottomRight: Corner.ROUND,
+          radius: BorderRadius.vertical(
+            bottom: Radius.elliptical(200, 40),
+            top: Radius.elliptical(80, 200),
+          ),
+        ),
+      ),
       duration: _DURATION,
       curve: _CURVE,
 
       /// Random color from Material primaries
       color: Colors.primaries[Random().nextInt(Colors.accents.length)]
           .withBlack(75)
-          .withOpacity(0.2),
-      // baseColor: Colors.black26, // defaults to `ColorScheme.primaryVariant`
+          .withOpacity(0.4),
+      baseColor: Colors.black38, // defaults to `ColorScheme.primaryVariant`
 
       /// Giving a *thicker* edge when the [_surfaceAsPopup] is hidden `!(_showExamplePopup)`
       /// results in a neat expansion during the entrance animation.
-      peekSpec: PeekSpec(
+      peek: Peek(
+        // peek: 0,
         peek: (_showExamplePopup) ? 25 : 30,
         peekRatio: (_showExamplePopup) ? 4 : 7,
         peekAlignment: Alignment.topLeft,
@@ -547,12 +586,10 @@ class _LandingState extends State<Landing> {
         providesFeedback: true,
       ),
 
-      filterSpec: const FilterSpec(
-        filteredLayers: {
-          SurfaceLayer.BASE,
-          SurfaceLayer.MATERIAL,
-          SurfaceLayer.CHILD,
-        },
+      // Child and Material filters will occupy same space unless
+      // `ShapeSpec(padLayer: SurfaceLayer.MATERIAL)`
+      filter: const Filter(
+        filteredLayers: Filter.TRILAYER,
         radiusMap: {
           SurfaceLayer.BASE: 3.0,
           SurfaceLayer.MATERIAL: 4.0,

@@ -1,12 +1,12 @@
 # 🌟 Surface
-##### **WORK IN PROGRESS**
-##### **NULL-SAFETY SUPPORT - as of v0.2.0**
+#### **WORK IN PROGRESS:**
+##### **Overhaul in progress. Documentation & Readme out of date.**
 
 ![Animated GIF preview of Surface Example app](https://github.com/Zabadam/surface/blob/main/doc/Surface-Example.gif?raw=true)
-> Some details in the screenshot above are from an outdated version.
+> Details in the screenshot above are from an outdated version.
 
-A  shapeable, layered, intrinsincally animated container Widget
-offering convenient access to blurring ImageFilters, Material InkResponse, and HapticFeedback.
+A  shapeable, layered, intrinsincally animated container `Widget`
+offering convenient access to blurring `ImageFilter`s, `Material` `InkResponse`, and `HapticFeedback`.
 
 &nbsp;
 
@@ -20,35 +20,34 @@ Offers robust customization for a set app-wide style or on-the-fly changes.
 &nbsp;
 
 ## 🔘📐 Shape Customization
-🔘 `Surface.radius` and 📐 `SurfaceCorners` parameter `Surface.corners` offer shape customization.
-The 🔘 `baseRadius` may be specified separately, but is optional and will only impact the 📚 `SurfaceLayer.BASE`.
-
-&nbsp;
-
-## 🔲 `SurfacePeekSpec` for bespoke "peek" effect
-`MATERIAL` inset or "border", the size of which is set by parameter 🔲 `SurfacePeekSpec.peek`.
-- Give special treatment, generally a thicker appearance, to selected
-  side(s) by passing `SurfacePeekSpec.peekAlignment`
-  and tuning with `SurfacePeekSpec.peekRatio`.
-
-&nbsp;
-
-## 🔬 `SurfaceFilterSpec` defines 🤹‍♂️ `SurfaceFX` `ImageFilter`s
-- In configured 👓 `SurfaceFilterSpec.filteredLayers` `Set`
-  - Whose radii (blur strength) are mapped with 📊 `SurfaceFilterSpec.radiusMap`
-- A 📚 `SurfaceLayer.BASE` filter may be extended through the `Surface.margin` with `SurfaceFilterSpec.extendBaseFilter`.
-
-&nbsp;
-
-## 👆 `SurfaceTapSpec` Controls Touch Feedback
-- If the 🌟 `Surface` is 👆 `SurfaceTapSpec.tappable` then 👆 `SurfaceTapSpec.onTap` `VoidCallback` becomes available.
-- Colors may be provided for `InkResponse` customization--though ThemeData defaults are accessed otherwise.
-- Finally consider a `HapticFeedback` shortcut `SurfaceTapSpec.providesFeedback`.
+    - 🆕 Manual [`Shape`](https://pub.dev/documentation/surface/latest/surface/Shape-class.html)ing is here! Work in progress.
 
 &nbsp;
 
 ## 🔰 `SurfaceShape` Open to Grow
-The class currently only responsible for the 📐 `SurfaceCorners.BEVEL` custom shape by 🔰 `SurfaceShape.biBeveledRectangle`.
+    - 🆕 Manual [`Shape`](https://pub.dev/documentation/surface/latest/surface/Shape-class.html)ing is here! Work in progress.
+
+&nbsp;
+
+## 🔲 `Peek` for bespoke "peek" effect
+`MATERIAL` inset or "border", the size of which is set by parameter 🔲 `Peek.peek`.
+- Give special treatment, generally a thicker appearance, to selected
+  side(s) by passing `Peek.peekAlignment`
+  and tuning with `Peek.peekRatio`.
+
+&nbsp;
+
+## 👆 `TapSpec` Controls Touch Feedback
+- If the 🌟 `Surface` is 👆 `TapSpec.tappable` then 👆 `TapSpec.onTap` `VoidCallback` becomes available.
+- Colors may be provided for `InkResponse` customization--though ThemeData defaults are accessed otherwise.
+- Finally consider a `HapticFeedback` shortcut `TapSpec.providesFeedback`.
+
+&nbsp;
+
+## 🔬 `Filter` defines 🤹‍♂️ `SurfaceFX` `ImageFilter`s
+- In configured 👓 `Filter.filteredLayers` `Set`
+  - Whose radii (blur strength) are mapped with 📊 `Filter.radiusMap`
+- A 📚 `SurfaceLayer.BASE` filter may be extended through the `Surface.margin` with `Filter.extendBaseFilter`.
 
 &nbsp;
 
@@ -59,11 +58,13 @@ The class currently only responsible for 💧 `FX.blurry` static method returnin
 
 # 📖 Reference
 - 🌟 [`Surface`] - A shapeable, layered, animated container `Widget`
-- 🔲 [`PeekSpec`] - An Object with optional parameters to customize a 🌟 `Surface`'s "peek"
+- 🔰 [`Shape`]
+  - 📐 [`Corner`] & 📐 [`CornerSpec`]
+  - 🆕 Manual [`Shape`](https://pub.dev/documentation/surface/latest/surface/Shape-class.html)ing is here! Work in progress.
+- 🔲 [`Peek`] - An Object with optional parameters to customize a 🌟 `Surface`'s "peek"
 - 👆 [`TapSpec`] - An Object with optional parameters to customize a 🌟 `Surface`'s tap behavior
-- 🔬 [`FilterSpec`] - An Object with optional parameters to customize a 🌟 `Surface`'s 🤹‍♂️ filters/effects
-- 🔰 [`SurfaceShape`] - Handles the "biBevel" shape for 🌟 `Surface`, but could do more
-- 🤹‍♂️ [`SurfaceFX`] - `Function typedef` for custom [FilterSpec.effect]s!
+- 🔬 [`Filter`] - An Object with optional parameters to customize a 🌟 `Surface`'s 🤹‍♂️ filters/effects
+  - 🤹‍♂️ [`SurfaceFX`] - `Function typedef` for custom [FilterSpec.effect]s!
 
 ### 🏓 [BouncyBall]
 A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].
@@ -84,11 +85,13 @@ Turn ink splashes for an [InkWell], [InkResponse] or material [Theme] into 🏓 
     - Currently there is a conditional swap in any build method utilizing shapes.
     - Ideally there would be a `Decoration.lerp()` involved.
 
-- Differed radius on 📚 `SurfaceLayer.MATERIAL` vs 📚 `SurfaceLayer.BASE`
-    - Smaller inner radius gives a better aesthetic for nested shapes.
-    - 🆕 Manual setting of [`Surface.radius`](https://pub.dev/documentation/surface/latest/surface/Surface/radius.html) or [`Surface.baseRadius`](https://pub.dev/documentation/surface/latest/surface/Surface/baseRadius.html) available now.
+- ~~Differed radius on 📚 `SurfaceLayer.MATERIAL` vs 📚 `SurfaceLayer.BASE`~~
+    - ~~Smaller inner radius gives a better aesthetic for nested shapes.~~
+    - ~~🆕 Manual setting of [`Surface.radius`](https://pub.dev/documentation/surface/latest/surface/Surface/radius.html) or [`Surface.baseRadius`](https://pub.dev/documentation/surface/latest/surface/Surface/baseRadius.html) available now.~~
+    - 🆕 Manual [`Shape`](https://pub.dev/documentation/surface/latest/surface/Shape-class.html)ing is here! Work in progress.
 
-- Proposed [SurfaceCornerSpec] for [Surface.corners] parameter or expansion of 🔰 [SurfaceShape] class that allows customization of all four corners independently.
+- ✅ ~~Proposed [SurfaceCornerSpec] for [Surface.corners] parameter or expansion of 🔰 [SurfaceShape] class that allows customization of all four corners independently.~~
+    - 🆕 Manual [`Shape`](https://pub.dev/documentation/surface/latest/surface/Shape-class.html)ing is here! Work in progress.
 
 
 # 🌟 [Surface Example](https://github.com/Zabadam/surface/tree/main/example)

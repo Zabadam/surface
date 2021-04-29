@@ -24,37 +24,38 @@
 ///   but is optional and will only impact the 📚 [SurfaceLayer.BASE].
 /// ---
 ///
-/// A 🔲 [SurfacePeekSpec] may be provided to alter the Surface "peek"
-/// (`MATERIAL` inset or "border") with parameter 🔲 [SurfacePeekSpec.peek].
+/// A 🔲 [Peek] may be provided to alter the Surface "peek"
+/// (`MATERIAL` inset or "border") with parameter 🔲 [Peek.peek].
 /// - Give special treatment, generally a thicker appearance, to selected
-///   side(s) by passing 🔲 [SurfacePeekSpec.peekAlignment]
-///   and tuning with 🔲 [SurfacePeekSpec.peekRatio].
+///   side(s) by passing 🔲 [Peek.peekAlignment]
+///   and tuning with 🔲 [Peek.peekRatio].
 /// ---
 ///
-/// Specify a 🔬 [SurfaceFilterSpec] with options
+/// Specify a 🔬 [Filter] with options
 /// to render 🤹‍♂️ [SurfaceFX] backdrop [ImageFilter]s
-/// - In configured 👓 [SurfaceFilterSpec.filteredLayers] `Set`
-/// - Whose radii (🤹‍♂️ [effect] strength) are mapped with 📊 [SurfaceFilterSpec.radiusMap]
+/// - In configured 👓 [Filter.filteredLayers] `Set`
+/// - Whose radii (🤹‍♂️ [effect] strength) are mapped with 📊 [Filter.radiusMap]
 ///   - A 📚 [SurfaceLayer.BASE] filter may be extended through the
-///   [Surface.margin] with [SurfaceFilterSpec.extendBaseFilter]
+///   [Surface.margin] with [Filter.extendBaseFilter]
 /// ---
 ///
-/// A 👆 [SurfaceTapSpec] offers [SurfaceTapSpec.onTap] `VoidCallback`,
+/// A 👆 [TapSpec] offers [TapSpec.onTap] `VoidCallback`,
 /// [InkResponse] customization, and a [HapticFeedback] shortcut.
 /// ---
 ///
 /// 🔰 [SurfaceShape.biBeveledRectangle] is responsible for the
-/// 📐 [SurfaceCorners.BIBEVEL] custom shape.
+/// 📐 [SurfaceCorners.BEVEL] custom shape.
 /// ---
 ///
 ///
 /// ### References
 /// - 🌟 [Surface] - A shapeable, layered, animated container Widget
-/// - 🔲 [PeekSpec] - An Object with optional parameters to customize a Surface's "peek"
+/// - 🔰 [Shape]
+///   - 📐 [Corner] & 📐 [CornerSpec]
+/// - 🔲 [Peek] - An Object with optional parameters to customize a Surface's "peek"
 /// - 👆 [TapSpec] - An Object with optional parameters to customize a Surface's tap behavior
-/// - 🔬 [FilterSpec] - An Object with optional parameters to customize a 🌟 `Surface`'s 🤹‍♂️ filters/effects
-/// - 🔰 [SurfaceShape] - Handles the "biBevel" shape for 🌟 `Surface`, but could do more
-/// - 🤹‍♂️ [SurfaceFX] - `Function typedef` for custom [FilterSpec.effect]s!
+/// - 🔬 [Filter] - An Object with optional parameters to customize a 🌟 `Surface`'s 🤹‍♂️ filters/effects
+///   - 🤹‍♂️ [SurfaceFX] - `Function typedef` for custom [FilterSpec.effect]s!
 ///
 /// ### 🏓 [BouncyBall]
 /// A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].

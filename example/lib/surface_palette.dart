@@ -190,14 +190,18 @@ class ColorItem extends StatelessWidget {
               curve: _CURVE,
               color: color.withOpacity(0.6),
               baseColor: color.withOpacity(0.3),
-              baseRadius: 100,
-              radius: 5,
-              peekSpec: const PeekSpec(
+              shape: Shape(
+                corners:
+                    CornerSpec(radius: BorderRadius.all(Radius.circular(5))),
+                baseCorners:
+                    CornerSpec(radius: BorderRadius.all(Radius.circular(75))),
+              ),
+              peek: const Peek(
                 peek: 15,
                 peekAlignment: Alignment.centerLeft,
                 peekRatio: 10,
               ),
-              filterSpec: const FilterSpec(
+              filter: const Filter(
                 extendBaseFilter: true, // default is `false`
                 filteredLayers: {SurfaceLayer.BASE, SurfaceLayer.MATERIAL},
                 radiusMap: {
@@ -315,8 +319,8 @@ class PaletteTabView extends StatelessWidget {
             color: Colors.transparent,
             baseColor: palette.primary[900]!.withOpacity(0.5),
             tapSpec: tapSpec,
-            filterSpec: const FilterSpec(
-              filteredLayers: FilterSpec.BASE,
+            filter: const Filter(
+              filteredLayers: Filter.BASE,
               baseRadius: 10,
             ),
             child: Center(

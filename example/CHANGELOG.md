@@ -12,7 +12,7 @@
 #### Surface [0.1.0+5]
 * Added a second route: to `SurfacePalette` which is a recreation of the Flutter Gallery
   MaterialColor presentation that utilizes 🌟 `Surface`s instead of Containers.
-  * Make reference to new `SurfaceFilterSpec.extendBaseFilter` & `Surface.baseRadius` parameters
+  * Make reference to new `Filter.extendBaseFilter` & `Surface.baseRadius` parameters
 * Cleaned up comments that referred to old parameters.
 * Incorporated more `const`
 

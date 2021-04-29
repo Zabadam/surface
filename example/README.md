@@ -14,7 +14,7 @@ The landing view uses several 🌟 `Surface`s right off the bat.
 - Main window
   - Try tapping and holding inside this container
 - Floating Action Buttons
-  - Three different `FAB`s show three different 📚 `SurfaceLayer` layouts for 👓 `SurfaceFilterSpec.filteredLayers`.
+  - Three different `FAB`s show three different 📚 `SurfaceLayer` layouts for 👓 `Filter.filteredLayers`.
 
 🏓 `BouncyBall` is delegated as the `InteractiveInkFeatureFactory` or `splashFactory`
   - Check out the `BallPit` demo from teh drawer for more!
@@ -29,7 +29,7 @@ Swiping open the main `Drawer` or tapping the hamburger menu offers a button (th
 - `SurfacePalette` is a recreation of the Flutter Gallery presentation for Material Colors utilizing 🌟 `Surfaces`
   - Even the two new parameters offered in **🌟 `Surface` [0.1.0+5]** are employed for creative measures
     - 🆕 `Surface.baseRadius`
-    - 🆕 `SurfaceFilterSpec.extendBaseFilter`
+    - 🆕 `Filter.extendBaseFilter`
 
 
 # 🌇 Roadmap

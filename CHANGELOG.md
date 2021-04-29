@@ -1,7 +1,16 @@
 # 🌟 Surface
-## **[0.3.0+2] - 25 APR 21**
-- Large animated doc `gif` uploaded accidentally. Removed.
-- Corrected `export 'package:flutter/material.dart';`.
+## **[0.4.0] - 29 APR 21**
+- Overhaul in progress. Developing...
+- ✅ Newly added:
+  - Manual (or pre-configured) custom [`Shape`](https://pub.dev/documentation/surface/latest/surface/Shape-class.html)ing
+    - Easy `Shape` scaling and differed `Shape` by 📚 `SurfaceLayer`
+    - Customize `Shape` by configuring four `Corner`s and `radius`
+  - `BorderSide` support, by 📚 `SurfaceLayer`
+  - `class`es given 📋 `copyWith` methods
+  - & more
+- 🔳 Todo:
+  - Improve transitioning/animating/lerping
+  - & more
 
 ## **[0.3.0] - 25 APR 21**
 - Divided package into several bite-size `src` files
@@ -19,7 +28,7 @@
 
 ## **[0.2.0] & [0.2.0+7] - 12 APR 21**
 - Migrated package to sound null safety.
-- Cleaned up internal `SurfaceFilterSpec` code a bit while adding relevant `constants`
+- Cleaned up internal `Filter` code a bit while adding relevant `constants`
   - One `DEFAULT_SPEC` is used by a `new` 🌟 `Surface`
   - And several more that are `const` options for 👓 `filteredLayers`:
     - `Set<SurfaceLayer>` that resemble old `enum SurfaceFilter`
@@ -30,23 +39,23 @@
 - Added [`Surface.baseRadius`](https://pub.dev/documentation/surface/latest/surface/Surface/baseRadius.html).
   - 🔘 [`baseRadius`](https://pub.dev/documentation/surface/latest/surface/Surface/baseRadius.html) may be specified separately from 🔘 [`radius`](https://pub.dev/documentation/surface/latest/surface/Surface/radius.html), but is optional and will only impact the 📚 `SurfaceLayer.BASE`.
   - If not provided, uses 🔘 [`Surface.radius`](https://pub.dev/documentation/surface/latest/surface/Surface/radius.html), which itself defaults to 🔘 `Surface._RADIUS == 3.0`.
-- Added `SurfaceFilterSpec.extendBaseFilter` boolean which will apply the 📚 `BASE` blurry filter to the `Surface.margin`.
+- Added `Filter.extendBaseFilter` boolean which will apply the 📚 `BASE` blurry filter to the `Surface.margin`.
 
 ## **[0.0.5] - 02 APR 21**
 - Further modification to initialization parameters for Surface constructor.
-- Filter strength and the `SurfaceLayer`s on which they are enabled are now set and mapped with a bespoke `SurfaceFilterSpec` Object.
-  - Enable blurry filters by passing the desired `SurfaceLayer`s into `SurfaceFilterSpec.filteredLayers` as a `Set`.
-  - Strength radii can be initialized formally or with a `Map<SurfaceLayer, double>` called `SurfaceFilterSpec.radiusMap`.
+- Filter strength and the `SurfaceLayer`s on which they are enabled are now set and mapped with a bespoke `Filter` Object.
+  - Enable blurry filters by passing the desired `SurfaceLayer`s into `Filter.filteredLayers` as a `Set`.
+  - Strength radii can be initialized formally or with a `Map<SurfaceLayer, double>` called `Filter.radiusMap`.
   - `SurfaceFilter` enum removed, as it redundantly represented the idea of `SurfaceLayer`s in a `Set`
 
 ## **[0.0.4] - 01 APR 21**
 - Reduction in initialization parameters for Surface constructor. This is achieved:
   - in one instance by joining three similar values in a Map (`filterRadius`)
-  - by introducing `SurfacePeekSpec` and `SurfaceTapSpec` classes to encapsulate other related parameters
+  - by introducing `Peek` and `TapSpec` classes to encapsulate other related parameters
 - Renamed `SurfaceLayer.BASE` from BORDER.
   - Changed or removed any references to "border"
   - Now refer to "base inset" or `peek`.
-    - Consider the old `Surface.borderRatio` is the new `SurfacePeekSpec.peekRatio`.
+    - Consider the old `Surface.borderRatio` is the new `Peek.peekRatio`.
 - Altered default `Color` handling.
   - `InkResponse` splashes and highlights now defer to `Theme`.
   - Without passing a `Surface.color`, deafult to `ColorScheme.surface`
