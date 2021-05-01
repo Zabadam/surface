@@ -1,20 +1,18 @@
-/// ## 🌟 Surface: Effects
-/// Specify a 🔬 [Filter] with options
-/// to render 🤹‍♂️ [SurfaceFX] backdrop [ImageFilter]s
-/// - In configured 👓 [Filter.filteredLayers] `Set`
-/// - Whose radii (🤹‍♂️ [effect] strength) are mapped with 📊 [Filter.radiusMap]
-///   - A 📚 [SurfaceLayer.BASE] filter may be extended through the
-///   [Surface.margin] with [Filter.extendBaseFilter]
+/// ## 🌟 Surface Library: Effect
+/// - 🤹‍♂️ [SurfaceFX] `typedef`
+/// - 🤹‍♂️ [FX] `ImageFilter`s
+/// - 🔬 [Filter] specification
 library surface;
 
-import '../surface.dart';
+import 'dart:ui' show ImageFilter;
 
-/// ### ❗ See ***CAUTION*** in [Surface] doc
-/// Concerning 👓 [Filter.filteredLayers]
-/// and 📊 [Filter.radiusMap] values.
+import 'shape.dart';
+
+/// ### ❗ See ***Consideration*** in library `surface.dart` doc
+/// Regarding 👓 [Filter.filteredLayers] and 📊 [Filter.radiusMap] values.
 ///
-/// Default 📊 `radius` passed to 💧 [FX.blurry].
-/// # `4.0`
+/// Default 📊 `radius` passed to 💧 [FX.blurry]
+/// is `4.0` & minimum is `0.0003`.
 const _BLUR = 4.0;
 
 /// ### 🤹‍♂️ Surface FX
@@ -27,7 +25,7 @@ typedef ImageFilter SurfaceFX(double specRadius, SurfaceLayer layerForRender);
 /// At present, 💧 [blurry] is the only [ImageFilter] available.
 class FX {
   /// # 💧 `b()`
-  /// [radius] is of type `double?` and may be `null`:
+  /// [radius] is of type `double?` and  is required but may be `null`.
   ///
   /// Returns [ImageFilter.blur], passing `radius ?? _BLUR == 4.0`
   /// as both `ImageFilter.blur(sigmaX)` & `ImageFilter.blur(sigmaY)`.
@@ -43,15 +41,25 @@ class FX {
 
 //! ---
 /// ### 🔬 [Filter]
-/// A 🌟 [Surface] may be provided a 🔬 [Filter] to alter
-/// filter appearance at all 📚 [SurfaceLayer]s.
+/// A 🌟 [Surface] may be provided a 🔬 [Filter]
+/// to change filter appearance at all 📚 [SurfaceLayer]s.
+/// - `Set<SurfaceLayer>` 👓 [filteredLayers] ultimately determines
+/// which 📚 Layers have filters enabled
+/// - Use [extendBaseFilter] `== true` to have 📚 [SurfaceLayer.BASE]'s
+///   filter extend to cover the [Surface.margin] insets.
+///
+/// While a `new` 🌟 [Surface] employs 🔬 [DEFAULT],
+/// where 👓 [filteredLayers] is [NONE], a `new` 🔬 [Filter]
+/// defaults 👓 [filteredLayers] to [BASE] and `_baseRadius` to `4.0`.
+///
+/// ### ❗ See ***Consideration*** in library `surface.dart` doc
+/// Regarding 👓 [Filter.filteredLayers] and 📊 [Filter.radiusMap] values.
+///
+/// Default 📊 `radius` passed to 💧 [FX.blurry]
+/// is [_BLUR] `== 4.0` & minimum is `0.0003`.
 class Filter {
   /// A new 🌟 [Surface] defaults 🔬 [Surface.filter] to this [DEFAULT],
   /// which differs from a `(new) FilterSpec`.
-  /// ```
-  /// - filteredLayers: Filter.NONE // <SurfaceLayer>{}
-  /// - radiusMap: <SurfaceLayer, double>{}
-  /// ```
   static const DEFAULT = Filter(
     filteredLayers: NONE,
     radiusMap: <SurfaceLayer, double>{},
@@ -137,63 +145,36 @@ class Filter {
   /// - under 📚 [SurfaceLayer.BASE], after any inset from [Surface.padding]
   static const CHILD = <SurfaceLayer>{SurfaceLayer.CHILD};
 
-  /// ### 🔬 [Filter]
   /// A 🌟 [Surface] may be provided a 🔬 [Filter]
   /// to change filter appearance at all 📚 [SurfaceLayer]s.
-  /// - `Set<SurfaceLayer>` 👓 [filteredLayers] determines which 📚 Layers have filters
-  /// - 📊 [radiusMap] or [baseRadius] && [materialRadius] && [childRadius]
-  ///   determine filter strength
+  /// - `Set<SurfaceLayer>` 👓 [filteredLayers] ultimately determines
+  /// which 📚 Layers have filters enabled
+  /// - 📊 [_radiusMap] or [_radiusBase] && [_radiusMaterial] && [_radiusChild]
+  ///   determine filter strength during creation
   /// - Use [extendBaseFilter] `== true` to have 📚 [SurfaceLayer.BASE]'s
   ///   filter extend to cover the [Surface.margin] insets.
   ///
   /// While a `new` 🌟 [Surface] employs 🔬 [DEFAULT],
   /// where 👓 [filteredLayers] is [NONE], a `new` 🔬 [Filter]
-  /// defaults 👓 [filteredLayers] to [BASE].
-  /// - Default 📊 `radius`/strength is [_BLUR] `== 4.0`.
-  /// - Minimum accepted 📊 `radius` for an activated
-  /// 📚 Layer is [_BLUR_MINIMUM] `== 0.0003`.
-  /// * **❗ See CAUTION in [Surface] doc.**
+  /// defaults 👓 [filteredLayers] to [BASE] and `_baseRadius` to `4.0`.
+  ///
+  /// ### ❗ See ***Consideration*** in library `surface.dart` doc
+  /// Regarding 👓 [Filter.filteredLayers] and 📊 [Filter.radiusMap] values.
+  ///
+  /// Default 📊 `radius` passed to 💧 [FX.blurry]
+  /// is [_BLUR] `== 4.0` & minimum is `0.0003`.
   const Filter({
-    this.filteredLayers = BASE,
-    this.radiusMap,
-    this.baseRadius,
-    this.materialRadius,
-    this.childRadius,
-    this.extendBaseFilter = false,
     this.effect = FX.blurry,
-  });
-
-  /// Provide a `Set{}` to 👓 [filteredLayers] to specify which
-  /// 📚 [SurfaceLayer]s will have an [effect] 🤹‍♂️ [SurfaceFX] enabled.
-  ///
-  /// 📊 `Radii` of the 🤹‍♂️ [effect] are mapped
-  /// to each 📚 [SurfaceLayer] by 📊 [radiusMap] or set explicitly
-  /// by 📊 [baseRadius], 📊 [materialRadius], or 📊 [childRadius].
-  final Set<SurfaceLayer> filteredLayers;
-
-  /// 📊 [radiusMap] `Map`s one or more 📚 [SurfaceLayer]s to a `double`
-  /// that determines the 🤹‍♂️ [SurfaceFX] `radius` for that layer's 🤹‍♂️ [effect].
-  ///
-  /// All three `radii`  to 💧 [_BLUR] `== 0.0003` so that
-  /// upper-layered filters are not erased by an ancestor filter having 0 radius.
-  ///
-  /// - If 👓 [filteredLayers] is set to enable all three
-  ///   📚 [SurfaceLayer] filters, initialize all three
-  ///   📊 [radiusMap] `double`s `>=` 💧 [_BLUR_MINIMUM] `== 0.
-  /// - Similarly, if only two filters are enabled, the lower-Z filter
-  ///   (lowest-Z value: [SurfaceLayer.BASE]) must be above zero to not negate
-  ///   any value passed to the higher-Z filter (highest-Z value: [SurfaceLayer.CHILD]).
-  ///
-  /// ### ❗ See ***CAUTION*** in [Surface] doc for more.
-  final Map<SurfaceLayer, double>? radiusMap;
-
-  /// Instead of initializing a 📊 [radiusMap], opt to
-  /// pass a specific layer's 🤹‍♂️ [effect] radius with this property.
-  final double? baseRadius, materialRadius, childRadius;
-
-  /// If [extendBaseFilter] is `true`, the BackdropFilter for 📚 [SurfaceLayer.BASE]
-  /// will extend to cover the [Surface.margin] padding.
-  final bool extendBaseFilter;
+    this.filteredLayers = BASE,
+    Map<SurfaceLayer, double>? radiusMap,
+    double? radiusBase,
+    double? radiusMaterial,
+    double? radiusChild,
+    this.extendBaseFilter = false,
+  })  : _radiusMap = radiusMap,
+        _radiusBase = radiusBase,
+        _radiusMaterial = radiusMaterial,
+        _radiusChild = radiusChild;
 
   /// ### 🤹‍♂️ Surface FX
   /// Open for expansion. Default implentation is 💧 [FX.blurry],
@@ -205,38 +186,107 @@ class Filter {
   /// will be delivered with `specRadius == 0.0`, regardless of [radiusByLayer].
   final SurfaceFX effect;
 
-  /// Check if � [radiusMap] has a value for this 📚 [layer] and return if so;
-  /// if not, then check if this 📚 [layer] was initialized a specific `double`
-  /// (such as � [baseRadius]) and return if so;
-  /// finally, if all else fails, return const [_BLUR]
+  /// Provide a `Set{}` to 👓 [filteredLayers] to specify which
+  /// 📚 [SurfaceLayer]s will have an [effect] 🤹‍♂️ [SurfaceFX] enabled.
+  ///
+  /// 📊 `Radii` of the 🤹‍♂️ [effect] are mapped
+  /// to each 📚 [SurfaceLayer] by 📊 [radiusMap], but a 📚 `Layer`
+  /// that is not within this `Set` will render no filter.
+  final Set<SurfaceLayer> filteredLayers;
+
+  /// 📊 [_radiusMap] `Map`s one or more 📚 [SurfaceLayer]s to a `double`
+  /// that determines the 🤹‍♂️ [SurfaceFX] `radius` for that layer's 🤹‍♂️ [effect].
+  ///
+  /// A 📚 `Layer` that is not within [filteredLayers] will render no filter.
+  ///
+  /// - If 👓 [filteredLayers] is set to enable all three
+  ///   📚 [SurfaceLayer] filters, initialize all `radii >= 💧 _BLUR_MINIMUM == 0.0003`
+  /// - Similarly, if only two filters are enabled, the lower-Z filter
+  ///   (lowest-Z value: [SurfaceLayer.BASE]) must be above zero to not negate
+  ///   any value passed to the higher-Z filter (highest-Z value: [SurfaceLayer.CHILD]).
+  ///
+  /// ### ❗ See ***Consideration*** in library `surface.dart` doc
+  final Map<SurfaceLayer, double>? _radiusMap;
+
+  /// Instead of initializing a 📊 [_radiusMap], opt to
+  /// pass a specific layer's 🤹‍♂️ [effect] radius with this property.
+  ///
+  /// A 📚 `Layer` that is not within [filteredLayers] will render no filter.
+  final double? _radiusBase, _radiusMaterial, _radiusChild;
+
+  /// If [extendBaseFilter] is `true`, the BackdropFilter for 📚 [SurfaceLayer.BASE]
+  /// will extend to cover the [Surface.margin] padding.
+  final bool extendBaseFilter;
+
+  /// Returns a `Map<SurfaceLayer, double>` via [radiusByLayer], and so
+  /// will always have an entry for every 📚 `Layer`, even if it is the
+  /// default [_BLUR] `== 4.0`.
+  ///
+  /// [radiusByLayer] returns the corresponding `renderedRadius_` field
+  /// by 📚 [SurfaceLayer] `switch`.
+  ///
+  /// A 📚 `Layer` that is not within [filteredLayers] will render no filter.
+  Map<SurfaceLayer, double> get radiusMap => <SurfaceLayer, double>{
+        for (var layer in SurfaceLayer.values) layer: radiusByLayer(layer)
+      };
+
+  /// Returns the corresponding `renderedRadius_` field
+  /// by 📚 [SurfaceLayer] `switch`.
+  ///
+  /// A 📚 `Layer` that is not within [filteredLayers] will render no filter.
   double radiusByLayer(SurfaceLayer layer) {
     switch (layer) {
       case SurfaceLayer.BASE:
-        return literalRadiusBase;
+        return renderedRadiusBase;
       case SurfaceLayer.MATERIAL:
-        return literalRadiusMaterial;
+        return renderedRadiusMaterial;
       case SurfaceLayer.CHILD:
-        return literalRadiusChild;
+        return renderedRadiusChild;
     }
   }
 
-  double get literalRadiusBase =>
-      radiusMap?.containsKey(SurfaceLayer.BASE) ?? false
-          ? radiusMap![SurfaceLayer.BASE]!
-          : (baseRadius != null)
-              ? baseRadius!
-              : _BLUR;
-  double get literalRadiusMaterial =>
-      radiusMap?.containsKey(SurfaceLayer.MATERIAL) ?? false
-          ? radiusMap![SurfaceLayer.MATERIAL]!
-          : (materialRadius != null)
-              ? materialRadius!
+  /// Checks if `double` 📊 [_radiusBase] was initialized and returns if so.
+  ///
+  /// Otherwise, checks if 📊 [_radiusMap] was assigned a value
+  /// for this 📚 [layer] and returns if so.
+  ///
+  /// If all else fails, returns [_BLUR] `== 4.0`.
+  ///
+  /// A 📚 `Layer` that is not within [filteredLayers] will render no filter.
+  double get renderedRadiusBase =>
+      _radiusMap?.containsKey(SurfaceLayer.BASE) ?? false
+          ? _radiusMap![SurfaceLayer.BASE]!
+          : (_radiusBase != null)
+              ? _radiusBase!
               : _BLUR;
 
-  double get literalRadiusChild =>
-      radiusMap?.containsKey(SurfaceLayer.CHILD) ?? false
-          ? radiusMap![SurfaceLayer.CHILD]!
-          : (childRadius != null)
-              ? childRadius!
+  /// Checks if `double` 📊 [_radiusMaterial] was initialized and returns if so.
+  ///
+  /// Otherwise, checks if 📊 [_radiusMap] was assigned a value
+  /// for this 📚 [layer] and returns if so.
+  ///
+  /// If all else fails, returns [_BLUR] `== 4.0`.
+  ///
+  /// A 📚 `Layer` that is not within [filteredLayers] will render no filter.
+  double get renderedRadiusMaterial =>
+      _radiusMap?.containsKey(SurfaceLayer.MATERIAL) ?? false
+          ? _radiusMap![SurfaceLayer.MATERIAL]!
+          : (_radiusMaterial != null)
+              ? _radiusMaterial!
+              : _BLUR;
+
+  /// Checks if `double` 📊 [_radiusChild] was initialized and returns if so.
+  ///
+  /// Otherwise, checks if 📊 [_radiusMap] was assigned a value
+  /// for this 📚 [layer] and returns if so.
+  ///
+  /// If all else fails, returns [_BLUR] `== 4.0`.
+  ///
+  /// A 📚 `Layer` that is not within [filteredLayers] will render no filter.
+  double get renderedRadiusChild =>
+      _radiusMap?.containsKey(SurfaceLayer.CHILD) ?? false
+          ? _radiusMap![SurfaceLayer.CHILD]!
+          : (_radiusChild != null)
+              ? _radiusChild!
               : _BLUR;
 }

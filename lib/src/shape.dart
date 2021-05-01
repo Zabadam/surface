@@ -1,10 +1,17 @@
 /// ## 🌟 Surface Library: Shape
+/// - 📚 [SurfaceLayer] `enum`
+/// - 📐 [Corner] `enum`
+/// - 📐 [CornerSpec] specification
+/// - 🔲 [Peek] specification
+/// - 👆 [TapSpec] specification
+/// - 🔰 [Shape] specification
+/// - [SurfaceShape] `ShapeBorder`
 library surface;
 
-import '../surface.dart';
-import 'dart:ui';
-import 'dart:math';
+import 'dart:math' as math show min, max, pi;
+import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// ## 🔘 Default Corner Radius: `10.0`
 const _RADIUS = BorderRadius.all(Radius.circular(10.0));
@@ -12,6 +19,7 @@ const _RADIUS = BorderRadius.all(Radius.circular(10.0));
 //! ---
 /// ### 📚 [SurfaceLayer]
 /// Defines the three layers for rendering a 🌟 [Surface].
+/// - [SurfaceLayer.BASE], [SurfaceLayer.MATERIAL], [SurfaceLayer.CHILD]
 enum SurfaceLayer {
   /// ### 📚 Base Surface Layer
   /// Lowest layer of a 🌟 [Surface]. This bottom [AnimatedContainer] may be
@@ -35,26 +43,30 @@ enum SurfaceLayer {
 //! ---
 /// ### 📐 [Corner]
 /// Simple corner appearance options for a [CornerSpec]'s four [Corner] fields.
-/// - [Corner.SQUARE], [Corner.ROUND], or [Corner.BEVEL]
+/// - [Corner.NONE], [Corner.SQUARE], [Corner.ROUND], or [Corner.BEVEL]
 enum Corner {
   /// ### 📐 [NONE]
-  /// No `Corner` is a circle, or the quarter-circle that would make this corner.
-  /// No 🔘 [CornerSpec.radius] considered.
+  /// No `Corner` is a circle/oval, or the quarter-circle
+  /// that would make this corner. This `Corner` will "eat" more
+  /// of the `Shape` than the other three `Corner`s will.
+  ///
+  /// No 🔘 [CornerSpec.radius] / [Shape.radius] considered.
   NONE,
 
   /// ### 📐 [SQUARE]
   /// A squared `Corner` is that of a standard rectangle.
-  /// No 🔘 [CornerSpec.radius] considered.
+  ///
+  /// No 🔘 [CornerSpec.radius] / [Shape.radius] considered.
   SQUARE,
 
   /// ### 📐 [ROUND]
-  /// A rounded `Corner` is a quarter-circle that
-  /// "softens" / curves the corners by 🔘 [CornerSpec.radius].
+  /// A rounded `Corner` is circle-like and
+  /// "softens" / curves the corners by 🔘 [CornerSpec.radius] / [Shape.radius].
   ROUND,
 
   /// ### 📐 [BEVEL]
   /// A beveled `Corner` is a straight line that
-  /// "cuts" the corners by 🔘 [CornerSpec.radius].
+  /// "cuts" the corners by 🔘 [CornerSpec.radius] / [Shape.radius].
   BEVEL,
 }
 
@@ -63,78 +75,76 @@ enum Corner {
 /// Define the [Corner] appearance options for each
 /// of the four corners in a [Shape] and their 🔘 [radius].
 ///
-/// A `const` constructor `CornerSpec()` requires all parameters,
-/// though [radius] will default.
+/// Not providing an optional [radius],
+/// a `Shape` will defer to its own [Shape.radius],
+/// defaulting to [_RADIUS] `== 10.0`.
 ///
 /// **`const` `CornerSpec`s with pre-set configurations available:**
-/// - [SQUARED], [ROUNDED], [BEVELED]
+/// - [CIRCLE], [SQUARED], [ROUNDED], [BEVELED]
+/// - [ROUNDED_50], [BEVELED_50]
+/// - [BIBEVELED_50], [BIBEVELED_50_FLIP]
 ///
 /// **`CornerSpec` named constructors with pre-filled [Corner]s:**
+/// - `new` [CornerSpec] is "roundedWith"
+/// - [CornerSpec.noneWith]
 /// - [CornerSpec.squaredWith]
-/// - [CornerSpec.roundedWith]
 /// - [CornerSpec.beveledWith]
 class CornerSpec with Diagnosticable {
-  /// ### 📐 [CIRCLE]
   /// All four corners of the [Shape] are [Corner.NONE];
   /// 🔘 [Shape.radius] is ignored.
   static const CIRCLE = CornerSpec.noneWith();
 
-  /// ### 📐 [SQUARED]
   /// All four corners of the [Shape] are [Corner.SQUARE]ed;
   /// 🔘 [Shape.radius] is ignored.
   static const SQUARED = CornerSpec.squaredWith();
 
-  /// ### 📐 [ROUNDED]
   /// All four corners will be [Corner.ROUND]ed default 🔘 [_RADIUS] `== 10.0`.
   static const ROUNDED = CornerSpec();
 
-  /// ### 📐 [ROUNDED_50]
   /// All four corners will be [Corner.ROUND]ed with 🔘 [radius] `== 50.0`.
   static const ROUNDED_50 =
       CornerSpec(radius: BorderRadius.all(Radius.circular(50.0)));
 
-  /// ### 📐 [BEVELED]
   /// All corners will be [Corner.BEVEL]ed by default 🔘 [_RADIUS] `== 10.0`.
   static const BEVELED = CornerSpec.beveledWith();
 
-  /// ### 📐 [BEVELED_50]
   /// All four corners will be [Corner.BEVEL]ed with 🔘 [radius] `== 50.0`.
   static const BEVELED_50 =
       CornerSpec.beveledWith(radius: BorderRadius.all(Radius.circular(50.0)));
 
-  /// ### 📐 [BIBEVELED_50]
   /// All four corners will be [Corner.BEVEL]ed with 🔘 [radius] `== 50.0`.
   static const BIBEVELED_50 = CornerSpec.beveledWith(
       topLeft: Corner.SQUARE,
       bottomRight: Corner.SQUARE,
       radius: BorderRadius.all(Radius.circular(50.0)));
 
-  /// ### 📐 [BIBEVELED_50_FLIP]
   /// All four corners will be [Corner.BEVEL]ed with 🔘 [radius] `== 50.0`.
   static const BIBEVELED_50_FLIP = CornerSpec.beveledWith(
       topRight: Corner.SQUARE,
       bottomLeft: Corner.SQUARE,
       radius: BorderRadius.all(Radius.circular(50.0)));
 
-  /// ### 📐 [CornerSpec] - (Rounded With)
   /// A `CornerSpec` that accepts any [Corner] for each field,
   /// but defaults them all to [Corner.ROUND].
+  ///
+  /// Not providing an optional [radius],
+  /// a `Shape` will defer to its own [Shape.radius],
+  /// defaulting to [_RADIUS] `== 10.0`.
+  ///
+  /// See [CornerSpec.squaredWith] & [CornerSpec.beveledWith]
+  /// for `const` constructors that default their fields differently.
   ///
   /// [CornerSpec.ROUNDED] is a `const` `CornerSpec` available
   /// with all four corners initialized to [Corner.ROUND].
   /// - Also see: [CornerSpec.ROUNDED_50]
-  ///
-  /// See [CornerSpec.squaredWith] & [CornerSpec.beveledWith]
-  /// for `const` constructors that default their fields differently.
   const CornerSpec({
     this.topLeft = Corner.ROUND,
     this.topRight = Corner.ROUND,
     this.bottomRight = Corner.ROUND,
     this.bottomLeft = Corner.ROUND,
-    this.radius = _RADIUS,
+    this.radius,
   });
 
-  /// ### 📐 [CornerSpec] - None With
   /// A `CornerSpec` that accepts any [Corner] for each field,
   /// but defaults them all to [Corner.NONE].
   ///
@@ -145,10 +155,9 @@ class CornerSpec with Diagnosticable {
     this.topRight = Corner.NONE,
     this.bottomRight = Corner.NONE,
     this.bottomLeft = Corner.NONE,
-    this.radius = _RADIUS,
+    this.radius,
   });
 
-  /// ### 📐 [CornerSpec] - Squared With
   /// A `CornerSpec` that accepts any [Corner] for each field,
   /// but defaults them all to [Corner.SQUARE].
   ///
@@ -159,10 +168,9 @@ class CornerSpec with Diagnosticable {
     this.topRight = Corner.SQUARE,
     this.bottomRight = Corner.SQUARE,
     this.bottomLeft = Corner.SQUARE,
-    this.radius = _RADIUS,
+    this.radius,
   });
 
-  /// ### 📐 [CornerSpec] - Beveled With
   /// A `CornerSpec` that accepts any [Corner] for each field,
   /// but defaults them all to [Corner.BEVEL].
   ///
@@ -176,7 +184,7 @@ class CornerSpec with Diagnosticable {
     this.topRight = Corner.BEVEL,
     this.bottomRight = Corner.BEVEL,
     this.bottomLeft = Corner.BEVEL,
-    this.radius = _RADIUS,
+    this.radius,
   });
 
   /// ### 📐 [Corner]
@@ -190,8 +198,12 @@ class CornerSpec with Diagnosticable {
   /// The 🔘 [radius] impacts the roundedness of default
   /// 📐 [Corner.ROUND] or bevel-depth of 📐 [Corner.BEVEL] corners.
   ///
-  /// If not provided, [radius] `==` [Surface._RADIUS] `== 10.0`.
-  final BorderRadiusGeometry radius;
+  /// If not provided, 🔘 [radius] `==` [Surface._RADIUS] `== 10.0`.
+  ///
+  /// If there is a `radius` provided for the entire 🔘 [Shape.radius],
+  /// that value will override any [Shape.corners] or [Shape.baseCorners]
+  /// 🔘 [CornerSpec.radius].
+  final BorderRadiusGeometry? radius;
 
   /// Return the `Set<Corner>` of this [CornerSpec]'s potential [Corner]s.
   ///
@@ -222,12 +234,7 @@ class CornerSpec with Diagnosticable {
   /// The `radius` is acquired by [BorderRadiusGeometry.lerp].
   ///
   /// For now, the four [CornerSpec] corners swap values from `a` to `b`
-  /// according to an arbitrary keyframe along `t`.
-  ///
-  /// - TL: `t < 0.5` returned [Corners] are from `a`, otherwise from `b`
-  /// - TR: `t < 0.65` returned [Corners] are from `a`, otherwise from `b`
-  /// - BR: `t < 0.8` returned [Corners] are from `a`, otherwise from `b`
-  /// - BL: `t < 0.95` returned [Corners] are from `a`, otherwise from `b`
+  /// according to the half-way keyframe along `t`.
   ///
   /// TODO: Find help.
   static CornerSpec? lerp(CornerSpec? a, CornerSpec? b, double t) {
@@ -236,10 +243,10 @@ class CornerSpec with Diagnosticable {
     b ??= CornerSpec.ROUNDED;
     return CornerSpec(
       topLeft: t < 0.5 ? a.topLeft : b.topLeft,
-      topRight: t < 0.65 ? a.topRight : b.topRight,
-      bottomRight: t < 0.8 ? a.bottomRight : b.bottomRight,
-      bottomLeft: t < 0.95 ? a.bottomLeft : b.bottomLeft,
-      radius: BorderRadiusGeometry.lerp(a.radius, b.radius, t)!,
+      topRight: t < 0.5 ? a.topRight : b.topRight,
+      bottomRight: t < 0.5 ? a.bottomRight : b.bottomRight,
+      bottomLeft: t < 0.5 ? a.bottomLeft : b.bottomLeft,
+      radius: BorderRadiusGeometry.lerp(a.radius, b.radius, t),
     );
   }
 
@@ -256,107 +263,165 @@ class CornerSpec with Diagnosticable {
 
 //! ---
 /// ### 🔲 [Peek]
-/// [Surface] may be provided a 🔲 [Peek] to define several attributes about
-/// the shared space at the adjacent edge of 📚 [SurfaceLayer.BASE] and 📚 [SurfaceLayer.MATERIAL].
+/// Consider `Peek` to be a description of how the 📚 `BASE`
+/// is exposed behind the 📚 `MATERIAL`.
+///
+/// 🔲 [Peek.peek] is applied as insets to 📚 [SurfaceLayer.MATERIAL].
+/// - Note: to give this 🌟 `Surface` a true [BorderSide], see 🔰 [Shape.border].
+///
+/// ---
+/// According to 🔲 [Peek.alignment] and [Peek.ratio],
+/// a side(s) is given special treatment.
+///
+/// Defaults [Alignment.center] such that no side(s) receive(s)
+/// special treatment regardless of 🔲 [Peek.peek].
 class Peek with Diagnosticable {
-  /// ### 🔲 [Peek]
-  /// A 🌟 [Surface] may be provided a 🔲 [Peek] to define several attributes about
-  /// the shared space at the adjacent edge of 📚 [SurfaceLayer.BASE] and 📚 [SurfaceLayer.MATERIAL].
-  /// - It may be considered to function like a border for the [Surface.child] content.
-  ///   - Note that [Surface] does not currently support actual [Border]s.
-  ///   - To give a border to a Surface, provide a Surface as a `child` to a [DecoratedBox] or [Container].
+  /// No `Peek` results in 📚 `BASE` being encompassed by 📚 `MATERIAL`.
+  static const NONE = Peek(peek: 0.0, ratio: 1.0, alignment: Alignment.center);
+
+  ///     Peek(peek: 3.0, ratio: 2.0, alignment: Alignment.center);
+  static const DEFAULT =
+      Peek(peek: 3.0, ratio: 2.0, alignment: Alignment.center);
+
+  /// Consider `Peek` to be a description of how the 📚 `BASE`
+  /// is exposed behind the 📚 `MATERIAL`.
+  ///
+  /// 🔲 [Peek.peek] is applied as insets to 📚 [SurfaceLayer.MATERIAL].
+  ///
+  /// It may be thought to function like a border for the [child] content, but
+  /// - Note: to give this 🌟 `Surface` a true [BorderSide], see 🔰 [Shape.border].
+  ///
+  /// ---
+  /// According to 🔲 [Peek.alignment], a side(s) is given special treatment:
+  /// - thicker (default [Peek.ratio] `== 2.0`) or
+  /// - thinner (`0 >` [Peek.ratio] `> 1.0`)
+  ///
+  /// Defaults [Alignment.center] such that no side(s) receive(s)
+  /// special treatment regardless of 🔲 [Peek.peek].
   const Peek({
-    this.peek = 3.0,
-    this.peekRatio = 2.0,
-    this.peekAlignment = Alignment.center,
+    this.peek = 0,
+    this.ratio = 1,
+    this.alignment = Alignment.center,
   }) : assert(peek >= 0, '[Peek] > Provide a non-negative `peek`.');
 
-  /// The 🔲 [peek] is a `double` applied as `padding` to
-  /// and insetting 📚 [SurfaceLayer.MATERIAL].
-  /// - It may be considered to function like a border for the [Surface.child] content.
-  ///   - Note that [Surface] does not currently support actual [Border]s.
-  ///   - To give a border to a Surface, provide a Surface as a `child` to a [DecoratedBox] or [Container].
+  /// 🔲 [Peek.peek] is applied as insets to 📚 [SurfaceLayer.MATERIAL].
   ///
-  /// Having declared a side(s) to receive special treatment by passing 🔀 [peekAlignment],
-  /// a 📏 [peekRatio] defines the scale by which to multiply this (these) edge inset(s).
-  /// - Defaults to thicker `peekRatio == 2.0`
-  /// - A larger `peekRatio` creates a more dramatic effect
-  /// - Thinner side(s) possible by passing `0 > peekRatio > 1`
+  /// It may be thought to function like a border for the [child] content, but
+  /// - Note: to give this 🌟 `Surface` a true [BorderSide], see 🔰 [Shape.border].
   ///
-  /// (More than one side is affected by a corner-set `Alignment`,
-  /// such as [Alignment.bottomRight].)
-  final double peek, peekRatio;
+  /// Having declared a side(s)✝ to receive special treatment by 🔀 [alignment],
+  /// a 📏 [ratio] defines the scale by which to multiply this (these) inset(s):
+  /// - Defaults to thicker `ratio == 2.0`
+  /// - A larger `ratio` creates a more dramatic effect
+  /// - Thinner side(s) possible by passing `0 > ratio > 1`
+  ///
+  /// ✝ More than one side is affected by a corner-set `Alignment`,
+  /// such as [Alignment.bottomRight].
+  final double peek, ratio;
 
-  /// Determined by [peekAlignment], a side(s) is given special treatment and made
-  /// - [peekAlignment] defaults [Alignment.center]
-  ///   such that no sides receive special treatment.
-  final AlignmentGeometry peekAlignment;
+  /// Selected by 🔲 [alignment], a side(s) is given special treatment:
+  /// - thicker (default [ratio] `== 2.0`) or
+  /// - thinner (`0 >` [ratio] `> 1.0`)
+  ///
+  /// Defaults [Alignment.center] such that no side(s) receive(s)
+  /// special treatment regardless of 🔲 [peek] / [ratio].
+  final AlignmentGeometry alignment;
 
   // 🔢 Establish the thickness of each base side "peek" or "border-side"
   // (`padding` property for 📚 [SurfaceLayer.BASE])
-  // based on [peek] and considering [peekAlignment] & [peekRatio]
-  double get peekLeft => (peekAlignment == Alignment.topLeft ||
-          peekAlignment == Alignment.centerLeft ||
-          peekAlignment == Alignment.bottomLeft)
-      ? peek * peekRatio
+  // based on [peek] and considering [alignment] & [ratio]
+  double get peekLeft => (alignment == Alignment.topLeft ||
+          alignment == Alignment.centerLeft ||
+          alignment == Alignment.bottomLeft)
+      ? peek * ratio
       : peek;
-  double get peekTop => (peekAlignment == Alignment.topLeft ||
-          peekAlignment == Alignment.topCenter ||
-          peekAlignment == Alignment.topRight)
-      ? peek * peekRatio
+  double get peekTop => (alignment == Alignment.topLeft ||
+          alignment == Alignment.topCenter ||
+          alignment == Alignment.topRight)
+      ? peek * ratio
       : peek;
-  double get peekRight => (peekAlignment == Alignment.topRight ||
-          peekAlignment == Alignment.centerRight ||
-          peekAlignment == Alignment.bottomRight)
-      ? peek * peekRatio
+  double get peekRight => (alignment == Alignment.topRight ||
+          alignment == Alignment.centerRight ||
+          alignment == Alignment.bottomRight)
+      ? peek * ratio
       : peek;
-  double get peekBottom => (peekAlignment == Alignment.bottomLeft ||
-          peekAlignment == Alignment.bottomCenter ||
-          peekAlignment == Alignment.bottomRight)
-      ? peek * peekRatio
+  double get peekBottom => (alignment == Alignment.bottomLeft ||
+          alignment == Alignment.bottomCenter ||
+          alignment == Alignment.bottomRight)
+      ? peek * ratio
       : peek;
 
   /// 📋 Returns a copy of this `Peek` with the given properties.
   Peek copyWith({
     double? peek,
-    double? peekRatio,
-    AlignmentGeometry? peekAlignment,
+    double? ratio,
+    AlignmentGeometry? alignment,
   }) =>
       Peek(
         peek: peek ?? this.peek,
-        peekRatio: peekRatio ?? this.peekRatio,
-        peekAlignment: peekAlignment ?? this.peekAlignment,
+        ratio: ratio ?? this.ratio,
+        alignment: alignment ?? this.alignment,
       );
+
+  /// If both are `null`, returns `null`.
+  ///
+  /// If either is `null`, replaced with [Peek.NONE].
+  static Peek? lerp(Peek? a, Peek? b, double t) {
+    if (a == null && b == null) return null;
+    a ??= Peek.NONE;
+    b ??= Peek.NONE;
+    return Peek(
+      peek: ui.lerpDouble(a.peek, b.peek, t)!,
+      ratio: ui.lerpDouble(a.ratio, b.ratio, t)!,
+      alignment: AlignmentGeometry.lerp(a.alignment, b.alignment, t)!,
+    );
+  }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(DoubleProperty('peek', peek));
-    properties.add(DoubleProperty('peekRatio', peekRatio));
-    properties.add(
-        DiagnosticsProperty<AlignmentGeometry>('peekAlignment', peekAlignment));
+    properties.add(DoubleProperty('ratio', ratio));
+    properties
+        .add(DiagnosticsProperty<AlignmentGeometry>('alignment', alignment));
   }
 }
 
 //! ---
 /// ### 👆 [TapSpec]
-/// A 🌟 [Surface] may be provided a 👆 [TapSpec] to define
-/// its "tappability" and appearance & behavior therein, if enabled.
+/// 👆 [TapSpec.tappable] provides `onTap` functionality and [InkResponse].
+/// Ink splash `Color`s may be customized.
+///
+/// ❓ [providesFeedback] is a convenience parameter
+/// to add a [HapticFeedback.vibrate] `onTap`.
+/// ---
+/// 🌟 `Surface` comes bundled with [🏓 `package:ball`](https://pub.dev/packages/ball 'pub.dev: ball').
+///
+/// Disable the default [BouncyBall.splashFactory] with
+/// [useThemeSplashFactory] or select an [InteractiveInkFeatureFactory]
+/// specific to this 👆 `TapSpec` with [splashFactory].
 class TapSpec with Diagnosticable {
-  /// ### 👆 [TapSpec]
-  /// Not only does [tappable] provide [Surface.onTap] Callback,
-  /// it also adds an [InkResponse] to the [Material] before rendering [child].
+  /// Not only does 👆 [tappable] provide `onTap` Callback functionality,
+  /// it also adds [InkResponse] to the [Material] underneath [child].
   ///
-  /// [providesFeedback] is a convenience parameter
+  /// ❓ [providesFeedback] is a convenience parameter
   /// to add a [HapticFeedback.vibrate] `onTap`.
   ///
-  /// If [tappable] `== true` the [InkResponse] appearance may be customized.
-  /// Otherwise no InkResponse is rendered with the Surface.
+  /// Ink splash `Color`s may be customized with a 👆 [TapSpec].
+  ///
+  /// ---
+  /// 🌟 `Surface` comes bundled with [🏓 `package:ball`](https://pub.dev/packages/ball 'pub.dev: ball').
+  ///
+  /// Disable the default [BouncyBall.splashFactory] with
+  /// ❓ [useThemeSplashFactory] or select an [InteractiveInkFeatureFactory]
+  /// specific to this 👆 `TapSpec` with [splashFactory].
   const TapSpec({
     this.tappable = true,
     this.providesFeedback = false,
     this.inkSplashColor,
     this.inkHighlightColor,
+    this.splashFactory,
+    this.useThemeSplashFactory = false,
     this.onTap,
   });
 
@@ -368,6 +433,21 @@ class TapSpec with Diagnosticable {
 
   /// If [tappable] `== true` the [InkResponse] appearance may be customized.
   final Color? inkSplashColor, inkHighlightColor;
+
+  /// 🌟 [Surface] comes bundled with [🏓 `package:ball`](https://pub.dev/packages/ball 'pub.dev: ball'),
+  ///
+  /// Determine an [InteractiveInkFeatureFactory] specific to
+  /// this 👆 `TapSpec` with `splashFactory`.
+  ///
+  /// Disable the default [BouncyBall.splashFactory] with [useThemeSplashFactory].
+  final InteractiveInkFeatureFactory? splashFactory;
+
+  /// 🌟 [Surface] comes bundled with [🏓 `package:ball`](https://pub.dev/packages/ball 'pub.dev: ball'),
+  ///
+  /// Disable the default [BouncyBall.splashFactory] with this `bool`
+  /// or select an [InteractiveInkFeatureFactory]
+  /// specific to this 👆 `TapSpec` with [splashFactory].
+  final bool useThemeSplashFactory;
 
   /// Disabled by [tappable] `== false`.
   ///
@@ -381,6 +461,8 @@ class TapSpec with Diagnosticable {
     bool? providesFeedback,
     Color? inkSplashColor,
     Color? inkHighlightColor,
+    InteractiveInkFeatureFactory? splashFactory,
+    bool? useThemeSplashFactory,
     VoidCallback? onTap,
   }) =>
       TapSpec(
@@ -388,8 +470,28 @@ class TapSpec with Diagnosticable {
         providesFeedback: providesFeedback ?? this.providesFeedback,
         inkHighlightColor: inkHighlightColor ?? this.inkHighlightColor,
         inkSplashColor: inkSplashColor ?? this.inkSplashColor,
+        splashFactory: splashFactory ?? this.splashFactory,
+        useThemeSplashFactory:
+            useThemeSplashFactory ?? this.useThemeSplashFactory,
         onTap: onTap ?? this.onTap,
       );
+
+  /// If both are `null`, returns `null`.
+  ///
+  /// If either is `null`, replaced with `TapSpec()`.
+  static TapSpec? lerp(TapSpec? a, TapSpec? b, double t) {
+    if (a == null && b == null) return null;
+    a ??= TapSpec();
+    b ??= TapSpec();
+    return TapSpec(
+      tappable: t < 0.5 ? a.tappable : b.tappable,
+      providesFeedback: t < 0.5 ? a.providesFeedback : b.providesFeedback,
+      onTap: t < 0.5 ? a.onTap : b.onTap,
+      inkHighlightColor:
+          Color.lerp(a.inkHighlightColor, b.inkHighlightColor, t),
+      inkSplashColor: Color.lerp(a.inkSplashColor, b.inkSplashColor, t),
+    );
+  }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -405,29 +507,54 @@ class TapSpec with Diagnosticable {
 
 //! ---
 /// ### 🔰 [Shape]
-/// 📐 [CornerSpec]
-/// - Use [corners] to customize all four corners in a [Shape] and their 🔘 [radius].
-/// - **`const` `CornerSpec`s with pre-set configurations available:**
-/// [CornerSpec.SQUARED], [CornerSpec.ROUNDED], [CornerSpec.BEVELED]
-///
-/// [border]
-/// - Add a [BorderSide] decoration to the edges of this [Shape].
-///
-/// 🔛 [padLayer]
-/// - Specify a 📚 [SurfaceLayer] to receive [Surface.padding] value.
+/// - 📐 [CornerSpec] `Shape` description
+///   - Use [corners] to customize all four corners
+/// in a [Shape] and their 🔘 [radius].
+/// ---
+/// - ➖ `BorderSide` [border]s
+/// ---
+/// - 🔘 `Corner` `BorderRadius` [radius]
+///   - Defers to any [Shape.corners] or [Shape.baseCorners]
+/// supplied 🔘 [CornerSpec.radius], if available.
+/// ---
+/// - 🔛 `SurfaceLayer` [padLayer]
+/// ---
+/// - 📏 `Shape` scaling
+///   - See `double`s [shapeScaleChild], [shapeScaleMaterial], [shapeScaleBase]
 class Shape with Diagnosticable {
+  /// - 📐 [CornerSpec] `Shape` description
+  ///   - Use [corners] to customize all four corners
+  ///   in a [Shape] and their 🔘 [radius].
+  ///   - Specify [baseCorners] separately if desired.
+  ///   - **`const` `CornerSpec`s with pre-set configurations available:**
+  ///     - [CornerSpec.CIRCLE], [CornerSpec.SQUARED], [CornerSpec.ROUNDED], [CornerSpec.BEVELED]
+  /// ---
+  /// - ➖ `BorderSide` [border]s
+  ///   - Add a [BorderSide] decoration to the edges of this [Shape].
+  ///   - Specify [baseBorder] separately if desired.
+  /// ---
+  /// - 🔘 `Corner` `BorderRadius` [radius]
+  ///   - Defers to any [Shape.corners] or [Shape.baseCorners]
+  ///   supplied 🔘 [CornerSpec.radius], if available.
+  /// ---
+  /// - 🔛 `SurfaceLayer` [padLayer]
+  ///   - Specify a 📚 [SurfaceLayer] to receive [Surface.padding] value.
+  ///   - Default is 📚 `SurfaceLayer.CHILD`
+  /// ---
+  /// - 📏 `Shape` scaling
+  ///   - See `double`s [shapeScaleChild], [shapeScaleMaterial], [shapeScaleBase]
   const Shape({
     this.corners = CornerSpec.ROUNDED,
     this.baseCorners,
     this.border,
     this.baseBorder,
+    this.radius = _RADIUS,
     this.padLayer = SurfaceLayer.CHILD,
-    this.childScale = 1.0,
-    this.materialScale = 1.0,
-    this.flipBevels = false,
+    this.shapeScaleChild = 1.0,
+    this.shapeScaleMaterial = 1.0,
+    this.shapeScaleBase = 1.0,
   });
 
-  /// ### 📐 [CornerSpec]
   /// Define the [Corner] appearance options for each
   /// of the four corners in a [Shape] and their 🔘 [radius].
   ///
@@ -435,15 +562,17 @@ class Shape with Diagnosticable {
   /// but is optional and will only impact the 📚 [SurfaceLayer.BASE].
   ///
   /// **`const` `CornerSpec`s with pre-set configurations available:**
-  /// - [SQUARED], [ROUNDED], [BEVELED]
+  /// - [CIRCLE], [SQUARED], [ROUNDED], [BEVELED]
+  /// - [ROUNDED_50], [BEVELED_50]
+  /// - [BIBEVELED_50], [BIBEVELED_50_FLIP]
   ///
   /// **`CornerSpec` named constructors with pre-filled [Corner]s:**
+  /// - `new` [CornerSpec] is "roundedWith"
+  /// - [CornerSpec.noneWith]
   /// - [CornerSpec.squaredWith]
-  /// - [CornerSpec.roundedWith]
   /// - [CornerSpec.beveledWith]
   final CornerSpec corners;
 
-  /// ### 📐 [CornerSpec]
   /// The 📐 [baseCorners] may be specified separately from [corners],
   /// but is optional and will only impact the 📚 [SurfaceLayer.BASE].
   final CornerSpec? baseCorners;
@@ -457,6 +586,13 @@ class Shape with Diagnosticable {
   /// The [baseBorder] may be specified separately from [border],
   /// but is optional and will only impact the 📚 [SurfaceLayer.BASE].
   final BorderSide? baseBorder;
+
+  /// The 🔘 [radius] impacts the roundedness of default
+  /// 📐 [Corner.ROUND] or bevel-depth of 📐 [Corner.BEVEL] corners.
+  ///
+  /// If not provided, 🔘 `borderRadius` defers to any
+  /// [Shape.corners] or [Shape.baseCorners] supplied 🔘 [CornerSpec.radius].
+  final BorderRadiusGeometry radius;
 
   /// Specify a 📚 [SurfaceLayer] as 🔛 [padLayer]
   /// to receive [Surface.padding] value.
@@ -475,7 +611,7 @@ class Shape with Diagnosticable {
   /// [Surface.padding] is then *split* between 📚 `MATERIAL` and 📚 `CHILD` layers.
   final SurfaceLayer padLayer;
 
-  /// Declare a `double` [childScale] (defaults `1.0`) that a 🌟 [Surface]
+  /// Declare a `double` [shapeScaleChild] (defaults `1.0`) that a 🌟 [Surface]
   /// will utilize when rendering its 👶 `child` 📚 [SurfaceLayer].
   ///
   /// Because the [Surface.child] is smaller than the 📚 [SurfaceLayer.MATERIAL]
@@ -488,13 +624,13 @@ class Shape with Diagnosticable {
   /// for 📚 [SurfaceLayer.CHILD] with this value.
   ///
   /// If a smaller, inset version of 📚 `MATERIAL` `Shape` -- ***after***
-  /// scaling with any [materialScale] -- is considered `1.0`,
+  /// scaling with any [shapeScaleMaterial] -- is considered `1.0`,
   /// a value between `0.5 -> 1.0` may be desirable with non-negligible `padding`
   /// for the resultant `Shape` will have a *smaller*
   /// border/corner radius than the 📚 `MATERIAL`.
-  final double childScale;
+  final double shapeScaleChild;
 
-  /// Declare a `double` [materialScale] (defaults `1.0`) that a 🌟 [Surface]
+  /// Declare a `double` [shapeScaleMaterial] (defaults `1.0`) that a 🌟 [Surface]
   /// will utilize when rendering the [Shape] for 📚 [SurfaceLayer.MATERIAL].
   ///
   /// Because the 📚 `MATERIAL` is smaller than the 📚 `BASE`
@@ -510,15 +646,13 @@ class Shape with Diagnosticable {
   /// a value between `0.5 -> 1.0` may be desirable with non-negligible 🔲 `peek`
   /// for the resultant `Shape` will have a *smaller*
   /// border/corner radius than the 📚 `BASE`.
-  final double materialScale;
+  final double shapeScaleMaterial;
 
-  /// Only if [corners] `==` 📐 [CornerSpec.BEVELED] will 🔁 [flipBevels] then
-  /// mirror the two beveled corners horizontally across x-axis; ignored otherwise.
+  /// Declare a `double` [shapeScaleBase] (defaults `1.0`) that a 🌟 [Surface]
+  /// will utilize when rendering the [Shape] for 📚 [SurfaceLayer.BASE].
   ///
-  /// See 🔰 [Shape] which ultimately provides the
-  /// [BeveledRectangleBorder] used throughout Surface.
-  @Deprecated(_DEPRECATED)
-  final bool flipBevels;
+  /// A larger, inflated version of 📚 `MATERIAL` `Shape` is considered `1.0`.
+  final double shapeScaleBase;
 
   /// Returns nullable [baseCorners] if initialized, else required [corners].
   CornerSpec get baseCornersOr => baseCorners ?? corners;
@@ -532,23 +666,25 @@ class Shape with Diagnosticable {
     CornerSpec? baseCorners,
     BorderSide? border,
     BorderSide? baseBorder,
+    BorderRadiusGeometry? radius,
     SurfaceLayer? padLayer,
-    double? childScale,
-    double? materialScale,
-    bool? flipBevels,
+    double? shapeScaleChild,
+    double? shapeScaleMaterial,
+    double? shapeScaleBase,
   }) =>
       Shape(
         corners: corners ?? this.corners,
         baseCorners: corners ?? this.baseCorners,
         border: border ?? this.border,
         baseBorder: baseBorder ?? this.baseBorder,
+        radius: radius ?? this.radius,
         padLayer: padLayer ?? this.padLayer,
-        childScale: childScale ?? this.childScale,
-        materialScale: materialScale ?? this.materialScale,
-        flipBevels: flipBevels ?? this.flipBevels,
+        shapeScaleChild: shapeScaleChild ?? this.shapeScaleChild,
+        shapeScaleMaterial: shapeScaleMaterial ?? this.shapeScaleMaterial,
+        shapeScaleBase: shapeScaleBase ?? this.shapeScaleBase,
       );
 
-  /// ### 🔰 [Shape.biBeveledRectangle]
+  /// **[_DEPRECATED]** - **🔰 [Shape.biBeveledRectangle]**
   ///
   /// Returns a [BeveledRectangleBorder] where the passed 🔘 [radius] is applied to
   /// two diagonally opposite corners while the other two remain square.
@@ -597,6 +733,20 @@ class Shape with Diagnosticable {
     );
   }
 
+  /// If both are `null`, returns `null`.
+  ///
+  /// If either is `null`, replaced with `Shape()`.
+  static Shape? lerp(Shape? a, Shape? b, double t) {
+    if (a == null && b == null) return null;
+    a ??= Shape();
+    b ??= Shape();
+    return Shape(
+        corners: CornerSpec.lerp(a.corners, b.corners, t)!,
+        baseCorners: CornerSpec.lerp(a.baseCorners, b.baseCorners, t),
+        border: BorderSide.lerp(
+            a.border ?? BorderSide.none, b.border ?? BorderSide.none, t));
+  }
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
@@ -605,14 +755,24 @@ class Shape with Diagnosticable {
     properties.add(EnumProperty<SurfaceLayer>('padLayer', padLayer));
     properties.add(DiagnosticsProperty<BorderSide>('border', border));
     properties.add(DiagnosticsProperty<BorderSide>('baseBorder', baseBorder));
+    properties.add(DiagnosticsProperty<BorderRadiusGeometry>('radius', radius));
   }
 }
 
-/// TODO WIP
+/// Responsible for accepting a [CornerSpec], [BorderRadiusGeometry],
+/// and optionally a [BorderSide] description, and generating an
+/// [OutlinedBorder] that may be pathed.
+///
+/// (used as `ShapeBorder`, such as in `ClipPath`, `ShapeDecoration`)
 class SurfaceShape extends OutlinedBorder with Diagnosticable {
+  /// Responsible for accepting a [CornerSpec], [BorderRadiusGeometry],
+  /// and optionally a [BorderSide] description, and generating an
+  /// [OutlinedBorder] that may be pathed.
+  ///
+  /// (used as `ShapeBorder`, such as in `ClipPath`, `ShapeDecoration`)
   const SurfaceShape({
     required this.cornerSpec,
-    required this.borderRadius,
+    this.borderRadius = BorderRadius.zero,
     BorderSide border = BorderSide.none,
   }) : super(side: border);
 
@@ -623,7 +783,10 @@ class SurfaceShape extends OutlinedBorder with Diagnosticable {
   EdgeInsetsGeometry get dimensions => EdgeInsets.all(side.width);
 
   @override
-  ShapeBorder scale(double t) => copyWith(
+  SurfaceShape scale(double t) => copyWith(
+        cornerSpec: cornerSpec.copyWith(
+            radius:
+                cornerSpec.radius != null ? (cornerSpec.radius! * t) : null),
         borderRadius: borderRadius * t,
         side: side.scale(t),
       );
@@ -631,24 +794,28 @@ class SurfaceShape extends OutlinedBorder with Diagnosticable {
   /// 📋 Returns a copy of this `SurfaceShape` with the given properties.
   @override
   SurfaceShape copyWith({
+    CornerSpec? cornerSpec,
     BorderRadiusGeometry? borderRadius,
     BorderSide? side,
   }) =>
       SurfaceShape(
-        cornerSpec: this.cornerSpec,
+        cornerSpec: cornerSpec ?? this.cornerSpec,
         borderRadius: borderRadius ?? this.borderRadius,
         border: side ?? this.side,
       );
 
   @override
   Path getInnerPath(Rect rect, {TextDirection? textDirection}) => _getPath(
-      borderRadius.resolve(textDirection).toRRect(rect).deflate(side.width),
-      borderRadius.resolve(textDirection));
+      (cornerSpec.radius ?? borderRadius)
+          .resolve(textDirection)
+          .toRRect(rect)
+          .deflate(side.width),
+      (cornerSpec.radius ?? borderRadius).resolve(textDirection));
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) => _getPath(
-      borderRadius.resolve(textDirection).toRRect(rect),
-      borderRadius.resolve(textDirection));
+      (cornerSpec.radius ?? borderRadius).resolve(textDirection).toRRect(rect),
+      (cornerSpec.radius ?? borderRadius).resolve(textDirection));
 
   /// TODO WIP
   @override
@@ -706,53 +873,52 @@ class SurfaceShape extends OutlinedBorder with Diagnosticable {
     final Offset centerTop = Offset(rrect.center.dx, rrect.top);
     final Offset centerBottom = Offset(rrect.center.dx, rrect.bottom);
 
-    final double tlRadiusX = max(0.0, rrect.tlRadiusX);
-    final double tlRadiusY = max(0.0, rrect.tlRadiusY);
-    final double trRadiusX = max(0.0, rrect.trRadiusX);
-    final double trRadiusY = max(0.0, rrect.trRadiusY);
-    final double blRadiusX = max(0.0, rrect.blRadiusX);
-    final double blRadiusY = max(0.0, rrect.blRadiusY);
-    final double brRadiusX = max(0.0, rrect.brRadiusX);
-    final double brRadiusY = max(0.0, rrect.brRadiusY);
+    final double tlRadiusX = math.max(0.0, rrect.tlRadiusX);
+    final double tlRadiusY = math.max(0.0, rrect.tlRadiusY);
+    final double trRadiusX = math.max(0.0, rrect.trRadiusX);
+    final double trRadiusY = math.max(0.0, rrect.trRadiusY);
+    final double blRadiusX = math.max(0.0, rrect.blRadiusX);
+    final double blRadiusY = math.max(0.0, rrect.blRadiusY);
+    final double brRadiusX = math.max(0.0, rrect.brRadiusX);
+    final double brRadiusY = math.max(0.0, rrect.brRadiusY);
 
     // ?: Safe coords for corners.
     // May have a literal corner Offset inserted between any pair if [Corner.SQUARE].
     // Beveled will `first` lineTo `last`. Round will `first` arcTo `last`.
     final List<Offset> topLeftCoords = <Offset>[
-      Offset(rrect.left, min(centerLeft.dy, rrect.top + tlRadiusY)),
+      Offset(rrect.left, math.min(centerLeft.dy, rrect.top + tlRadiusY)),
       if (tlIsSquare) Offset(rrect.left, rrect.top),
-      Offset(min(centerTop.dx, rrect.left + tlRadiusX), rrect.top),
+      Offset(math.min(centerTop.dx, rrect.left + tlRadiusX), rrect.top),
     ];
     final List<Offset> topRightCoords = <Offset>[
-      Offset(max(centerTop.dx, rrect.right - trRadiusX), rrect.top),
+      Offset(math.max(centerTop.dx, rrect.right - trRadiusX), rrect.top),
       if (trIsSquare) Offset(rrect.right, rrect.top),
-      Offset(rrect.right, min(centerRight.dy, rrect.top + trRadiusY)),
+      Offset(rrect.right, math.min(centerRight.dy, rrect.top + trRadiusY)),
     ];
     final List<Offset> bottomRightCoords = <Offset>[
-      Offset(rrect.right, max(centerRight.dy, rrect.bottom - brRadiusY)),
+      Offset(rrect.right, math.max(centerRight.dy, rrect.bottom - brRadiusY)),
       if (brIsSquare) Offset(rrect.right, rrect.bottom),
-      Offset(max(centerBottom.dx, rrect.right - brRadiusX), rrect.bottom),
+      Offset(math.max(centerBottom.dx, rrect.right - brRadiusX), rrect.bottom),
     ];
     final List<Offset> bottomLeftCoords = <Offset>[
-      Offset(min(centerBottom.dx, rrect.left + blRadiusX), rrect.bottom),
+      Offset(math.min(centerBottom.dx, rrect.left + blRadiusX), rrect.bottom),
       if (blIsSquare) Offset(rrect.left, rrect.bottom),
-      Offset(rrect.left, max(centerLeft.dy, rrect.bottom - blRadiusY)),
+      Offset(rrect.left, math.max(centerLeft.dy, rrect.bottom - blRadiusY)),
     ];
 
     // ?: (no round Corners) => generate Polygon
-    if (!cornerSpec.asSet.contains(Corner.ROUND) &&
-        !cornerSpec.asSet.contains(Corner.NONE))
+    if (cornerSpec.asSet.intersection({Corner.ROUND, Corner.NONE}).isEmpty)
       return Path()
         ..addPolygon(
           topLeftCoords + topRightCoords + bottomRightCoords + bottomLeftCoords,
-          false,
+          true,
         );
 
     // !(no round Corners) => generate by driving Path
     var output = Path()..moveTo(centerLeft.dx, centerLeft.dy);
 
     if (cornerSpec.topLeft == Corner.NONE) {
-      output.arcTo(rrect.outerRect, 1.0 * pi, 0.5 * pi, false);
+      output.arcTo(rrect.outerRect, 1.0 * math.pi, 0.5 * math.pi, false);
     } else {
       output.lineTo(topLeftCoords.first.dx, topLeftCoords.first.dy);
       if (cornerSpec.topLeft == Corner.ROUND)
@@ -765,7 +931,7 @@ class SurfaceShape extends OutlinedBorder with Diagnosticable {
     }
 
     if (cornerSpec.topRight == Corner.NONE) {
-      output.arcTo(rrect.outerRect, 1.5 * pi, 0.5 * pi, false);
+      output.arcTo(rrect.outerRect, 1.5 * math.pi, 0.5 * math.pi, false);
     } else {
       output.lineTo(topRightCoords.first.dx, topRightCoords.first.dy);
       if (cornerSpec.topRight == Corner.ROUND)
@@ -779,7 +945,7 @@ class SurfaceShape extends OutlinedBorder with Diagnosticable {
     }
 
     if (cornerSpec.bottomRight == Corner.NONE) {
-      output.arcTo(rrect.outerRect, 0.0 * pi, 0.5 * pi, false);
+      output.arcTo(rrect.outerRect, 0.0 * math.pi, 0.5 * math.pi, false);
     } else {
       output.lineTo(bottomRightCoords.first.dx, bottomRightCoords.first.dy);
       if (cornerSpec.bottomRight == Corner.ROUND)
@@ -793,7 +959,7 @@ class SurfaceShape extends OutlinedBorder with Diagnosticable {
     }
 
     if (cornerSpec.bottomLeft == Corner.NONE) {
-      output.arcTo(rrect.outerRect, 0.5 * pi, 0.5 * pi, false);
+      output.arcTo(rrect.outerRect, 0.5 * math.pi, 0.5 * math.pi, false);
     } else {
       output.lineTo(bottomLeftCoords.first.dx, bottomLeftCoords.first.dy);
       if (cornerSpec.bottomLeft == Corner.ROUND)
@@ -818,4 +984,5 @@ class SurfaceShape extends OutlinedBorder with Diagnosticable {
   }
 }
 
+///     'Manual shaping now available! See [CornerSpec.BIBEVEL_50]'
 const _DEPRECATED = 'Manual shaping now available! See [CornerSpec.BIBEVEL_50]';

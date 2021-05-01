@@ -1,4 +1,22 @@
 # 🌟 Surface
+## **[0.4.3] - 30 APR 21**
+- Beginning doc/readme cleanup for new `Shape`ing and naming schemes
+- Investigating performance degradation.
+- 🆕 props for 👆 `TapSpec`
+  - ❓ `useThemeSplashFactory`
+  - Custom `splashFactory`
+    - `Surface` falls back to 🏓 `BouncyBall`
+- Renamed 🔲 `Peek.peekAlignment` -> `Peek.alignment` & `Peek.peekRatio` -> `Peek.ratio`
+- Renamed 🔬 `Filter.baseRadius`, et al. -> `Filter.radiusBase`, et al. & made all forms of `radius` input _private with public getters
+- A `radius`, or `Corner` `BorderRadius`, may be specified in `Shape` as well as individual `CornerSpec`
+  - `CornerSpec.radius` will win if available
+
+## **[0.4.2] - 30 APR 21**
+- Fixing `null` checks, especially by `lerp`s.
+
+## **[0.4.1] - 29 APR 21**
+- Imports correction.
+
 ## **[0.4.0] - 29 APR 21**
 - Overhaul in progress. Developing...
 - ✅ Newly added:
@@ -6,7 +24,8 @@
     - Easy `Shape` scaling and differed `Shape` by 📚 `SurfaceLayer`
     - Customize `Shape` by configuring four `Corner`s and `radius`
   - `BorderSide` support, by 📚 `SurfaceLayer`
-  - `class`es given 📋 `copyWith` methods
+  - 📋 `copyWith` methods
+  - Renamed classes: `FilterSpec` -> `Filter`, `PeekSpec` -> `Peek`
   - & more
 - 🔳 Todo:
   - Improve transitioning/animating/lerping
@@ -55,7 +74,7 @@
 - Renamed `SurfaceLayer.BASE` from BORDER.
   - Changed or removed any references to "border"
   - Now refer to "base inset" or `peek`.
-    - Consider the old `Surface.borderRatio` is the new `Peek.peekRatio`.
+    - Consider the old `Surface.borderRatio` is the new `Peek.ratio`.
 - Altered default `Color` handling.
   - `InkResponse` splashes and highlights now defer to `Theme`.
   - Without passing a `Surface.color`, deafult to `ColorScheme.surface`

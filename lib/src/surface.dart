@@ -1,71 +1,27 @@
 /// ## 🌟 Surface
 /// A shapeable, layered, intrinsincally animated container Widget
-/// offering convenient access to blurring ImageFilters, Material InkResponse,
-/// and HapticFeedback.
-/// ---
-///
-/// 📚 [SurfaceLayer] container layering offers robust customization.
-/// - Support for both [Color]s and [Gradient]s in both
-///   📚 [SurfaceLayer] `BASE` and `MATERIAL` layers.
-/// ---
-///
-/// Use 🔘 [Surface.radius] and 📐 [CornerSpec] parameter
-/// [Surface.corners] to configure the shape.
-/// - The 🔘 [baseRadius] may be specified separately,
-///   but is optional and will only impact the 📚 [SurfaceLayer.BASE].
-/// ---
-///
-/// A 🔲 [Peek] may be provided to alter the Surface "peek"
-/// (`MATERIAL` inset or "border") with parameter 🔲 [Peek.peek].
-/// - Give special treatment, generally a thicker appearance, to selected
-///   side(s) by passing 🔲 [Peek.peekAlignment]
-///   and tuning with 🔲 [Peek.peekRatio].
-/// ---
-///
-/// Specify a 🔬 [Filter] with options
-/// to render 🤹‍♂️ [SurfaceFX] backdrop [ImageFilter]s
-/// - In configured 👓 [Filter.filteredLayers] `Set`
-/// - Whose radii (🤹‍♂️ [effect] strength) are mapped with 📊 [Filter.radiusMap]
-///   - A 📚 [SurfaceLayer.BASE] filter may be extended through the
-///   [Surface.margin] with [Filter.extendBaseFilter]
-/// ---
-///
-/// A 👆 [TapSpec] offers [TapSpec.onTap] `VoidCallback`,
-/// [InkResponse] customization, and a [HapticFeedback] shortcut.
-/// ---
-///
-/// ### References
-/// - 🌟 [Surface] - A shapeable, layered, animated container Widget
-/// - 🔰 [Shape]
-///   - 📐 [Corner] & 📐 [CornerSpec]
-/// - 🔲 [Peek] - An Object with optional parameters to customize a Surface's "peek"
-/// - 👆 [TapSpec] - An Object with optional parameters to customize a Surface's tap behavior
-/// - 🔬 [Filter] - An Object with optional parameters to customize a 🌟 `Surface`'s 🤹‍♂️ filters/effects
-///   - 🤹‍♂️ [SurfaceFX] - `Function typedef` for custom [Filter.effect]s!
-///
-/// ### 🏓 [BouncyBall] bundled with `package:ball`
-/// A delightfully bouncy and position-mirroring reaction to user input on a piece of [Material].
-///
-/// Turn ink splashes for an [InkWell], [InkResponse] or material [Theme]
-/// into 🏓 [BouncyBall]s or 🔮 `Glass` [BouncyBall]s
-/// with the built-in [InteractiveInkFeatureFactory]s,
-/// or design your own with 🪀 [BouncyBall.mold].
+/// offering convenient access to blurring `ImageFilter`s,
+/// `Material` `InkResponse`, and `HapticFeedback`.
 library surface;
 
-import '../surface.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
+import 'package:flutter/foundation.dart'
+    show DiagnosticPropertiesBuilder, DiagnosticsProperty, DoubleProperty, Key;
 import 'package:flutter/material.dart';
 
-/// ### ❗ See ***CAUTION*** in [Surface] doc
-/// Concerning 👓 [Filter.filteredLayers]
-/// and 📊 [Filter.radiusMap] values.
+import 'package:ball/ball.dart';
+import 'shape.dart';
+import 'effect.dart';
+import 'goodies.dart';
+
+/// ### ❗ See ***Consideration*** in library `surface.dart`
+/// Regarding 👓 [Filter.filteredLayers] and 📊 [Filter.radiusMap] values.
 ///
-/// Default 📊 `radius` passed to 💧 [FX.blurry].
-/// # `4.0`
+/// Default 📊 `radius` passed to 💧 [FX.blurry]
+/// is `4.0` & minimum is `0.0003`.
 const _BLUR_MINIMUM = 0.0003;
 
-/// Will be overridden when a 🌟 `Surface` is built.
+/// Color fallbacks. Will be overridden when a 🌟 `Surface` is built.
 var _fallbacks = <dynamic, Color>{
   SurfaceLayer.BASE: Colors.black.withOpacity(0.75),
   SurfaceLayer.MATERIAL: Colors.white.withOpacity(0.5),
@@ -83,20 +39,8 @@ var _fallbacks = <dynamic, Color>{
 ///
 /// ---
 ///
-/// ### ❗ ***CAUTION***
-/// With default 🤹‍♂️ [SurfaceFX] 💧 [Fx.blurry], only provide
-/// 👓 [Filter.filteredLayers] value for which you intend on
-/// passing each relevant 💧 [Filter.radiusMap] map parameter.
-///   - Not only are the blurry [BackdropFilter]s expensive, but the
-///   inheritance/ancestry behavior is strange.
-///   - If all three filters are active via 👓 [Filter.filteredLayers], passing
-///   📊 `baseRadius: 0` eliminates the remaining children filters,
-///   regardless of their passed 📊 `radius`.
-///     - This behavior can be worked-around by setting any parent 📚 `Layer`'s
-///     `radius` to just above `0`, specifically `radius > (_MINIMUM_BLUR == 0.0003)`
-///     - `📚 BASE > 📚 MATERIAL > 📚 CHILD`
-///     - But in this case a different 👓 [FilterSpec.filteredLayers] `Set`
-///     should be passed anyway that only activates the correct 📚 `Layer`(s).
+/// ### ❗ See ***Consideration*** in library `surface.dart`
+/// Regarding 👓 [Filter.filteredLayers] and 📊 [Filter.radiusMap] values.
 class Surface extends StatelessWidget {
   //! ---
   /// ### 🌟 [Surface]
@@ -104,18 +48,18 @@ class Surface extends StatelessWidget {
   /// offering convenient access to blurring ImageFilters, Material InkResponse,
   /// and HapticFeedback.
   ///
-  /// Property 🔲 [Peek.peekAlignment] has hard-coded recognition
+  /// Property 🔲 [Peek.alignment] has hard-coded recognition
   /// of all nine [Alignment] geometries and will determine which side(s)
   /// receive a special border treatment according to
-  /// property 🔲 [Peek.peekRatio].
-  /// - defaults at `peekRatio: 2` which makes the 🔲 [Peek.peekAlignment] sides twice as thick, but
-  /// - these borders made be made *thinner* than the others by passing `0 > peekRatio > 1`.
+  /// property 🔲 [Peek.ratio].
+  /// - defaults at `ratio: 2` which makes the 🔲 [Peek.alignment] sides twice as thick, but
+  /// - these borders made be made *thinner* than the others by passing `0 > ratio > 1`.
   ///
   /// Considering:
-  /// 1. 📐 [CornerSpec] property [corners] and global 🔘 [radius];
-  /// 2. 👆 [TapSpec] parameters `tappable`, `onTap`, `providesFeedback` & `inkHighlightColor`, `inkSplashColor`;
+  /// 1. 🔰 [Shape] by 📐 [CornerSpec]
+  /// 2. 👆 [TapSpec]
   /// 3. 🔛 [padLayer] initialized 📚 [SurfaceLayer.MATERIAL] for three effective container layers
-  /// 4. 👓 [SurfaceFilter] passed as 👓 [filterStyle] and `Map<SurfaceLayer, double>` 📊 [radiusMap]
+  /// 4. 👓 [Filter] passed as 👓 [filterStyle] and `Map<SurfaceLayer, double>` 📊 [radiusMap]
   /// 5. [duration] & [curve] properties for intrinsic property-change animations;
   ///
   /// A 🌟 [Surface] is robustly customizable and, *watch out*, could also be expensive.
@@ -127,14 +71,10 @@ class Surface extends StatelessWidget {
   /// >   - 🎨 **[color]** - `Theme.of(context).colorScheme.surface.withOpacity(0.3)`
   /// >   - 🎨 **[baseColor]** - `Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3)`
   ///
-  /// - **If [corners] is passed 📐 [CornerSpec.SQUARED]** then 🔘 [radius] is ignored.
-  /// - **If [corners] is passed 📐 [CornerSpec.BEVELED]** then `bool` 🔁 [flipBevels]
-  ///   can mirror the cut corners horizontally. Ignored otherwise.
-  ///
-  /// - **Passing 🔲 [Peek.peekRatio] a value of `1`**
-  ///   will negate any passed value to `peekAlignment`.
-  /// - Similarly, **passing `peekRatio` in the range `0..1`**
-  ///   will actually make the 🔲 [Peek.peekAlignment]
+  /// - **Passing 🔲 [Peek.ratio] a value of `1`**
+  ///   will negate any passed value to `alignment`.
+  /// - Similarly, **passing `ratio` in the range `0..1`**
+  ///   will actually make the 🔲 [Peek.alignment]
   ///   aligned side(s) *thinner* than the others.
   ///
   /// - By default **👆 [TapSpec.tappable] is true and
@@ -144,32 +84,20 @@ class Surface extends StatelessWidget {
   ///
   /// ---
   ///
-  /// ### ❗ ***CAUTION***
-  /// With default 🤹‍♂️ [SurfaceFX] 💧 [Fx.blurry], only provide
-  /// 👓 [Filter.filteredLayers] value for which you intend on
-  /// passing each relevant 💧 [Filter.radiusMap] map parameter.
-  ///   - Not only are the blurry [BackdropFilter]s expensive, but the
-  ///   inheritance/ancestry behavior is strange.
-  ///   - If all three filters are active via 👓 [Filter.filteredLayers], passing
-  ///   📊 `baseRadius: 0` eliminates the remaining children filters,
-  ///   regardless of their passed 📊 `radius`.
-  ///     - This behavior can be worked-around by setting any parent 📚 `Layer`'s
-  ///     `radius` to just above `0`, specifically `radius > (_MINIMUM_BLUR == 0.0003)`
-  ///     - `📚 BASE > 📚 MATERIAL > 📚 CHILD`
-  ///     - But in this case a different 👓 [FilterSpec.filteredLayers] `Set`
-  ///     should be passed anyway that only activates the correct 📚 `Layer`(s).
+  /// ### ❗ See ***Consideration*** in library `surface.dart`
+  /// Regarding 👓 [Filter.filteredLayers] and 📊 [Filter.radiusMap] values.
   ///
   /// ------
-  /// ------
   ///
-  /// ### Simple Example
+  /// ### ❓ Example
   /// ```dart
-  /// // Surface with a border that's thicker on bottom & right, with rounded corners
+  /// // Surface with a BASE that exposed more on bottom & right, (child set upper-left)
+  /// // with rounded corners and Theme fallback colors; is tappable with InkResponse
+  /// // (also Theme colors) but no vibration & `BouncyBall` splashFactory
   /// final surface = Surface(
-  ///   radius: 10,
   ///   peek: const Peek(
-  ///     peekAlignment: Alignment.bottomRight,
-  ///     peekRatio: 20,
+  ///     alignment: Alignment.bottomRight,
+  ///     ratio: 20,
   ///   ),
   /// );
   /// ```
@@ -183,7 +111,7 @@ class Surface extends StatelessWidget {
     this.gradient,
     this.baseGradient,
     this.shape = const Shape(),
-    this.peek = const Peek(),
+    this.peek = Peek.DEFAULT,
     this.tapSpec = const TapSpec(),
     this.filter = Filter.DEFAULT,
     this.duration = const Duration(milliseconds: 500),
@@ -193,11 +121,11 @@ class Surface extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  /// The [width] and [height] follow rules of [AnimatedContainer],
-  /// applying directly to the 📚 [SurfaceLayer.BASE].
+  /// The [width] and [height] for this 🌟 `Surface`, following the rules
+  /// of [AnimatedContainer] & applying directly to the 📚 [SurfaceLayer.BASE].
   final double? width, height;
 
-  /// [margin] applies to 📚 [SurfaceLayer.BASE] and the 🌟 Surface as a whole.
+  /// [margin] applies to 📚 [SurfaceLayer.BASE] and the 🌟 `Surface` as a whole.
   /// - Consider [Filter.extendBaseFilter] which, if `true`,
   ///   has the BackdropFilter for 📚 [SurfaceLayer.BASE] extend to
   ///   cover the [Surface.margin] insets.
@@ -211,7 +139,9 @@ class Surface extends StatelessWidget {
   ///   between 📚 `MATERIAL` and 📚 `CHILD` [SurfaceLayer]s.
   final EdgeInsets margin, padding;
 
-  /// If 🎨 [color] or 🎨 [baseColor] is initialized, then initializing the
+  /// The 🎨 `Color` to use for this 🌟 `Surface`.
+  ///
+  /// If [color] or [baseColor] is initialized, then initializing the
   /// respective `Gradient` parameter overrides the `Color` pass.
   ///
   /// If not initialized, then default as follows:
@@ -219,32 +149,66 @@ class Surface extends StatelessWidget {
   /// - [baseColor] - `Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3)`
   final Color? color, baseColor;
 
-  /// If 🌆 [gradient] or 🌆 [baseGradient] is initialized,
+  /// The 🌆 `Gradient` to use for this 🌟 `Surface`.
+  ///
+  /// If [gradient] or [baseGradient] is initialized,
   /// then respective `Color` parameter is ignored.
   final Gradient? gradient, baseGradient;
 
-  /// ## WIP
+  /// 📐 [CornerSpec] `Shape` description
+  /// - Use [corners] to customize all four corners
+  /// in a [Shape] and their 🔘 [radius].
+  /// - Specify [baseCorners] separately if desired.
+  /// - **`const` `CornerSpec`s with pre-set configurations available:**
+  ///   - [CornerSpec.CIRCLE], [CornerSpec.SQUARED], [CornerSpec.ROUNDED], [CornerSpec.BEVELED]
+  ///
+  /// ➖ `BorderSide` [border]s
+  /// - Add a [BorderSide] decoration to the edges of this [Shape].
+  /// - Specify [baseBorder] separately if desired.
+  ///
+  /// 🔘 `Corner` `BorderRadius` [radius]
+  /// - Defers to any [Shape.corners] or [Shape.baseCorners]
+  /// supplied 🔘 [CornerSpec.radius], if available.
+  ///
+  /// 🔛 `SurfaceLayer` [padLayer]
+  /// - Specify a 📚 [SurfaceLayer] to receive [Surface.padding] value.
+  /// - Default is 📚 `SurfaceLayer.CHILD`
+  ///
+  /// 📏 `Shape` scaling
+  /// - See `double`s [shapeScaleChild], [shapeScaleMaterial], [shapeScaleBase]
   final Shape shape;
 
-  /// Surface 🔲 [Peek.peek] is applied as insets to 📚 [SurfaceLayer.MATERIAL].
-  /// - It may be considered to function like a border for the [child] content.
-  ///   - Note that 🌟 [Surface] does not currently support actual [Border]s.
-  ///   - To give a border to a 🌟 `Surface`,
-  ///   provide one as a `child` to a [DecoratedBox] or [Container].
+  /// Consider `Peek` to be a description of how the 📚 `BASE`
+  /// is exposed behind the 📚 `MATERIAL`.
   ///
-  /// According to 🔲 [Peek.peekAlignment], a side(s)
-  /// is given special treatment and made:
-  /// - thicker (default `peekRatio == 2.0`) or
-  /// - thinner (`0 > peekRatio > 1`)
+  /// 🔲 [Peek.peek] is applied as insets to 📚 [SurfaceLayer.MATERIAL].
   ///
-  /// Defaults [Alignment.center] such that no sides receive special treatment.
+  /// It may be thought to function like a border for the [child] content, but
+  /// - Note: to give this 🌟 `Surface` a true [BorderSide], see 🔰 [Shape.border].
+  ///
+  /// ---
+  /// Selected by 🔲 [Peek.alignment], a side(s) is given special treatment:
+  /// - thicker (default [Peek.ratio] `== 2.0`) or
+  /// - thinner (`0 >` [Peek.ratio] `> 1.0`)
+  ///
+  /// Defaults [Alignment.center] such that no side(s) receive(s)
+  /// special treatment regardless of 🔲 [Peek.peek] / [Peek.ratio].
   final Peek peek;
 
-  /// Not only does 👆 [TapSpec.tappable] provide `onTap` Callback,
-  /// it also adds an [InkResponse] to the [Material] before rendering [child].
+  /// Not only does 👆 [TapSpec.tappable] provide `onTap` Callback functionality,
+  /// it also adds [InkResponse] to the [Material] underneath [child].
   ///
   /// 👆 [TapSpec.providesFeedback] is a convenience parameter
   /// to add a [HapticFeedback.vibrate] `onTap`.
+  ///
+  /// Ink splash `Color`s may be customized with a 👆 [TapSpec].
+  ///
+  /// ---
+  /// 🌟 `Surface` comes bundled with [🏓 `package:ball`](https://pub.dev/packages/ball 'pub.dev: ball').
+  ///
+  /// Disable the default [BouncyBall.splashFactory] with
+  /// 👆 [TapSpec.useThemeSplashFactory] or select an [InteractiveInkFeatureFactory]
+  /// specific to this 🌟 `Surface` with 👆 [TapSpec.splashFactory].
   final TapSpec tapSpec;
 
   /// Provided a 🔬 [Filter] to alter
@@ -282,23 +246,137 @@ class Surface extends StatelessWidget {
   /// Defaults to standard [Clip.hardEdge]. Must *not* be [Clip.none].
   final Clip clipBehavior;
 
+  // ! ---
+  /// ## ✂️ Clip
+  Widget _clip(ShapeBorder? shape, {required Widget child}) => ClipPath.shape(
+        clipBehavior: clipBehavior,
+        shape: shape!,
+        child: child,
+      );
+
+  // ! ---
+  /// ## 🤹‍♂️ Filter
+  /// Returns [_clip]-ed [ImageFilter] with [Filter.effect].
+  Widget _filter(SurfaceLayer layer, ShapeBorder? shape,
+          {required Widget child}) =>
+      _clip(
+        shape,
+        child: BackdropFilter(
+          filter: filter.effect(
+            (filter.filteredLayers.contains(layer))
+                ? filter.radiusByLayer(layer)
+                : 0.0, // Ignore all radius values if 📚 layer is not enabled
+            layer,
+          ),
+          child: child,
+        ),
+      );
+
+  // ! ---
+  /// ## 🌈 Decorate
+  /// Returns [ShapeDecoration] given a [SurfaceLayer] and [SurfaceShape].
+  Decoration _decorate(SurfaceLayer layer, ShapeBorder shape) {
+    final isGradient = (layer == SurfaceLayer.BASE)
+        ? (baseGradient != null)
+        : (gradient != null);
+
+    // _fallbacks starts with colors every time.
+    final Color _color = (layer == SurfaceLayer.BASE)
+        ? baseColor ?? _fallbacks[SurfaceLayer.BASE]!
+        : color ?? _fallbacks[SurfaceLayer.MATERIAL]!;
+
+    return ShapeDecoration(
+      shape: shape,
+      gradient: (isGradient)
+          ? (layer == SurfaceLayer.BASE)
+              ? baseGradient
+              : gradient
+          : LinearGradient(colors: [_color, _color]),
+    );
+  }
+
+  // ! ---
+  /// ## 👶 Build Child
+  /// Property 🔛 [padLayer] determines how [padding] is distributed.
+  /// - Special case where `padLayer == SurfaceLayer.BASE` *splits* the padding
+  ///   between 📚 `MATERIAL` and 📚 `CHILD` [SurfaceLayer]s.
+  AnimatedPadding _buildChild(ShapeBorder? shapeMaterial) {
+    /// Outer Padding applies to [_filter] (maybe).
+    return AnimatedPadding(
+      duration: duration,
+      curve: curve,
+      padding: (shape.padLayer == SurfaceLayer.MATERIAL)
+          ? padding
+          : (shape.padLayer == SurfaceLayer.BASE)
+              ? padding / 2
+              // padLayer == SurfaceLayer.CHILD, default
+              : const EdgeInsets.all(0),
+      child: _filter(
+        SurfaceLayer.CHILD,
+        shapeMaterial!.scale(shape.shapeScaleChild),
+        // Inner Padding applies to [child] (maybe).
+        child: AnimatedPadding(
+          duration: duration,
+          curve: curve,
+          padding: (shape.padLayer == SurfaceLayer.CHILD) // default
+              ? padding
+              : (shape.padLayer == SurfaceLayer.BASE)
+                  ? padding / 2
+                  // padLayer == SurfaceLayer.SURFACE
+                  : const EdgeInsets.all(0),
+          child: child ?? const SizedBox(width: 0, height: 0),
+        ),
+      ),
+    );
+  }
+
+  //! ---
+  /// ## 👆 Wrap Child
+  /// Clearly the [SurfaceLayer.CHILD], `_wrapChild` takes no 📚 `Layer`.
+  InkResponse _wrapChild(
+    ShapeBorder? materialShape, {
+    required InteractiveInkFeatureFactory splashFactory,
+  }) {
+    return InkResponse(
+      canRequestFocus:
+          tapSpec.tappable, // TODO Look into `focus`, accessibility, nav
+      containedInkWell: true,
+      customBorder: materialShape,
+      highlightShape: BoxShape.rectangle,
+      highlightColor: tapSpec.tappable
+          ? tapSpec.inkHighlightColor ?? _fallbacks['HIGHLIGHT']
+          : Colors.transparent,
+      splashColor: tapSpec.tappable
+          ? tapSpec.inkSplashColor ?? _fallbacks['SPLASH']
+          : Colors.transparent,
+      splashFactory: splashFactory,
+      child: _buildChild(materialShape),
+      onTap: (tapSpec.tappable)
+          ? () {
+              if (tapSpec.providesFeedback) HapticFeedback.vibrate();
+              tapSpec.onTap?.call();
+            }
+          : null,
+    );
+  }
+
   //! ---
   /// ## 👷‍♂️🌟 Build [Surface]
   @override
   Widget build(BuildContext context) {
     assert(
         ((filter.filteredLayers == Filter.TRILAYER)
-                ? (filter.literalRadiusBase >= _BLUR_MINIMUM &&
-                    filter.literalRadiusMaterial >= _BLUR_MINIMUM)
+                ? (filter.renderedRadiusBase >= _BLUR_MINIMUM &&
+                    filter.renderedRadiusMaterial >= _BLUR_MINIMUM)
                 : true) ||
             ((filter.filteredLayers == Filter.INNER_BILAYER)
-                ? (filter.literalRadiusMaterial >= _BLUR_MINIMUM)
+                ? (filter.renderedRadiusMaterial >= _BLUR_MINIMUM)
                 : true) ||
             ((filter.filteredLayers == Filter.BASE_AND_CHILD)
-                ? (filter.literalRadiusBase >= _BLUR_MINIMUM)
+                ? (filter.renderedRadiusBase >= _BLUR_MINIMUM)
                 : true) ||
             ((filter.filteredLayers == Filter.BASE_AND_MATERIAL)
-                ? (filter.literalRadiusBase >= _BLUR_MINIMUM)
+                ? (filter.renderedRadiusBase >= _BLUR_MINIMUM)
                 : true),
         '[Surface] > Upper-layered filters will be negated if ancestor filters are enabled that have radius < 0.0003.\n'
         'Increase blur radius of lower layer(s) or pass a different [Filter.filteredLayers].');
@@ -310,33 +388,39 @@ class Surface extends StatelessWidget {
     _fallbacks['HIGHLIGHT'] = Theme.of(context).highlightColor;
     _fallbacks['SPLASH'] = Theme.of(context).splashColor;
 
-    final shapeBase = SurfaceShape(
+    final InteractiveInkFeatureFactory _splashFactory =
+        tapSpec.useThemeSplashFactory
+            ? Theme.of(context).splashFactory
+            : tapSpec.splashFactory ?? BouncyBall.splashFactory;
+
+    final SurfaceShape shapeBase = SurfaceShape(
       cornerSpec: shape.baseCornersOr,
-      borderRadius: shape.baseCorners?.radius ?? shape.corners.radius * 1,
+      borderRadius: shape.radius,
       border: shape.baseBorderOr ?? BorderSide.none,
-    );
-    final shapeMaterial = SurfaceShape(
+    ).scale(shape.shapeScaleBase);
+
+    final SurfaceShape shapeMaterial = SurfaceShape(
       cornerSpec: shape.corners,
-      borderRadius: shape.corners.radius,
+      borderRadius: shape.radius,
       border: shape.border ?? BorderSide.none,
-    ).scale(shape.materialScale);
+    ).scale(shape.shapeScaleMaterial);
 
     // ! ---
     // * 🌟🧅 [innerMaterial] == 📚 [SurfaceLayer.MATERIAL]
     // Material will be canvas for [child] and respond to touches.
-    Widget innerMaterial = AnimatedContainer(
+    final AnimatedContainer innerMaterial = AnimatedContainer(
       duration: duration,
       curve: curve,
       decoration: _decorate(SurfaceLayer.MATERIAL, shapeMaterial),
       child: Material(
         color: Colors.transparent,
-        child: _wrapChildWithInk(shapeMaterial),
+        child: _wrapChild(shapeMaterial, splashFactory: _splashFactory),
       ),
     );
 
     // ! ---
     // * 🌟🐚 [baseContainer] == 📚 [SurfaceLayer.BASE]
-    Widget baseContainer = AnimatedContainer(
+    final AnimatedContainer baseContainer = AnimatedContainer(
       width: width,
       height: height,
       duration: duration,
@@ -370,110 +454,6 @@ class Surface extends StatelessWidget {
       child: _filter(SurfaceLayer.BASE, shapeBase, child: baseContainer),
     );
   }
-
-  //! ---
-  /// ## 👆 [_wrapChildWithInk]
-  IgnorePointer _wrapChildWithInk(ShapeBorder? materialShape) {
-    return IgnorePointer(
-      ignoring: !tapSpec.tappable,
-      child: InkResponse(
-        canRequestFocus: true, // TODO Look into `focus`, accessibility, nav
-        containedInkWell: true,
-        customBorder: materialShape,
-        highlightShape: BoxShape.rectangle,
-        highlightColor: tapSpec.inkHighlightColor ?? _fallbacks['HIGHLIGHT'],
-        splashColor: tapSpec.inkSplashColor ?? _fallbacks['SPLASH'],
-        child: _buildChild(materialShape),
-        onTap: () {
-          if (tapSpec.providesFeedback) HapticFeedback.vibrate();
-          tapSpec.onTap?.call();
-        },
-      ),
-    );
-  }
-
-  /// ! ---
-  /// ## 👷‍♂️: 👶 [_buildChild] with passed [child]
-  /// Property 🔛 [padLayer] determines how [padding] is distributed.
-  /// - Special case where `padLayer == SurfaceLayer.BASE` *splits* the padding
-  ///   between 📚 `MATERIAL` and 📚 `CHILD` [SurfaceLayer]s.
-  AnimatedPadding _buildChild(ShapeBorder? shapeMaterial) {
-    /// Outer Padding applies to [_filter] (maybe).
-    return AnimatedPadding(
-      duration: duration,
-      curve: curve,
-      padding: (shape.padLayer == SurfaceLayer.MATERIAL)
-          ? padding
-          : (shape.padLayer == SurfaceLayer.BASE)
-              ? padding / 2
-              // padLayer == SurfaceLayer.CHILD, default
-              : const EdgeInsets.all(0),
-      child: _filter(
-        SurfaceLayer.CHILD,
-        shapeMaterial!.scale(shape.childScale / 2),
-        // Inner Padding applies to [child] (maybe).
-        child: AnimatedPadding(
-          duration: duration,
-          curve: curve,
-          padding: (shape.padLayer == SurfaceLayer.CHILD) // default
-              ? padding
-              : (shape.padLayer == SurfaceLayer.BASE)
-                  ? padding / 2
-                  // padLayer == SurfaceLayer.SURFACE
-                  : const EdgeInsets.all(0),
-          child: child ?? const SizedBox(width: 0, height: 0), // 👶 [child]
-        ),
-      ),
-    );
-  }
-
-  // ! ---
-  /// ## 🌈 Decorate
-  /// Returns [ShapeDecoration] given a [SurfaceLayer] and [SurfaceShape].
-  Decoration _decorate(SurfaceLayer layer, ShapeBorder? shape) {
-    final isGradient = (layer == SurfaceLayer.BASE)
-        ? (baseGradient != null)
-        : (gradient != null);
-
-    final _color = (layer == SurfaceLayer.BASE)
-        ? baseColor ?? _fallbacks[SurfaceLayer.BASE]
-        : color ?? _fallbacks[SurfaceLayer.MATERIAL];
-
-    return ShapeDecoration(
-      shape: shape!,
-      gradient: (isGradient)
-          ? (layer == SurfaceLayer.BASE)
-              ? baseGradient
-              : gradient
-          : LinearGradient(colors: [_color!, _color]),
-    );
-  }
-
-  // ! ---
-  /// ## 🤹‍♂️
-  /// Returns [_clip]-ed [ImageFilter] with [Filter.effect].
-  Widget _filter(SurfaceLayer layer, ShapeBorder? shape,
-          {required Widget child}) =>
-      _clip(
-        shape,
-        child: BackdropFilter(
-          filter: filter.effect(
-            (filter.filteredLayers.contains(layer))
-                ? filter.radiusByLayer(layer)
-                : 0.0,
-            layer,
-          ),
-          child: child,
-        ),
-      );
-
-  // ! ---
-  /// ## ✂️
-  Widget _clip(ShapeBorder? shape, {required Widget child}) => ClipPath.shape(
-        clipBehavior: clipBehavior,
-        shape: shape!,
-        child: child,
-      );
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

@@ -1,24 +1,19 @@
-/// ## 🎊 Surface: Goodies
-/// Just for fun.
-///
-/// ### References
-/// - 🔦 [WithShading] `Color` extension
-///   - ⬛ [withBlack] `.withBlack(int subtract)`
-///   - ⬜ [withWhite] `.withWhite(int add)`
-/// - 🤚 [DragNub] A small, round "handle" indicator used to visualize impression of draggable material
+/// ## 🎊 Surface Library: Goodies
+/// - ⬛⬜ [Shading] `extension on Color`
+/// - ✋ [DragNub] `Widget`
 library surface;
 
-import '../surface.dart';
+import 'package:flutter/material.dart';
+
+extension _Clamp on int {
+  int get _clamp => this.clamp(0, 255);
+}
 
 /// ---
-/// ### 🔦 [WithShading] extends [Color]
-///
-/// #### ⬛ [withBlack]
-///      Color.withBlack(int subtract)
-///
-/// #### ⬜ [withWhite]
-///      Color.withWhite(int add)
-extension WithShading on Color {
+/// 🔦 `WithShading` extends `Color`
+/// - ⬛ [withBlack]
+/// - ⬜ [withWhite]
+extension Shading on Color {
   /// #### ⬜ With White
   ///
   /// ```
@@ -26,10 +21,10 @@ extension WithShading on Color {
   /// // Brightens Color's RGB values by `add` (result <= 255)
   /// ```
   Color withWhite(int add) => Color.fromARGB(
-        this.alpha,
-        (this.red + add).clamp(0, 255),
-        (this.green + add).clamp(0, 255),
-        (this.blue + add).clamp(0, 255),
+        alpha,
+        (red + add)._clamp,
+        (green + add)._clamp,
+        (blue + add)._clamp,
       );
 
   /// #### ⬛ With Black
@@ -39,21 +34,25 @@ extension WithShading on Color {
   /// // Darkens Color's RGB values by `subtract` (result >= 0)
   /// ```
   Color withBlack(int subtract) => Color.fromARGB(
-        this.alpha,
-        (this.red - subtract).clamp(0, 255),
-        (this.green - subtract).clamp(0, 255),
-        (this.blue - subtract).clamp(0, 255),
+        alpha,
+        (red - subtract)._clamp,
+        (green - subtract)._clamp,
+        (blue - subtract)._clamp,
       );
+
+  /// Average the `alpha`, `red`, `green`, and `blue` channels
+  /// of a `Color` with another `other`.
+  Color operator +(Color other) => Color.fromARGB(
+      ((alpha + other.alpha) ~/ 2)._clamp,
+      ((red + red) ~/ 2)._clamp,
+      ((green + other.green) ~/ 2)._clamp,
+      ((blue + other.blue) ~/ 2)._clamp);
 }
 
 /// ---
 /// ### ✋ Drag Nub
 /// A small, round "handle" indicator used to visualize
 /// the impression of a moving sheet or draggable material.
-///
-/// ```
-/// DragNub({double width, double height, Color color, double borderWidth})
-/// ```
 class DragNub extends StatelessWidget {
   /// ### ✋ Drag Nub
   /// Aa small, round "handle" indicator used to visualize
@@ -88,9 +87,15 @@ class DragNub extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10)),
             boxShadow: const [
               BoxShadow(
-                  color: Colors.white24, blurRadius: 4, offset: Offset(-2, -2)),
+                color: Colors.white24,
+                blurRadius: 4,
+                offset: Offset(-2, -2),
+              ),
               BoxShadow(
-                  color: Colors.white10, blurRadius: 4, offset: Offset(2, 2)),
+                color: Colors.white10,
+                blurRadius: 4,
+                offset: Offset(2, 2),
+              ),
             ],
           ),
         ),

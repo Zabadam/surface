@@ -1,3 +1,4 @@
+/// WORK IN PROGRESS
 library surface_example;
 
 import 'dart:async';
@@ -57,9 +58,7 @@ class SurfaceExample extends StatelessWidget {
 }
 
 class SurfaceExampleDrawer extends StatelessWidget {
-  const SurfaceExampleDrawer({
-    Key? key,
-  }) : super(key: key);
+  const SurfaceExampleDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +108,7 @@ class SurfaceExampleDrawer extends StatelessWidget {
       child: Text(
         onSurface,
         textAlign: TextAlign.center,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 50,
           fontWeight: FontWeight.bold,
@@ -121,8 +120,6 @@ class SurfaceExampleDrawer extends StatelessWidget {
 
 class Landing extends StatefulWidget {
   const Landing({Key? key}) : super(key: key);
-
-  @override
   _LandingState createState() => _LandingState();
 }
 
@@ -347,12 +344,12 @@ class _LandingState extends State<Landing> {
       ),
 
       /// Ensure the border is very thin at edges of screen to not obscure system
-      /// navbar, but use `peekAlignment` & `peekRatio` to give the
+      /// navbar, but use `alignment` & `ratio` to give the
       /// bottom edge some girth.
       peek: const Peek(
         peek: 1.5,
-        peekRatio: 2,
-        peekAlignment: Alignment.bottomCenter,
+        ratio: 2,
+        alignment: Alignment.bottomCenter,
       ),
 
       /// Easily we've given the system navbar a bright shine at top-left edge
@@ -383,7 +380,7 @@ class _LandingState extends State<Landing> {
       padding: const EdgeInsets.all(50),
       shape: Shape(
         // childScale: 0.75,
-        materialScale: 0.7,
+        shapeScaleMaterial: 0.7,
         // corners: (_isExampleBeveled)
         //     ? CornerSpec.BIBEVELED_50_FLIP
         //     : CornerSpec.CIRCLE,
@@ -402,8 +399,8 @@ class _LandingState extends State<Landing> {
       ),
       peek: Peek(
         peek: 20,
-        peekRatio: (_isExampleBeveled) ? 2.5 : 5,
-        peekAlignment:
+        ratio: (_isExampleBeveled) ? 2.5 : 5,
+        alignment:
             (_isExampleBeveled) ? Alignment.bottomRight : Alignment.topCenter,
       ),
       tapSpec: const TapSpec(
@@ -412,17 +409,17 @@ class _LandingState extends State<Landing> {
       ),
       filter: Filter(
         // filteredLayers: FilterSpec.TRILAYER,
-        filteredLayers: Filter.NONE, // Override `radii` below
-        baseRadius: 1.0,
-        materialRadius: 2.0,
-        childRadius: 20.0,
+        filteredLayers: Filter.NONE, // Overrides `radii` below
+        radiusBase: 1.0,
+        radiusMaterial: 2.0,
+        // radiusChild: 20.0,
 
         /// `filteredLayers: FilterSpec.NONE` above so `specRadius` == 0,
         /// but `SurfaceLayer` is still delivered.
         effect: (double specRadius, SurfaceLayer layerForRender) =>
 
             /// Overrides both the `filteredLayers` AND `radii` above
-            // FX.b(specRadius), // when `FilterSpec.NONE` -> `specRadius` == 0
+            // FX.b(specRadius), // but when `FilterSpec.NONE` -> `specRadius` == 0, so
             FX.b(layerForRender == SurfaceLayer.CHILD ? specRadius : 2.5),
       ),
       baseColor: Colors.black38,
@@ -484,8 +481,8 @@ class _LandingState extends State<Landing> {
       duration: _DURATION,
       peek: const Peek(
         peek: 30,
-        // peekAlignment: Alignment.bottomCenter,
-        // peekRatio: 1.25,
+        // alignment: Alignment.bottomCenter,
+        // ratio: 1.25,
       ),
 
       shape: const Shape(
@@ -576,8 +573,8 @@ class _LandingState extends State<Landing> {
       peek: Peek(
         // peek: 0,
         peek: (_showExamplePopup) ? 25 : 30,
-        peekRatio: (_showExamplePopup) ? 4 : 7,
-        peekAlignment: Alignment.topLeft,
+        ratio: (_showExamplePopup) ? 4 : 7,
+        alignment: Alignment.topLeft,
       ),
 
       tapSpec: TapSpec(
@@ -589,11 +586,12 @@ class _LandingState extends State<Landing> {
       // Child and Material filters will occupy same space unless
       // `ShapeSpec(padLayer: SurfaceLayer.MATERIAL)`
       filter: const Filter(
-        filteredLayers: Filter.TRILAYER,
+        // filteredLayers: Filter.TRILAYER,
+        filteredLayers: Filter.BASE_AND_MATERIAL,
         radiusMap: {
           SurfaceLayer.BASE: 3.0,
           SurfaceLayer.MATERIAL: 4.0,
-          SurfaceLayer.CHILD: 20.0
+          // SurfaceLayer.CHILD: 20.0
         },
       ),
 

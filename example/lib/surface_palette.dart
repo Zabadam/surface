@@ -198,8 +198,8 @@ class ColorItem extends StatelessWidget {
               ),
               peek: const Peek(
                 peek: 15,
-                peekAlignment: Alignment.centerLeft,
-                peekRatio: 10,
+                alignment: Alignment.centerLeft,
+                ratio: 10,
               ),
               filter: const Filter(
                 extendBaseFilter: true, // default is `false`
@@ -321,7 +321,7 @@ class PaletteTabView extends StatelessWidget {
             tapSpec: tapSpec,
             filter: const Filter(
               filteredLayers: Filter.BASE,
-              baseRadius: 10,
+              radiusBase: 10,
             ),
             child: Center(
               /// Using a FittedBox, feel free to set a really huge fontSize.
