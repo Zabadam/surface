@@ -3,7 +3,6 @@ library surface_example;
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-import 'package:surface/surface.dart';
 import 'package:ball/ball.dart';
 
 /// Mouse-over [BouncyBall.mold] or [ctrl]+[click]

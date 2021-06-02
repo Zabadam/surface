@@ -1,21 +1,18 @@
 name: surface_example
 description: Example usage of Surface and Bouncy Ball.
-publish_to: 'none'
-version: 0.3.0
-# +7
-
+version: 0.5.0
 environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  surface:
-    path: ../
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  surface:
+    path: ../
 
 flutter:
   uses-material-design: true

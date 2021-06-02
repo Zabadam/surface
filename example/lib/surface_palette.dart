@@ -156,14 +156,14 @@ class ColorItem extends StatelessWidget {
     required this.color,
     this.prefix = '',
     required this.brightness,
-    this.tapSpec,
+    required this.tactility,
   }) : super(key: key);
 
   final int index;
   final Color color;
   final String prefix;
   final Brightness brightness;
-  final TapSpec? tapSpec;
+  final Tactility tactility;
 
   String get _colorString =>
       "#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}";
@@ -182,35 +182,40 @@ class ColorItem extends StatelessWidget {
         children: [
           Semantics(
             container: true,
-            child: Surface(
-              height: _ITEM_HEIGHT,
-              margin: const EdgeInsets.all(_ITEM_PADDING),
-              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+            child: Surface.founded(
+              shape: Shape(
+                corners: Corners.roundWith(),
+                radius: CornerRadius.all(Circular(Length(75))),
+              ),
+              appearance: Appearance.primitive(
+                height: _ITEM_HEIGHT,
+                margin: const EdgeInsets.all(_ITEM_PADDING),
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                color: color.withOpacity(0.75),
+              ),
+              foundation: Foundation(
+                peek: 5,
+                exposure: Alignment.centerLeft,
+                ratio: 30,
+                shape: Shape(
+                  corners: Corners.roundWith(),
+                  radius: CornerRadius.all(Circular(Length(75))),
+                ),
+                appearance: Appearance.primitive(color: color.withOpacity(0.3)),
+              ),
               duration: _DURATION,
               curve: _CURVE,
-              color: color.withOpacity(0.6),
-              baseColor: color.withOpacity(0.3),
-              shape: Shape(
-                corners:
-                    CornerSpec(radius: BorderRadius.all(Radius.circular(5))),
-                baseCorners:
-                    CornerSpec(radius: BorderRadius.all(Radius.circular(75))),
-              ),
-              peek: const Peek(
-                peek: 15,
-                alignment: Alignment.centerLeft,
-                ratio: 10,
-              ),
               filter: const Filter(
-                extendBaseFilter: true, // default is `false`
-                filteredLayers: {SurfaceLayer.BASE, SurfaceLayer.MATERIAL},
-                radiusMap: {
-                  SurfaceLayer.BASE: 4.0,
-                  SurfaceLayer.MATERIAL: 15.0,
+                filteredLayers: {
+                  SurfaceLayer.FOUNDATION,
+                  SurfaceLayer.MATERIAL
                 },
+                radiusFoundation: 4.0,
+                radiusMaterial: 15.0,
               ),
-              tapSpec: tapSpec!,
-              child: Center(
+              tactility: tactility,
+              child: Align(
+                alignment: Alignment(0, -0.5),
                 child: FittedBox(child: Text(_colorString, style: style)),
               ),
             ),
@@ -270,7 +275,7 @@ class PaletteTabView extends StatelessWidget {
           KEYS_PRIMARIES.length +
           ((palette.accent != null) ? KEYS_ACCENTS.length : 0),
       itemBuilder: (_, index) {
-        final TapSpec tapSpec = TapSpec(
+        final Tactility tactility = Tactility(
           inkHighlightColor: ((palette.accent != null)
                   ? palette.accent![400]
                   : palette.primary)!
@@ -287,7 +292,7 @@ class PaletteTabView extends StatelessWidget {
             brightness: primariesIndex > palette.threshold
                 ? Brightness.dark
                 : Brightness.light,
-            tapSpec: tapSpec,
+            tactility: tactility,
           );
         }
 
@@ -305,46 +310,46 @@ class PaletteTabView extends StatelessWidget {
             brightness: accentsIndex > palette.threshold
                 ? Brightness.dark
                 : Brightness.light,
-            tapSpec: tapSpec,
+            tactility: tactility,
           );
         }
 
         /// Else
-        return Center(
-          child: Surface(
-            width: double.infinity,
-            height: _ITEM_HEIGHT - _ITEM_PADDING * 2,
+        return Surface.tactile(
+          shape: Shape(),
+          appearance: Appearance.primitive(
+            // width: double.infinity,
+            height: _ITEM_HEIGHT - _ITEM_PADDING * 4,
             margin: const EdgeInsets.all(_ITEM_PADDING * 2),
             padding: const EdgeInsets.all(10),
-            color: Colors.transparent,
-            baseColor: palette.primary[900]!.withOpacity(0.5),
-            tapSpec: tapSpec,
-            filter: const Filter(
-              filteredLayers: Filter.BASE,
-              radiusBase: 10,
-            ),
-            child: Center(
-              /// Using a FittedBox, feel free to set a really huge fontSize.
-              child: FittedBox(
-                child: Text(
-                  '${palette.name.toUpperCase()}:\n'
-                  'No Further Shades',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 100,
-                    color: palette.primary[300],
-                    fontWeight: FontWeight.w900,
-                    shadows: [
-                      Shadow(
-                        color: palette.primary[50]!,
-                        offset: Offset(0, -1),
-                      ),
-                      Shadow(
-                        color: palette.primary[900]!.withBlack(25),
-                        offset: Offset(0, 5),
-                      )
-                    ],
-                  ),
+            color: palette.primary[900]!.withOpacity(0.5),
+          ),
+          filter: const Filter(
+            filteredLayers: {SurfaceLayer.FOUNDATION},
+            radiusFoundation: 10,
+          ),
+          tactility: tactility,
+          child: Center(
+            /// Using a FittedBox, feel free to set a really huge fontSize.
+            child: FittedBox(
+              child: Text(
+                '${palette.name.toUpperCase()}:\n'
+                'No Further Shades',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 100,
+                  color: palette.primary[300],
+                  fontWeight: FontWeight.w900,
+                  shadows: [
+                    Shadow(
+                      color: palette.primary[50]!,
+                      offset: Offset(0, -1),
+                    ),
+                    Shadow(
+                      color: palette.primary[900]!.withBlack(25),
+                      offset: Offset(0, 5),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -356,7 +361,7 @@ class PaletteTabView extends StatelessWidget {
 }
 
 /// A tabbed view that presents a MaterialColor on each tab,
-/// with shades presented with the use of [Surface]s.
+/// with shades presented with the use of [SurfaceLegacy]s.
 class SurfacePalette extends StatefulWidget {
   const SurfacePalette({Key? key}) : super(key: key);
   _SurfacePaletteState createState() => _SurfacePaletteState();

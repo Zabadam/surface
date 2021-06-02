@@ -1,5 +1,10 @@
 # 🌟 Surface
-## **[0.4.3] - 30 APR 21**
+## **[0.5.0]** - 01 MAR 21
+- In lieu of reinventing the wheel on shaping, I'm looking to make
+  flavored usage of [`AnimatedStyledWidget`](https://pub.dev/packages/animated_styled_widget).
+
+## Legacy
+### **[0.4.3]** - 30 APR 21
 - Beginning doc/readme cleanup for new `Shape`ing and naming schemes
 - Investigating performance degradation.
 - 🆕 props for 👆 `TapSpec`
@@ -11,13 +16,13 @@
 - A `radius`, or `Corner` `BorderRadius`, may be specified in `Shape` as well as individual `CornerSpec`
   - `CornerSpec.radius` will win if available
 
-## **[0.4.2] - 30 APR 21**
+### **[0.4.2]** - 30 APR 21
 - Fixing `null` checks, especially by `lerp`s.
 
-## **[0.4.1] - 29 APR 21**
+### **[0.4.1]** - 29 APR 21
 - Imports correction.
 
-## **[0.4.0] - 29 APR 21**
+### **[0.4.0]** - 29 APR 21
 - Overhaul in progress. Developing...
 - ✅ Newly added:
   - Manual (or pre-configured) custom [`Shape`](https://pub.dev/documentation/surface/latest/surface/Shape-class.html)ing
@@ -31,7 +36,7 @@
   - Improve transitioning/animating/lerping
   - & more
 
-## **[0.3.0] - 25 APR 21**
+### **[0.3.0]** - 25 APR 21
 - Divided package into several bite-size `src` files
 - Reverted names of `Spec` classes to drop preceding `'Surface'`
 - `CustomInk` -> `BouncyBall`, forked as [🏓 `package:ball`](https://pub.dev/packages/ball), with LOTS of 🆕 features!
@@ -45,7 +50,7 @@
 - Core of 🌟 `Surface` cleaned up, with with is hopefully now ***zero*** changes to Widget tree depth by altering parameters like removing filters & disabling ink response and handling `Clip`s differently
   -  Still need to work on 🔰 `SurfaceShape` and `Decoration lerp`ing
 
-## **[0.2.0] & [0.2.0+7] - 12 APR 21**
+### **[0.2.0]** & **[0.2.0+7]** - 12 APR 21
 - Migrated package to sound null safety.
 - Cleaned up internal `Filter` code a bit while adding relevant `constants`
   - One `DEFAULT_SPEC` is used by a `new` 🌟 `Surface`
@@ -54,20 +59,20 @@
 - 🔰 `BiBeveledShape.build` becomes 🔰 [`SurfaceShape.biBeveledRectangle`](https://pub.dev/documentation/surface/latest/surface/SurfaceShape/biBeveledRectangle.html) for growth potential
 - Removed `fullPrint` and `scaleAxis`.
 
-## **[0.1.0] - 04 APR 21**
+### **[0.1.0]** - 04 APR 21
 - Added [`Surface.baseRadius`](https://pub.dev/documentation/surface/latest/surface/Surface/baseRadius.html).
   - 🔘 [`baseRadius`](https://pub.dev/documentation/surface/latest/surface/Surface/baseRadius.html) may be specified separately from 🔘 [`radius`](https://pub.dev/documentation/surface/latest/surface/Surface/radius.html), but is optional and will only impact the 📚 `SurfaceLayer.BASE`.
   - If not provided, uses 🔘 [`Surface.radius`](https://pub.dev/documentation/surface/latest/surface/Surface/radius.html), which itself defaults to 🔘 `Surface._RADIUS == 3.0`.
 - Added `Filter.extendBaseFilter` boolean which will apply the 📚 `BASE` blurry filter to the `Surface.margin`.
 
-## **[0.0.5] - 02 APR 21**
+## **[0.0.5]** - 02 APR 21
 - Further modification to initialization parameters for Surface constructor.
 - Filter strength and the `SurfaceLayer`s on which they are enabled are now set and mapped with a bespoke `Filter` Object.
   - Enable blurry filters by passing the desired `SurfaceLayer`s into `Filter.filteredLayers` as a `Set`.
   - Strength radii can be initialized formally or with a `Map<SurfaceLayer, double>` called `Filter.radiusMap`.
   - `SurfaceFilter` enum removed, as it redundantly represented the idea of `SurfaceLayer`s in a `Set`
 
-## **[0.0.4] - 01 APR 21**
+### **[0.0.4]** - 01 APR 21
 - Reduction in initialization parameters for Surface constructor. This is achieved:
   - in one instance by joining three similar values in a Map (`filterRadius`)
   - by introducing `Peek` and `TapSpec` classes to encapsulate other related parameters
@@ -81,16 +86,16 @@
   - Without passing a `Surface.baseColor`, deafult to `ColorScheme.primaryVariant`
 - Organized documentation. Added iconography through emoji.
 
-## **[0.0.3] - 23 FEB 21**
+### **[0.0.3]** - 23 FEB 21
 - Improving layout and comments for pub.dev listing
 - Touchup on [example application](https://github.com/Zabadam/surface/tree/main/example)
 
-## **[0.0.2] - 22 FEB 21**
+### **[0.0.2]** - 22 FEB 21
 - Prepared for pub.dev
     - Updated comments and documentation; fixed M⬇; ran `dartdoc`.
     - Cleaned and linked READMEs; added hyperlinks to Surface Example.
 - Removed Color and Duration constants from goodies.
 - Goodie `scaleAxis` simplified
 
-## **[0.0.1] - 22 FEB 21**
+### **[0.0.1]** - 22 FEB 21
 - Work in progress transfer from an [Android application](https://play.google.com/store/apps/details?id=com.zaba.bug_bash 'Bug Bash in the Play Store') on which I am primarily focused.
