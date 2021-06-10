@@ -160,9 +160,20 @@ extension Shading on Color {
   /// If `others is List<Color>`, the return value is `this` or one of the
   /// entries from `others`.
   Color operator |(dynamic others) => (others is Color)
-      ? (List.from([others, this])..shuffle()).first
+      // Expanding first enables the mingling of Color-subtype objects,
+      // like MaterialColors and MaterialAccentColors.
+      ? (List.from([
+          [others] + [this]
+        ].expand((list) => list).toList())
+            ..shuffle())
+          .first
       : (others is List<Color>)
-          ? (List.from(others + [this])..shuffle()).first
+          ? (List.from([
+              others,
+              [this]
+            ].expand((list) => list).toList())
+                ..shuffle())
+              .first
           : this;
 }
 

@@ -183,11 +183,20 @@ class ColorItem extends StatelessWidget {
           Semantics(
             container: true,
             child: Surface.founded(
+              tactility: tactility,
               shape: Shape(
                 corners: Corners.roundWith(),
                 radius: CornerRadius.all(Circular(Length(75))),
               ),
               appearance: Appearance.primitive(
+                filter: const Filter(
+                  filteredLayers: {
+                    SurfaceLayer.FOUNDATION,
+                    SurfaceLayer.MATERIAL
+                  },
+                  radiusFoundation: 4.0,
+                  radiusMaterial: 15.0,
+                ),
                 height: _ITEM_HEIGHT,
                 margin: const EdgeInsets.all(_ITEM_PADDING),
                 padding: const EdgeInsets.symmetric(horizontal: 50.0),
@@ -205,15 +214,6 @@ class ColorItem extends StatelessWidget {
               ),
               duration: _DURATION,
               curve: _CURVE,
-              filter: const Filter(
-                filteredLayers: {
-                  SurfaceLayer.FOUNDATION,
-                  SurfaceLayer.MATERIAL
-                },
-                radiusFoundation: 4.0,
-                radiusMaterial: 15.0,
-              ),
-              tactility: tactility,
               child: Align(
                 alignment: Alignment(0, -0.5),
                 child: FittedBox(child: Text(_colorString, style: style)),
@@ -318,15 +318,15 @@ class PaletteTabView extends StatelessWidget {
         return Surface.tactile(
           shape: Shape(),
           appearance: Appearance.primitive(
+            filter: const Filter(
+              filteredLayers: {SurfaceLayer.FOUNDATION},
+              radiusFoundation: 10,
+            ),
             // width: double.infinity,
             height: _ITEM_HEIGHT - _ITEM_PADDING * 4,
             margin: const EdgeInsets.all(_ITEM_PADDING * 2),
             padding: const EdgeInsets.all(10),
             color: palette.primary[900]!.withOpacity(0.5),
-          ),
-          filter: const Filter(
-            filteredLayers: {SurfaceLayer.FOUNDATION},
-            radiusFoundation: 10,
           ),
           tactility: tactility,
           child: Center(

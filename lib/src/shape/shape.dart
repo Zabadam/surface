@@ -10,6 +10,10 @@ import 'package:animated_styled_widget/animated_styled_widget.dart' as morph;
 import '../wrappers.dart';
 import 'corner.dart';
 
+export '../wrappers.dart';
+export 'corner.dart';
+export 'foundation.dart';
+
 //! ---
 /// ### 🔰 [Shape]
 /// Describe a rectangle-based `Shape` by declaring up to four `Corner`s
@@ -26,13 +30,13 @@ class Shape with Diagnosticable {
   /// - 📐 `Corners` `Shape` description
   ///   - Use [corners] to customize all four [Corner]s in a [Shape].
   /// ---
-  /// - ➖ [border] from [Stroke]
+  /// - ➖ [stroke] from [Stroke]
   ///   - Add a [Stroke] decoration to the edges of this [Shape].
   /// ---
   /// - 🔘 `CornerRadius` [radius]
   const Shape({
     this.corners = const Corners.roundWith(),
-    this.border = Stroke.none,
+    this.stroke = Stroke.none,
     this.radius = CornerRadius.none,
   });
 
@@ -41,7 +45,7 @@ class Shape with Diagnosticable {
   final Corners corners;
 
   /// Define a [Stroke] decoration for the edges of this [Shape].
-  final Stroke border;
+  final Stroke stroke;
 
   /// The 🔘 [radius] impacts the roundedness of default
   /// 📐 [Corner.ROUND] or bevel-depth of 📐 [Corner.BEVEL] corners.
@@ -50,12 +54,12 @@ class Shape with Diagnosticable {
   /// 📋 Returns a copy of this `Shape` with the given properties.
   Shape copyWith({
     Corners? corners,
-    Stroke? border,
+    Stroke? stroke,
     CornerRadius? radius,
   }) =>
       Shape(
         corners: corners ?? this.corners,
-        border: border ?? this.border,
+        stroke: stroke ?? this.stroke,
         radius: radius ?? this.radius,
       );
 
@@ -89,7 +93,7 @@ class Shape with Diagnosticable {
         bottomRight: corners.bottomRight.toMorphable,
         bottomLeft: corners.bottomLeft.toMorphable,
       ),
-      border: border,
+      border: stroke,
       borderRadius: (radius).copyWith(
         topLeft: _topLeft,
         topRight: _topRight,
@@ -104,7 +108,7 @@ class Shape with Diagnosticable {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty<Corners>('corners', corners))
-      ..add(DiagnosticsProperty<Stroke>('border', border))
+      ..add(DiagnosticsProperty<Stroke>('stroke', stroke))
       ..add(DiagnosticsProperty<CornerRadius>('radius', radius));
   }
 }

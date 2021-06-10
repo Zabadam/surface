@@ -2,15 +2,14 @@
 /// Marriage of `Surface` and `AutoXL`
 library surface;
 
-import 'package:flutter/rendering.dart'
-    show PointerEnterEventListener, PointerExitEventListener;
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:xl/xl.dart';
 
 import '../appearance/appearance.dart';
 import '../models/filter.dart';
-import '../models/surface_layer.dart';
+import '../models/layer.dart';
 import '../models/tactility.dart';
 import '../shape/foundation.dart';
 import '../shape/shape.dart';
@@ -46,9 +45,8 @@ class SurfaceXL extends StatelessWidget {
     this.isPane = false,
     this.shape = const Shape(),
     this.appearance = const Appearance(),
-    this.foundation = const Foundation(),
     this.tactility = const Tactility(),
-    this.filter = const Filter(),
+    this.foundation = const Foundation(),
     this.child,
     this.duration = const Duration(milliseconds: 400),
     this.curve = Curves.ease,
@@ -75,7 +73,6 @@ class SurfaceXL extends StatelessWidget {
     this.shape = const Shape(),
     this.appearance = const Appearance(),
     this.tactility = const Tactility(),
-    this.filter = const Filter(),
     this.child,
     this.duration = const Duration(milliseconds: 400),
     this.curve = Curves.ease,
@@ -118,16 +115,18 @@ class SurfaceXL extends StatelessWidget {
   })  : onEnd = null,
         foundation = null,
         tactility = Tactility.none,
-        filter = Filter(
-          radiusChild: blurChild ?? 0,
-          radiusMaterial: blurMaterial ?? 0,
-          radiusFoundation: blurFoundation ?? 0,
-        ),
         appearance = Appearance(
-          width: width?.asPX,
-          height: height?.asPX,
-          margin: margin,
-          padding: padding,
+          layout: Layout.primitive(
+            width: width,
+            height: height,
+            margin: margin,
+            padding: padding,
+          ),
+          filter: Filter(
+            radiusChild: blurChild ?? 0,
+            radiusMaterial: blurMaterial ?? 0,
+            radiusFoundation: blurFoundation ?? 0,
+          ),
           decoration: BoxDecoration(color: color, gradient: gradient),
         ),
         super(key: key);
@@ -153,7 +152,7 @@ class SurfaceXL extends StatelessWidget {
   /// - 📐 `Corners` `Shape` description
   ///   - Use `corners` to customize all four `Corner`s in a [Shape].
   /// ---
-  /// - ➖ [Shape.border] from [Stroke]
+  /// - ➖ [Shape.stroke] from [Stroke]
   ///   - Add a [Stroke] decoration to the edges of this [Shape].
   /// ---
   /// - 🔘 `CornerRadius` as [Shape.radius]
@@ -194,12 +193,6 @@ class SurfaceXL extends StatelessWidget {
   /// `InteractiveInkFeatureFactory` specific to this 🌟 `Surface`
   /// with [Tactility.splashFactory].
   final Tactility tactility;
-
-  /// A 🔬 [Filter] provides options to customize `ImageFilter`
-  /// appearance at all 📚 [SurfaceLayer]s.
-  /// - `Set<SurfaceLayer>` 👓 [Filter.filteredLayers] ultimately determines
-  /// which 📚 Layers have filters enabled.
-  final Filter filter;
 
   /// Consider 🧱 `Foundation` to be a description of how the 📚 `FOUNDATION`
   /// is exposed behind the 📚 `MATERIAL`, or as insets
@@ -242,14 +235,16 @@ class SurfaceXL extends StatelessWidget {
   Widget build(BuildContext context) {
     final foundationSurface = Surface(
       shape: foundation?.shape ?? shape,
-      appearance: foundation?.appearance ?? appearance,
-      // Convert Foundation reference to Material reference
-      // when compositing this layer's filter.
-      filter: Filter(
-        filteredLayers: filter.filteredLayers.contains(SurfaceLayer.FOUNDATION)
-            ? {SurfaceLayer.MATERIAL}
-            : const <SurfaceLayer>{},
-        radiusMaterial: filter.radiusFoundation,
+      appearance: (foundation?.appearance ?? appearance).copyWith(
+        // Convert Foundation reference to Material reference
+        // when compositing this layer's filter.
+        filter: Filter(
+          filteredLayers:
+              appearance.filter.filteredLayers.contains(SurfaceLayer.FOUNDATION)
+                  ? {SurfaceLayer.MATERIAL}
+                  : const <SurfaceLayer>{},
+          radiusMaterial: appearance.filter.radiusFoundation,
+        ),
       ),
       duration: duration,
       curve: curve,
@@ -258,15 +253,18 @@ class SurfaceXL extends StatelessWidget {
     final surface = Surface.tactile(
       shape: shape,
       appearance: appearance.copyWith(
-        margin: EdgeInsets.fromLTRB(
-          appearance.margin?.left ?? 0 + (foundation?.peekLeft ?? 0),
-          appearance.margin?.top ?? 0 + (foundation?.peekTop ?? 0),
-          appearance.margin?.right ?? 0 + (foundation?.peekRight ?? 0),
-          appearance.margin?.bottom ?? 0 + (foundation?.peekBottom ?? 0),
+        filter: appearance.filter,
+        layout: appearance.layout.copyWith(
+          margin: EdgeInsets.fromLTRB(
+            appearance.layout.margin?.left ?? 0 + (foundation?.peekLeft ?? 0),
+            appearance.layout.margin?.top ?? 0 + (foundation?.peekTop ?? 0),
+            appearance.layout.margin?.right ?? 0 + (foundation?.peekRight ?? 0),
+            appearance.layout.margin?.bottom ??
+                0 + (foundation?.peekBottom ?? 0),
+          ),
         ),
       ),
       tactility: tactility,
-      filter: filter,
       duration: duration,
       curve: curve,
       // child: child, // Will be its own layer in the AutoXL stack

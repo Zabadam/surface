@@ -2,22 +2,25 @@
 /// ### 🎨 `Appearance`
 library surface;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 
 import 'package:animated_styled_widget/animated_styled_widget.dart' as morph;
 
 import '../models/filter.dart';
-import '../models/surface_layer.dart';
+import '../models/layer.dart';
 import '../shape/shape.dart';
-import '../wrappers.dart';
+import 'layout.dart';
+
+export '../models/filter.dart';
+export 'clay.dart';
+export 'glass.dart';
+export 'layout.dart';
 
 /// ### 🎨 [Appearance]
-/// A collection of stylization parameters under one roof;
-/// named to avoid `Type` clashing.
-///
-/// Wrapper for animated_styled_widget's [`Style`](https://github.com/KevinVan720/animated_styled_widget/blob/main/lib/src/style.dart)
-/// where `Shape` and `Filter` are handled separately.
-class Appearance {
+/// A collection of stylization parameters under one roof.
+class Appearance with Diagnosticable {
   /// {@template appearance}
   /// A collection of 🎨 appearance stylization parameters under one roof.
   ///
@@ -38,63 +41,87 @@ class Appearance {
   /// ![](https://i.imgur.com/3oG6C57.png)
   /// ![](https://i.imgur.com/j8ioaX8.png)
   /// ##### Diagrams from [pub.dev: animated_styled_widget](https://pub.dev/packages/animated_styled_widget)
-  /// Named to avoid `Type` clashing with `Style`.
   /// {@endtemplate}
   const Appearance({
+    this.layout = const Layout(),
+    this.filter = Filter.none,
     this.visible,
     this.opacity,
-    this.alignment,
-    this.width,
-    this.height,
-    this.margin,
-    this.padding,
     this.foregroundDecoration,
     this.decoration,
     this.shadows,
-    this.foregroundShadows,
-    this.transform,
-    this.transformAlignment,
-    this.childAlignment,
-    this.textStyle,
-    this.textAlign,
+    this.insetShadows,
     this.shaderGradient,
     this.mouseCursor,
   });
 
-  /// Unavailable as `const` [Appearance].
-  /// Reduced number of available parameters.
+  /// Unavailable as `const` [Appearance]. \
+  /// Direct access to some of the more buried properties,
+  /// like `color` and `width`.
   ///
-  /// Provide `width` and `height` with mere `double`s in place of `Length`s.
+  /// Provide `width` and `height` with mere `double`s in place of `Length`s
+  /// and these will populate a [Layout] automatically.
+  ///
+  /// `BoxDecoration` [Appearance.decoration] filled with provided `Color`,
+  /// `Gradient`, or `DecorationImage`.
+  Appearance.primitive({
+    this.filter = Filter.none,
+    this.visible,
+    this.opacity,
+    this.foregroundDecoration,
+    this.shadows,
+    this.insetShadows,
+    this.shaderGradient,
+    this.mouseCursor,
+    Alignment? alignment,
+    double? width,
+    double? height,
+    EdgeInsets? margin,
+    EdgeInsets? padding,
+    Color? color,
+    Gradient? gradient,
+    DecorationImage? image,
+  })  : layout = Layout.primitive(
+          alignment: alignment,
+          width: width,
+          height: height,
+          margin: margin,
+          padding: padding,
+        ),
+        decoration =
+            BoxDecoration(color: color, gradient: gradient, image: image);
+
+  /// Unavailable as `const` [Appearance]. \
+  /// Direct access to some of the more buried properties, like `color`,
+  /// and a reduction of less-used properties.
   ///
   /// `BoxDecoration` [Appearance.decoration] filled with provided `Color`,
   /// `Gradient`, or `DecorationImage`.
   ///
-  /// This `decoration` instead is used as [Appearance.foregroundDecoration].
-  Appearance.primitive({
+  /// Compared to [Appearance.primitive], this constructor accepts a full-fat
+  /// [Layout], further reducing parameters.
+  Appearance.primitiveWithLayout({
+    this.layout = const Layout(),
+    this.filter = Filter.none,
     this.visible,
     this.opacity,
-    this.alignment,
-    double? width,
-    double? height,
-    this.margin,
-    this.padding,
+    this.foregroundDecoration,
+    this.shadows,
+    this.insetShadows,
+    this.shaderGradient,
+    this.mouseCursor,
     Color? color,
     Gradient? gradient,
     DecorationImage? image,
-    this.foregroundDecoration,
-    this.shadows,
-    this.foregroundShadows,
-    this.shaderGradient,
-    this.mouseCursor,
-  })  : transform = null,
-        transformAlignment = null,
-        childAlignment = null,
-        textStyle = null,
-        textAlign = null,
-        width = width?.asPX,
-        height = height?.asPX,
-        decoration =
+  }) : decoration =
             BoxDecoration(color: color, gradient: gradient, image: image);
+
+  /// A collection of 🔄 layout and sizing properties under one roof.
+  final Layout layout;
+
+  /// A 🔬 [Filter] provides options to customize `ImageFilter`
+  /// appearance at all 📚 [SurfaceLayer]s.
+  final Filter filter;
 
   /// Widget renders invisible only when this value is `false`.
   final bool? visible;
@@ -102,25 +129,6 @@ class Appearance {
   /// If specified, this `double` between `0..1` corresponds to how
   /// "see-through" this `Appearance` is; `0` is invisible and `1` is opaque.
   final double? opacity;
-
-  /// Provide an `Alignment` for this `Appearance` as a whole.
-  final Alignment? alignment;
-
-  /// Contrain a `width` for this `Appearance`.
-  final morph.Dimension? width;
-
-  /// Contrain a `height` for this `Appearance`.
-  final morph.Dimension? height;
-
-  /// Define `EdgeInsets` for the outside of this `Appearance`.
-  ///
-  /// See `Foundation.peek`.
-  final EdgeInsets? margin;
-
-  /// Define `EdgeInsets` for the inside of this `Appearance`.
-  ///
-  /// See `Foundation.peek`.
-  final EdgeInsets? padding;
 
   /// A `BoxDecoration` to apply as a background for this `Appearance`.
   final BoxDecoration? decoration;
@@ -132,22 +140,7 @@ class Appearance {
   final List<morph.ShapeShadow>? shadows;
 
   /// A `List<ShapeShadow>` to apply in front of this `Appearance`.
-  final List<morph.ShapeShadow>? foregroundShadows;
-
-  /// See [morph.SmoothMatrix4]. Aligned by [transformAlignment].
-  final morph.SmoothMatrix4? transform;
-
-  /// Provide an `Alignment` for the provided [transform].
-  final Alignment? transformAlignment;
-
-  /// Text related.
-  final Alignment? childAlignment;
-
-  /// Text related.
-  final morph.DynamicTextStyle? textStyle;
-
-  /// Text related.
-  final TextAlign? textAlign;
+  final List<morph.ShapeShadow>? insetShadows;
 
   /// See [Gradient].
   final Gradient? shaderGradient;
@@ -155,45 +148,29 @@ class Appearance {
   /// See [SystemMouseCursor].
   final SystemMouseCursor? mouseCursor;
 
-  /// 📋 Return a copy of this `Styl` with optional parameters
+  /// 📋 Return a copy of this 🎨 `Appearance` with optional parameters
   /// replacing those of `this`.
   Appearance copyWith({
+    Layout? layout,
+    Filter? filter,
     bool? visible,
     double? opacity,
-    Alignment? alignment,
-    morph.Dimension? width,
-    morph.Dimension? height,
-    EdgeInsets? margin,
-    EdgeInsets? padding,
     BoxDecoration? foregroundDecoration,
     BoxDecoration? decoration,
     List<morph.ShapeShadow>? shadows,
-    List<morph.ShapeShadow>? foregroundShadows,
-    morph.SmoothMatrix4? transform,
-    Alignment? transformAlignment,
-    Alignment? childAlignment,
-    morph.DynamicTextStyle? textStyle,
-    TextAlign? textAlign,
+    List<morph.ShapeShadow>? insetShadows,
     Gradient? shaderGradient,
     SystemMouseCursor? mouseCursor,
   }) =>
       Appearance(
+        layout: layout ?? this.layout,
+        filter: filter ?? this.filter,
         visible: visible ?? this.visible,
         opacity: opacity ?? this.opacity,
-        alignment: alignment ?? this.alignment,
-        width: width ?? this.width,
-        height: height ?? this.height,
-        margin: margin ?? this.margin,
-        padding: padding ?? this.padding,
         foregroundDecoration: foregroundDecoration ?? this.foregroundDecoration,
         decoration: decoration ?? this.decoration,
         shadows: shadows ?? this.shadows,
-        foregroundShadows: foregroundShadows ?? this.foregroundShadows,
-        transform: transform ?? this.transform,
-        transformAlignment: transformAlignment ?? this.transformAlignment,
-        childAlignment: childAlignment ?? this.childAlignment,
-        textStyle: textStyle ?? this.textStyle,
-        textAlign: textAlign ?? this.textAlign,
+        insetShadows: insetShadows ?? this.insetShadows,
         shaderGradient: shaderGradient ?? this.shaderGradient,
         mouseCursor: mouseCursor ?? this.mouseCursor,
       );
@@ -203,36 +180,58 @@ class Appearance {
   morph.Style asStyle({
     required SurfaceLayer layer,
     required Shape shape,
-    required Filter filter,
     EdgeInsets? peekInsets,
-  }) =>
-      morph.Style(
-        shapeBorder: shape.toMorphable,
-        backdropFilter: (filter.radiusByLayer(layer) > 0)
-            ? filter.effect(filter.radiusByLayer(layer), layer)
-            : null,
-        imageFilter: (layer != SurfaceLayer.FOUNDATION &&
-                filter.radiusByLayer(SurfaceLayer.CHILD) > 0)
+  }) {
+    // print('Current Layer: $layer | radius: ${filter.radiusByLayer(layer)}');
+    final isFiltered = filter.filteredLayers.contains(layer) &&
+        filter.radiusByLayer(layer) > 0;
+    final isBlurry = filter.filteredLayers.contains(SurfaceLayer.CHILD) &&
+        filter.radiusByLayer(SurfaceLayer.CHILD) > 0;
+
+    if (layer == SurfaceLayer.CHILD) {
+      return morph.Style(
+        shapeBorder: shape.copyWith(stroke: Stroke.none).toMorphable,
+        imageFilter: isBlurry
             ? filter.effect(
                 filter.radiusByLayer(SurfaceLayer.CHILD), SurfaceLayer.CHILD)
             : null,
-        visible: visible,
-        opacity: opacity,
-        alignment: alignment,
-        width: width,
-        height: height,
-        margin: margin,
-        padding: (padding ?? EdgeInsets.zero) + (peekInsets ?? EdgeInsets.zero),
-        foregroundDecoration: foregroundDecoration,
-        backgroundDecoration: decoration,
-        shadows: shadows,
-        insetShadows: foregroundShadows,
-        transform: transform,
-        transformAlignment: transformAlignment,
-        childAlignment: childAlignment,
-        textStyle: textStyle,
-        textAlign: textAlign,
-        shaderGradient: shaderGradient,
-        mouseCursor: mouseCursor,
       );
+    }
+
+    return morph.Style(
+      shapeBorder: shape.toMorphable,
+      backdropFilter:
+          isFiltered ? filter.effect(filter.radiusByLayer(layer), layer) : null,
+      visible: visible,
+      opacity: opacity,
+      alignment: layout.alignment,
+      width: layout.width,
+      height: layout.height,
+      margin: layout.margin,
+      padding:
+          (layout.padding ?? EdgeInsets.zero) + (peekInsets ?? EdgeInsets.zero),
+      foregroundDecoration: foregroundDecoration,
+      backgroundDecoration: decoration,
+      shadows: shadows,
+      insetShadows: insetShadows,
+      transform: layout.transform,
+      transformAlignment: layout.transformAlignment,
+      childAlignment: layout.childAlignment,
+      textStyle: layout.textStyle,
+      textAlign: layout.textAlign,
+      shaderGradient: shaderGradient,
+      mouseCursor: mouseCursor,
+    );
+  }
+
+  /// TODO: Add the rest of the properties if [morph.Style] does not.
+  @override
+  void debugFillProperties(properties) {
+    super.debugFillProperties(properties);
+    properties
+          ..add(DiagnosticsProperty<Layout>('layout', layout))
+          ..add(DiagnosticsProperty<Filter>('filter', filter))
+        //
+        ;
+  }
 }

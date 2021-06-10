@@ -53,6 +53,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  foil:
+    dependency: "direct main"
+    description:
+      name: foil
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.0+1"
+  img:
+    dependency: "direct main"
+    description:
+      name: img
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   js:
     dependency: transitive
     description:
@@ -198,13 +212,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-  very_good_analysis:
-    dependency: "direct dev"
-    description:
-      name: very_good_analysis
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1"
   xl:
     dependency: "direct main"
     description:

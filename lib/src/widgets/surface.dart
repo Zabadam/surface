@@ -6,21 +6,17 @@ library surface;
 
 import 'package:flutter/foundation.dart'
     show DiagnosticPropertiesBuilder, DiagnosticsProperty;
-import 'package:flutter/rendering.dart'
-    show PointerEnterEventListener, PointerExitEventListener;
+import 'package:flutter/services.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter/material.dart';
 
+import 'package:img/img.dart';
 import 'package:ball/ball.dart';
 import 'package:animated_styled_widget/animated_styled_widget.dart' as morph;
 
 import '../appearance/appearance.dart';
-import '../appearance/clay.dart';
-import '../appearance/glass.dart';
-import '../models/filter.dart';
-import '../models/surface_layer.dart';
+import '../models/layer.dart';
 import '../models/tactility.dart';
-import '../shape/foundation.dart';
 import '../shape/shape.dart';
 import '../wrappers.dart';
 
@@ -65,26 +61,25 @@ class Surface extends morph.AnimatedStyledContainer {
     Key? key,
     this.shape = const Shape(),
     this.appearance = const Appearance(),
-    this.foundation = const Foundation(),
     this.tactility = const Tactility(),
-    this.filter = const Filter(),
+    this.foundation = const Foundation(),
     Widget? child,
     Duration duration = const Duration(milliseconds: 400),
     Curve curve = Curves.ease,
     // String? animationID,
     VoidCallback? onEnd,
-  }) : super(
+  })  : _isClay = appearance is Clay,
+        super(
           key: key,
           id: null, // '$animationID:foundation',
           style: (foundation.appearance ?? const Appearance()).asStyle(
             layer: SurfaceLayer.FOUNDATION,
             shape: foundation.shape ?? shape,
-            filter: filter,
             peekInsets: EdgeInsets.fromLTRB(
-              foundation.peekLeft + (appearance.margin?.left ?? 0),
-              foundation.peekTop + (appearance.margin?.top ?? 0),
-              foundation.peekRight + (appearance.margin?.right ?? 0),
-              foundation.peekBottom + (appearance.margin?.bottom ?? 0),
+              foundation.peekLeft + (appearance.layout.margin?.left ?? 0),
+              foundation.peekTop + (appearance.layout.margin?.top ?? 0),
+              foundation.peekRight + (appearance.layout.margin?.right ?? 0),
+              foundation.peekBottom + (appearance.layout.margin?.bottom ?? 0),
             ),
           ),
           duration: duration,
@@ -94,45 +89,52 @@ class Surface extends morph.AnimatedStyledContainer {
             duration: duration,
             curve: curve,
             onEnd: onEnd,
-            onMouseEnter: tactility.onMouseEnter,
-            onMouseExit: tactility.onMouseExit,
             style: appearance
                 .asStyle(
                   layer: SurfaceLayer.MATERIAL,
                   shape: shape,
-                  filter: filter,
                 )
                 .copyWith(
                   padding: EdgeInsets.zero,
                 ),
-            child: Material(
-              animationDuration: duration,
-              color: Colors.transparent,
-              // shape: shape.toMorphable,
-              // TODO Look into `focus`, accessibility, nav
-              child: InkResponse(
-                canRequestFocus: tactility.tappable,
-                // customBorder: shape.toMorphable,
-                containedInkWell: true,
-                highlightShape: BoxShape.rectangle,
-                highlightColor: tactility.tappable
-                    ? tactility.inkHighlightColor
-                    : Colors.transparent,
-                splashColor: tactility.tappable
-                    ? tactility.inkSplashColor
-                    : Colors.transparent,
-                splashFactory: tactility.useThemeSplashFactory
-                    ? null
-                    : tactility.splashFactory ?? BouncyBall.splashFactory,
-                onTap: tactility.tappable
-                    ? () {
-                        if (tactility.vibrates) HapticFeedback.vibrate();
-                        tactility.onTap?.call();
-                      }
-                    : null,
-                child: Padding(
-                  padding: appearance.padding ?? EdgeInsets.zero,
-                  child: child ?? const SizedBox(),
+            child: morph.AnimatedStyledContainer(
+              style: appearance.asStyle(
+                layer: SurfaceLayer.CHILD,
+                shape: shape,
+              ),
+              duration: duration,
+              curve: curve,
+              onMouseEnter: tactility.onMouseEnter,
+              onMouseExit: tactility.onMouseExit,
+              child: Material(
+                animationDuration: duration,
+                color: Colors.transparent,
+                // shape: shape.toMorphable,
+                // TODO Look into `focus`, accessibility, nav
+                child: InkResponse(
+                  canRequestFocus: tactility.tappable,
+                  // customBorder: shape.toMorphable,
+                  containedInkWell: true,
+                  highlightShape: BoxShape.rectangle,
+                  highlightColor: tactility.tappable
+                      ? tactility.inkHighlightColor
+                      : Colors.transparent,
+                  splashColor: tactility.tappable
+                      ? tactility.inkSplashColor
+                      : Colors.transparent,
+                  splashFactory: tactility.useThemeSplashFactory
+                      ? null // TODO: Probably need Theme.of(context)
+                      : tactility.splashFactory ?? BouncyBall.splashFactory,
+                  onTap: tactility.tappable
+                      ? () {
+                          if (tactility.vibrates) HapticFeedback.vibrate();
+                          tactility.onTap?.call();
+                        }
+                      : null,
+                  child: Padding(
+                    padding: appearance.layout.padding ?? EdgeInsets.zero,
+                    child: child ?? const SizedBox(),
+                  ),
                 ),
               ),
             ),
@@ -177,56 +179,62 @@ class Surface extends morph.AnimatedStyledContainer {
     this.shape = const Shape(),
     this.appearance = const Appearance(),
     this.tactility = const Tactility(),
-    this.filter = const Filter(),
     Widget? child,
     Duration duration = const Duration(milliseconds: 400),
     Curve curve = Curves.ease,
     // String? animationID,
     VoidCallback? onEnd,
-  })  : foundation = Foundation.none,
+  })  : _isClay = appearance is Clay,
+        foundation = Foundation.none,
         super(
           key: key,
           id: null, // animationID,
           duration: duration,
           curve: curve,
           onEnd: onEnd,
-          onMouseEnter: tactility.onMouseEnter,
-          onMouseExit: tactility.onMouseExit,
           style: appearance
               .asStyle(
                 layer: SurfaceLayer.MATERIAL,
                 shape: shape,
-                filter: filter,
               )
               .copyWith(padding: EdgeInsets.zero),
-          child: Material(
-            animationDuration: duration,
-            color: Colors.transparent,
-            // shape: shape.toMorphable,
-            // TODO Look into `focus`, accessibility, nav
-            child: InkResponse(
-              canRequestFocus: tactility.tappable,
-              // customBorder: shape.toMorphable,
-              containedInkWell: true,
-              highlightShape: BoxShape.rectangle,
-              highlightColor: tactility.tappable
-                  ? tactility.inkHighlightColor
-                  : Colors.transparent,
-              splashColor: tactility.tappable
-                  ? tactility.inkSplashColor
-                  : Colors.transparent,
-              splashFactory: tactility.useThemeSplashFactory
-                  ? null
-                  : tactility.splashFactory ?? BouncyBall.splashFactory,
-              onTap: tactility.tappable
-                  ? () {
-                      if (tactility.vibrates) HapticFeedback.vibrate();
-                      tactility.onTap?.call();
-                    }
-                  : null,
-              child: Padding(
-                padding: appearance.padding ?? EdgeInsets.zero,
-                child: child ?? const SizedBox(width: 0, height: 0),
+          child: morph.AnimatedStyledContainer(
+            style: appearance.asStyle(
+              layer: SurfaceLayer.CHILD,
+              shape: shape,
+            ),
+            duration: duration,
+            curve: curve,
+            onMouseEnter: tactility.onMouseEnter,
+            onMouseExit: tactility.onMouseExit,
+            child: Material(
+              animationDuration: duration,
+              color: Colors.transparent,
+              // shape: shape.toMorphable,
+              child: InkResponse(
+                canRequestFocus: tactility.tappable,
+                // customBorder: shape.toMorphable,
+                containedInkWell: true,
+                highlightShape: BoxShape.rectangle,
+                highlightColor: tactility.tappable
+                    ? tactility.inkHighlightColor
+                    : Colors.transparent,
+                splashColor: tactility.tappable
+                    ? tactility.inkSplashColor
+                    : Colors.transparent,
+                splashFactory: tactility.useThemeSplashFactory
+                    ? null
+                    : tactility.splashFactory ?? BouncyBall.splashFactory,
+                onTap: tactility.tappable
+                    ? () {
+                        if (tactility.vibrates) HapticFeedback.vibrate();
+                        tactility.onTap?.call();
+                      }
+                    : null,
+                child: Padding(
+                  padding: appearance.layout.padding ?? EdgeInsets.zero,
+                  child: child ?? const SizedBox(width: 0, height: 0),
+                ),
               ),
             ),
           ),
@@ -269,7 +277,6 @@ class Surface extends morph.AnimatedStyledContainer {
     Key? key,
     this.shape = const Shape(),
     this.appearance = const Appearance(),
-    this.filter = const Filter(),
     Widget? child,
     Duration duration = const Duration(milliseconds: 400),
     Curve curve = Curves.ease,
@@ -277,7 +284,8 @@ class Surface extends morph.AnimatedStyledContainer {
     PointerEnterEventListener? onMouseEnter,
     PointerExitEventListener? onMouseExit,
     VoidCallback? onEnd,
-  })  : foundation = Foundation.none,
+  })  : _isClay = appearance is Clay,
+        foundation = Foundation.none,
         tactility = Tactility.none,
         super(
           key: key,
@@ -285,15 +293,22 @@ class Surface extends morph.AnimatedStyledContainer {
           duration: duration,
           curve: curve,
           onEnd: onEnd,
-          onMouseEnter: onMouseEnter,
-          onMouseExit: onMouseExit,
 
           style: appearance.asStyle(
             layer: SurfaceLayer.MATERIAL,
             shape: shape,
-            filter: filter,
           ),
-          child: child ?? const SizedBox(width: 0, height: 0),
+          child: morph.AnimatedStyledContainer(
+            style: appearance.asStyle(
+              layer: SurfaceLayer.CHILD,
+              shape: shape,
+            ),
+            duration: duration,
+            curve: curve,
+            onMouseEnter: onMouseEnter,
+            onMouseExit: onMouseExit,
+            child: child ?? const SizedBox(width: 0, height: 0),
+          ),
         );
 
   /// ### 🌟 [Surface.primitive]
@@ -327,13 +342,10 @@ class Surface extends morph.AnimatedStyledContainer {
     Curve curve = Curves.ease,
     PointerEnterEventListener? onMouseEnter,
     PointerExitEventListener? onMouseExit,
-  })  : appearance = const Appearance(),
+  })  : _isClay = false,
+        appearance = const Appearance(),
         foundation = Foundation.none,
         tactility = Tactility.none,
-        filter = Filter(
-          radiusChild: blurChild ?? 0,
-          radiusMaterial: blurMaterial ?? 0,
-        ),
         super(
           key: key,
           duration: duration,
@@ -341,35 +353,114 @@ class Surface extends morph.AnimatedStyledContainer {
           onMouseEnter: onMouseEnter,
           onMouseExit: onMouseExit,
           style: Appearance(
-            width: width?.asPX,
-            height: height?.asPX,
-            margin: margin,
-            padding: padding,
-            decoration: BoxDecoration(color: color, gradient: gradient),
-          ).asStyle(
-            layer: SurfaceLayer.MATERIAL,
-            shape: shape,
+            layout: Layout.primitive(
+              width: width,
+              height: height,
+              margin: margin,
+              padding: padding,
+            ),
             filter: Filter(
               radiusChild: blurChild ?? 0,
               radiusMaterial: blurMaterial ?? 0,
             ),
+            decoration: BoxDecoration(color: color, gradient: gradient),
+          ).asStyle(
+            layer: SurfaceLayer.MATERIAL,
+            shape: shape,
           ),
           child: child ?? const SizedBox(width: 0, height: 0),
         );
 
+  /// This `Surface` has it [appearance]
+  /// defaulted and restricted to [Clay].
+  ///
+  /// This `Surface.clay.foundation` represents a special bit of padding
+  /// which conceptually and visually provides a base surface from which
+  /// this `clay` "swells".
   Surface.clay({
     Key? key,
     this.shape = const Shape(),
     Clay appearance = const Clay(),
     this.tactility = const Tactility(),
-    this.filter = const Filter(),
+    this.foundation = Foundation.none,
     Widget? child,
     Duration duration = const Duration(milliseconds: 400),
     Curve curve = Curves.ease,
     // String? animationID,
     VoidCallback? onEnd,
-    // ignore: prefer_initializing_formals
-  })  : appearance = appearance,
+  })  : _isClay = true,
+        // ignore: prefer_initializing_formals
+        appearance = appearance,
+        super(
+          key: key,
+          id: null, // animationID,
+          duration: duration,
+          curve: curve,
+          onEnd: onEnd,
+          style: appearance
+              .asStyle(
+                layer: SurfaceLayer.MATERIAL,
+                shape: shape,
+              )
+              .copyWith(padding: EdgeInsets.zero),
+          child: morph.AnimatedStyledContainer(
+            style: appearance.asStyle(
+              layer: SurfaceLayer.CHILD,
+              shape: shape,
+            ),
+            duration: duration,
+            curve: curve,
+            onMouseEnter: tactility.onMouseEnter,
+            onMouseExit: tactility.onMouseExit,
+            child: Material(
+              animationDuration: duration,
+              color: Colors.transparent,
+              // shape: shape.toMorphable,
+              child: InkResponse(
+                canRequestFocus: tactility.tappable,
+                // customBorder: shape.toMorphable,
+                containedInkWell: true,
+                highlightShape: BoxShape.rectangle,
+                highlightColor: tactility.tappable
+                    ? tactility.inkHighlightColor
+                    : Colors.transparent,
+                splashColor: tactility.tappable
+                    ? tactility.inkSplashColor
+                    : Colors.transparent,
+                splashFactory: tactility.useThemeSplashFactory
+                    ? null
+                    : tactility.splashFactory ?? BouncyBall.splashFactory,
+                onTap: tactility.tappable
+                    ? () {
+                        if (tactility.vibrates) HapticFeedback.vibrate();
+                        tactility.onTap?.call();
+                      }
+                    : null,
+                child: Padding(
+                  padding: appearance.layout.padding ?? EdgeInsets.zero,
+                  child: child ?? const SizedBox(width: 0, height: 0),
+                ),
+              ),
+            ),
+          ),
+        );
+
+  /// This `Surface` has it [appearance]
+  /// defaulted and restricted to [Glass].
+  Surface.glass({
+    Key? key,
+    this.shape = const Shape(),
+    Glass appearance = const Glass(),
+    Frost frost = const Frost(),
+    this.tactility = const Tactility(),
+    Widget? child,
+    Duration duration = const Duration(milliseconds: 400),
+    Curve curve = Curves.ease,
+    // String? animationID,
+    VoidCallback? onEnd,
+  })  : _isClay = false,
+        // ignore: prefer_initializing_formals
+        appearance = appearance,
         foundation = Foundation.none,
         super(
           key: key,
@@ -377,44 +468,72 @@ class Surface extends morph.AnimatedStyledContainer {
           duration: duration,
           curve: curve,
           onEnd: onEnd,
-          onMouseEnter: tactility.onMouseEnter,
-          onMouseExit: tactility.onMouseExit,
-          style: appearance
-              .asStyle(
-                layer: SurfaceLayer.MATERIAL,
-                shape: shape,
-                filter: filter,
-              )
-              .copyWith(padding: EdgeInsets.zero),
-          child: Material(
-            animationDuration: duration,
-            color: Colors.transparent,
-            // shape: shape.toMorphable,
-            // TODO Look into `focus`, accessibility, nav
-            child: InkResponse(
-              canRequestFocus: tactility.tappable,
-              // customBorder: shape.toMorphable,
-              containedInkWell: true,
-              highlightShape: BoxShape.rectangle,
-              highlightColor: tactility.tappable
-                  ? tactility.inkHighlightColor
-                  : Colors.transparent,
-              splashColor: tactility.tappable
-                  ? tactility.inkSplashColor
-                  : Colors.transparent,
-              splashFactory: tactility.useThemeSplashFactory
-                  ? null
-                  : tactility.splashFactory ?? BouncyBall.splashFactory,
-              onTap: tactility.tappable
-                  ? () {
-                      if (tactility.vibrates) HapticFeedback.vibrate();
-                      tactility.onTap?.call();
-                    }
-                  : null,
-              child: Padding(
-                padding: appearance.padding ?? EdgeInsets.zero,
-                child: child ?? const SizedBox(width: 0, height: 0),
-              ),
+          style: appearance.asStyle(
+            layer: SurfaceLayer.MATERIAL,
+            shape: shape,
+          ),
+          child: morph.AnimatedStyledContainer(
+            style: appearance.asStyle(
+              layer: SurfaceLayer.CHILD,
+              shape: shape,
+            ),
+            duration: duration,
+            curve: curve,
+            onMouseEnter: tactility.onMouseEnter,
+            onMouseExit: tactility.onMouseExit,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: AnimatedOpacity(
+                    opacity:
+                        (frost.isFrosted) ? (frost.opacity).clamp(0, 1) : 0,
+                    duration: duration,
+                    curve: curve,
+                    child: ImageToo(
+                      image: frost.customTexture != null
+                          ? ExactAssetImage(frost.customTexture!)
+                          : kFrostTextures[frost.texture]!,
+                      fit: BoxFit.none,
+                      repeat: frost.repeat, // secret sauce 😈
+                      // alignment: Alignment.topCenter, // overridden by mirror
+                      mirrorOffset: frost.mirrorOffset,
+                      color: appearance.color
+                          .withOpacity((frost.strength).clamp(0, 1)),
+                      colorBlendMode: frost.blendMode,
+                    ),
+                  ),
+                ),
+                Material(
+                  animationDuration: duration,
+                  color: Colors.transparent,
+                  // shape: shape.toMorphable,
+                  child: InkResponse(
+                    canRequestFocus: tactility.tappable,
+                    // customBorder: shape.toMorphable,
+                    containedInkWell: true,
+                    highlightShape: BoxShape.rectangle,
+                    highlightColor: tactility.tappable
+                        ? tactility.inkHighlightColor
+                        : Colors.transparent,
+                    splashColor: tactility.tappable
+                        ? tactility.inkSplashColor
+                        : Colors.transparent,
+                    splashFactory: tactility.useThemeSplashFactory
+                        ? null
+                        : tactility.splashFactory ?? BouncyBall.splashFactory,
+                    onTap: tactility.tappable
+                        ? () {
+                            if (tactility.vibrates) HapticFeedback.vibrate();
+                            tactility.onTap?.call();
+                          }
+                        : null,
+                    child: Padding(
+                      padding: appearance.layout.padding ?? EdgeInsets.zero,
+                      child: child ?? const SizedBox(width: 0, height: 0),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -424,13 +543,13 @@ class Surface extends morph.AnimatedStyledContainer {
   /// Optionally provide a [Stroke].
   ///
   /// - 📐 Use [Shape.corners] to customize all four `Corner`s in a [Shape]
-  /// - ➖ [Shape.border] from [Stroke]
+  /// - ➖ [Shape.stroke] from [Stroke]
   /// - 🔘 `CornerRadius` as [Shape.radius]
   final Shape shape;
 
   /// An `Appearance` object serves to dictate size, layout, and style.
   ///
-  /// Variants to [Appearance] include [Clay] and [Glass].
+  /// Variants to 🎨 [Appearance] include 🤏 [Clay] and 🔍 [Glass].
   final Appearance appearance;
 
   /// 👆 [Tactility.tappable] provides `onTap` functionality and [InkResponse].
@@ -447,12 +566,6 @@ class Surface extends morph.AnimatedStyledContainer {
   /// [InteractiveInkFeatureFactory] specific to this 🌟 `Surface`
   /// with [Tactility.splashFactory].
   final Tactility tactility;
-
-  /// A 🔬 [Filter] provides options to customize `ImageFilter`
-  /// appearance at all 📚 [SurfaceLayer]s.
-  /// - `Set<SurfaceLayer>` 👓 [Filter.filteredLayers] ultimately determines
-  /// which 📚 Layers have filters enabled.
-  final Filter filter;
 
   /// Consider 🧱 `Foundation` to be a description of how the 📚 `FOUNDATION`
   /// is exposed behind the 📚 `MATERIAL`, or as insets
@@ -471,6 +584,24 @@ class Surface extends morph.AnimatedStyledContainer {
   /// special treatment *regardless* of 🔲 `peek` / `ratio`.
   final Foundation foundation;
 
+  final bool _isClay;
+
+  Color get _color => (appearance is Clay)
+      ? (appearance as Clay).color
+      : (appearance is Glass)
+          ? (appearance as Glass).color
+          : Colors.transparent;
+
+  List<morph.Dimension?> get _size =>
+      [appearance.layout.width, appearance.layout.height];
+  List<morph.Dimension?> get _foundationSize => [
+        foundation.appearance?.layout.width,
+        foundation.appearance?.layout.height
+      ];
+
+  @override
+  State<StatefulWidget> createState() => _SurfaceState();
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
@@ -478,8 +609,54 @@ class Surface extends morph.AnimatedStyledContainer {
       ..add(DiagnosticsProperty<Shape>('shape', shape))
       ..add(DiagnosticsProperty<morph.Style>('style', style))
       ..add(DiagnosticsProperty<Tactility>('tactility', tactility))
-      ..add(DiagnosticsProperty<Filter>('filter', filter))
       ..add(DiagnosticsProperty<Foundation>('foundation', foundation))
       ..add(DiagnosticsProperty<Duration>('duration', duration));
+  }
+}
+
+class _SurfaceState
+    extends morph.StyledWidgetState<morph.AnimatedStyledContainer> {
+  _SurfaceState();
+
+  @override
+  Widget build(BuildContext context) {
+    resolveStyle();
+    resolveProperties();
+    final widget = (this.widget as Surface);
+
+    var surface = buildAnimatedStyledContainer(
+      child: widget.child,
+      duration: widget.duration,
+      curve: widget.curve,
+      onMouseEnter: widget.onMouseEnter,
+      onMouseExit: widget.onMouseExit,
+      onEnd: widget.onEnd,
+    );
+
+    // Very special case for `Surface.clay`.
+    if (widget._isClay) {
+      if (widget.foundation.peek > 0) {
+        final size = widget._size;
+        final foundationSize = widget._foundationSize;
+        surface = morph.AnimatedStyledContainer(
+          duration: widget.duration,
+          curve: widget.curve,
+          style: morph.Style(
+            shapeBorder: widget.foundation.shape?.toMorphable ??
+                widget.shape.toMorphable,
+            width: foundationSize[0] ?? size[0],
+            height: foundationSize[1] ?? size[1],
+            backgroundDecoration: BoxDecoration(color: widget._color),
+          ),
+          child: FittedBox(
+            child: Padding(
+              padding: widget.foundation.insets,
+              child: Center(child: surface),
+            ),
+          ),
+        );
+      }
+    }
+    return surface;
   }
 }

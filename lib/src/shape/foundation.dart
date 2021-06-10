@@ -68,7 +68,7 @@ class Foundation with Diagnosticable {
   /// It may be thought to function like a padding for the `child` content.
   ///
   /// To give this 🌟 `Surface` a `BorderSide` or [Stroke],
-  /// see 🔰 [Shape.border].
+  /// see 🔰 [Shape.stroke].
   ///
   /// Having declared a side(s)✝ to receive special treatment by 🔀 [exposure],
   /// a 📏 [ratio] defines the scale by which to multiply this (these) inset(s):
@@ -89,37 +89,46 @@ class Foundation with Diagnosticable {
   /// special treatment *regardless* of [peek] / [ratio].
   final Alignment exposure;
 
-  /// {@template get_peek}
-  /// 🔢 Establish the thickness/inset of each foundation inside "peek"
+  /// Establish the thickness/inset of each foundation inside "peek"
   /// (`padding` property for 📚 `SurfaceLayer.MATERIAL`)
-  /// based on [peek] and considering [exposure] & [ratio]
-  /// {@endtemplate}
+  /// based on [peek] and considering [exposure] & [ratio].
   double get peekLeft => (exposure == Alignment.topLeft ||
           exposure == Alignment.centerLeft ||
           exposure == Alignment.bottomLeft)
       ? peek * ratio
       : peek;
 
-  /// {@macro get_peek}
+  /// Establish the thickness/inset of each foundation inside "peek"
+  /// (`padding` property for 📚 `SurfaceLayer.MATERIAL`)
+  /// based on [peek] and considering [exposure] & [ratio].
   double get peekTop => (exposure == Alignment.topLeft ||
           exposure == Alignment.topCenter ||
           exposure == Alignment.topRight)
       ? peek * ratio
       : peek;
 
-  /// {@macro get_peek}
+  /// Establish the thickness/inset of each foundation inside "peek"
+  /// (`padding` property for 📚 `SurfaceLayer.MATERIAL`)
+  /// based on [peek] and considering [exposure] & [ratio].
   double get peekRight => (exposure == Alignment.topRight ||
           exposure == Alignment.centerRight ||
           exposure == Alignment.bottomRight)
       ? peek * ratio
       : peek;
 
-  /// {@macro get_peek}
+  /// Establish the thickness/inset of each foundation inside "peek"
+  /// (`padding` property for 📚 `SurfaceLayer.MATERIAL`)
+  /// based on [peek] and considering [exposure] & [ratio].
   double get peekBottom => (exposure == Alignment.bottomLeft ||
           exposure == Alignment.bottomCenter ||
           exposure == Alignment.bottomRight)
       ? peek * ratio
       : peek;
+
+  /// Returns `EdgeInsets` where `left` is [peekLeft], `top` is [peekRight],
+  /// etc.
+  EdgeInsets get insets =>
+      EdgeInsets.fromLTRB(peekLeft, peekTop, peekRight, peekBottom);
 
   /// 📋 Returns a copy of this `Peek` with the given properties.
   Foundation copyWith({

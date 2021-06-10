@@ -7,7 +7,7 @@ library surface;
 
 import 'dart:ui' show ImageFilter;
 
-import 'surface_layer.dart';
+import 'layer.dart';
 
 /// ### 🤹‍♂️ Surface FX
 /// `specRadius` will be the radius from 🔬 [Filter]
@@ -55,6 +55,15 @@ class Filter {
     this.radiusChild,
     this.effect = FX.blurry,
   });
+
+  /// All 📚 layers disabled and radii set to `0.0`.
+  static const none = Filter(
+    effect: FX.blurry,
+    filteredLayers: <SurfaceLayer>{},
+    radiusFoundation: 0.0,
+    radiusMaterial: 0.0,
+    radiusChild: 0.0,
+  );
 
   /// 📚 `CHILD` Layer blurred, radius: `10.0`
   static const blurChild = Filter(
@@ -123,11 +132,11 @@ class Filter {
   double radiusByLayer(SurfaceLayer layer) {
     switch (layer) {
       case SurfaceLayer.FOUNDATION:
-        return (filteredLayers.contains(layer)) ? radiusFoundation ?? 0 : 0;
+        return radiusFoundation ?? 0.0;
       case SurfaceLayer.MATERIAL:
-        return (filteredLayers.contains(layer)) ? radiusMaterial ?? 0 : 0;
+        return radiusMaterial ?? 0.0;
       case SurfaceLayer.CHILD:
-        return (filteredLayers.contains(layer)) ? radiusChild ?? 0 : 0;
+        return radiusChild ?? 0.0;
     }
   }
 }

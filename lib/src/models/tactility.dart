@@ -4,8 +4,7 @@ library surface;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart'
-    show PointerEnterEventListener, PointerExitEventListener;
+import 'package:flutter/services.dart';
 
 /// {@macro tactility}
 class Tactility with Diagnosticable {
