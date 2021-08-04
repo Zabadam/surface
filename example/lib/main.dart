@@ -1,5 +1,4 @@
-// /// WORK IN PROGRESS
-// library surface_example;
+// WORK IN PROGRESS
 
 // import 'dart:async';
 // import 'dart:math';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // // import 'package:animated_styled_widget/animated_styled_widget.dart' as Morph;
 import 'package:surface/surface.dart';
+import 'package:spectrum/spectrum.dart';
 // import 'package:ball/ball.dart';
 // import 'surface_palette.dart';
 // import 'ball_pit.dart';

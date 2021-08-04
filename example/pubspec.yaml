@@ -7,10 +7,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  spectrum: ^0.2.1
 
 dev_dependencies:
   surface:
     path: ../
+  neu:
+    path: ../../neu
 
 flutter:
   uses-material-design: true

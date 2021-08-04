@@ -7,6 +7,7 @@ library surface_example;
 import 'package:flutter/material.dart';
 
 import 'package:surface/surface.dart';
+import 'package:spectrum/spectrum.dart';
 
 const _ITEM_HEIGHT = 180.0;
 const _ITEM_PADDING = 10.0;
